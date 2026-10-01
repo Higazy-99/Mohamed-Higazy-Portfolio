@@ -1152,3 +1152,15 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
   .services h3 { margin-top: 6px; font-size: 17px; line-height: 1.15; overflow-wrap: anywhere; }
   .services p { margin-top: 6px; font-size: 13.5px; line-height: 1.5; }
 }
+
+/* ---------- Phones: hero gap, focus chips, How I work ---------- */
+@media (max-width: 720px) {
+  .portfolio-shell { min-height: 0; padding-top: calc(80px + 70vw); }
+  .focus-list li { padding: 6px 12px; font-size: 14px; }
+  .ep.is-vertical .ep-rail { padding: 0 20px; }
+  .ep-numeral-lg { font-size: 26px; }
+  .ep-title { font-size: 24px; }
+  .ep-body p { font-size: 15px; line-height: 1.5; }
+  .ep-body ul { gap: 6px; margin-top: 12px; }
+  .ep-body li { padding: 5px 12px; font-size: 13px; }
+}

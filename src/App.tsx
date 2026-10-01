@@ -868,9 +868,12 @@ function App({ initialPath }: { initialPath?: string } = {}) {
           </header>
           <div data-reveal>
             <ExpandingPanels
+              key={narrow ? 'narrow' : 'wide'}
               label="How I work"
-              height={narrow ? 760 : 440}
+              height={narrow ? 540 : 440}
               vertical={narrow}
+              defaultActive={narrow ? 0 : null}
+              grow={narrow ? 5 : undefined}
               items={steps.map((step) => ({
                 title: step.title,
                 subtitle: step.subtitle,

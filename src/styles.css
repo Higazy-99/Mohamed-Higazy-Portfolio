@@ -1115,3 +1115,40 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
   .cs-screen-head p { font-size: 15px; }
   .cs-close .cs-panel p { font-size: 15px; }
 }
+
+/* ---------- Phones: Fan-ID alignment fixes ---------- */
+@media (max-width: 720px) {
+  .cs .cs-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 0; }
+  .cs .cs-meta div, .cs .cs-meta div + div, .cs .cs-meta div:nth-child(4n + 1) { padding: 14px 12px 14px 0; border-left: 0; border-bottom: 1px solid var(--line); }
+  .cs .cs-meta div:nth-child(even) { padding-left: 14px; padding-right: 0; border-left: 1px solid var(--line); }
+  .cs .cs-meta div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .fid-poc { grid-template-columns: 1fr; gap: 20px; }
+  .fid-poc > li { display: grid; grid-template-columns: 124px minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: 14px; row-gap: 6px; align-items: start; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .fid-poc > li:last-child { border-bottom: 0; }
+  .fid-poc .fid-screen { grid-row: 1 / span 3; padding: 10px 6px; }
+  .fid-poc .fid-screen .cs-zoom { height: 210px; border-radius: 14px; }
+  .fid-poc .fid-step { margin-top: 0; }
+  .fid-poc > li > p { margin-top: 0; max-width: none; font-size: 14px; }
+  .fid-poc .fid-links { margin-top: 4px; gap: 4px; }
+  .fid-poc .fid-links li { padding: 3px 10px; font-size: 12px; line-height: 1.35; }
+}
+
+@media (max-width: 720px) {
+  .fid-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fid-stats div, .fid-stats div + div, .fid-stats div:nth-child(3n + 1) { padding: 14px 10px 14px 0; border-left: 0; border-bottom: 1px solid var(--line); }
+  .fid-stats div:nth-child(even) { padding-left: 14px; padding-right: 0; border-left: 1px solid var(--line); }
+  .fid-stats div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .fid-stats dd { font-size: 32px; }
+  .fid-stats dt { font-size: 13px; }
+}
+
+/* ---------- Phones: What I do as a 2-column grid ---------- */
+@media (max-width: 720px) {
+  .services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .services li, .services li:not(:nth-child(3n + 1)) { padding: 16px 12px 20px 0; border-left: 0; }
+  .services li:nth-child(even) { padding-left: 12px; padding-right: 0; border-left: 1px solid var(--line); }
+  .services li:nth-child(odd) { padding-left: 0; }
+  .service-no { margin-bottom: 12px; font-size: 12px; }
+  .services h3 { margin-top: 6px; font-size: 17px; line-height: 1.15; overflow-wrap: anywhere; }
+  .services p { margin-top: 6px; font-size: 13.5px; line-height: 1.5; }
+}

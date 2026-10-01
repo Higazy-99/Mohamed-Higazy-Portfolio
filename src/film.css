@@ -451,7 +451,8 @@
   .fs-roadmap > li { padding: 18px; }
   .fs-road-head > span:first-child { font-size: 26px; }
   .fs-road-head h3 { font-size: 20px; }
-  .fs-glance li { padding: 20px 0; }
+  .fs-glance li { padding: 20px 18px; }
+  .fs-glance { border-radius: 18px; }
   .fs-glance h3 { font-size: 20px; }
   .fs-tasks summary > span { font-size: 22px; }
   .jm-cards-top h3 { font-size: 18px; }
@@ -462,3 +463,15 @@
   .fl-lane { padding: 12px; }
 }
 @media (max-width: 720px) { .fl-list { grid-template-columns: minmax(0, 1fr); } .fl-list > li { min-width: 0; overflow-wrap: anywhere; } }
+@media (max-width: 720px) {
+  .fs-heat-row { grid-template-columns: 108px minmax(0, 1fr) minmax(0, 1fr); }
+  .fs-heat-row > span { padding: 12px 10px; }
+  .fs-heat-area { font-size: 15px; line-height: 1.25; }
+  .fs-heat-cell { gap: 4px; }
+  .fs-dot { width: 26px; height: 26px; font-size: 12px; }
+}
+@media (max-width: 720px) {
+  .fs-flowkey { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+  .fs-flowkey li { min-width: 0; }
+  .jm-meter { max-width: none; }
+}

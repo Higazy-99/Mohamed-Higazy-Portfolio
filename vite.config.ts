@@ -8,7 +8,9 @@ import { absoluteUrl, headHtml, routes } from './src/seo/routes.ts';
 function siteAddress() {
   const env = process.env;
   if (env.SITE_URL) return env.SITE_URL.replace(/\/+$/, '');
-  const vercel = env.VERCEL_ENV === 'production' ? env.VERCEL_PROJECT_PRODUCTION_URL : env.VERCEL_URL;
+  // the live address; a fixed value because Vercel's own production-URL variable can still point to the old project name
+  if (env.VERCEL_ENV === 'production') return 'https://mohamedhigazy.vercel.app';
+  const vercel = env.VERCEL_URL;
   if (vercel) return `https://${vercel}`;
   return 'http://127.0.0.1:4173';
 }

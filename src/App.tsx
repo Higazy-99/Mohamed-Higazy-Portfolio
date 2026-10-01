@@ -29,20 +29,20 @@ const featured = FEATURED_IDS.map((id) => projects.find((project) => project.id 
 const rest = projects.filter((project) => !FEATURED_IDS.includes(project.id));
 
 const clients = [
-  { name: 'Ministry of Culture', src: '/logos/ministry-of-culture.webp', h: 62 },
-  { name: 'stc', src: '/logos/stc.svg', h: 38 },
-  { name: 'Expo 2030 Riyadh', src: '/logos/expo-2030.webp', h: 74 },
-  { name: 'TAM', src: '/logos/tam.webp', h: 40 },
-  { name: 'Diriyah Company', src: '/logos/diriyah.webp', h: 72 },
-  { name: 'Golf Saudi', src: '/logos/golf-saudi.webp', h: 60 },
-  { name: 'Misk Foundation', src: '/logos/misk.webp', h: 58 },
-  { name: 'Tarjim Initiative', src: '/logos/tarjim.webp', h: 70 },
-  { name: 'King Salman Foundation', src: '/logos/king-salman-foundation.webp', h: 66 },
-  { name: 'Literature, Publishing & Translation Commission', src: '/logos/lptc.webp', h: 56 },
-  { name: 'Film Commission', src: '/logos/film-commission.webp', h: 40 },
-  { name: 'Jameel Finance', src: '/logos/jameel-finance.webp', h: 64 },
-  { name: 'Hawi', src: '/logos/hawi.webp', h: 44 },
-  { name: 'innovaDigits', src: '/logos/innovadigits.webp', h: 34 },
+  { name: 'Ministry of Culture', src: '/logos/ministry-of-culture.webp', h: 62, w: 98 },
+  { name: 'stc', src: '/logos/stc.svg', h: 38, w: 76 },
+  { name: 'Expo 2030 Riyadh', src: '/logos/expo-2030.webp', h: 74, w: 40 },
+  { name: 'TAM', src: '/logos/tam.webp', h: 40, w: 115 },
+  { name: 'Diriyah Company', src: '/logos/diriyah.webp', h: 72, w: 72 },
+  { name: 'Golf Saudi', src: '/logos/golf-saudi.webp', h: 60, w: 82 },
+  { name: 'Misk Foundation', src: '/logos/misk.webp', h: 58, w: 115 },
+  { name: 'Tarjim Initiative', src: '/logos/tarjim.webp', h: 70, w: 190 },
+  { name: 'King Salman Foundation', src: '/logos/king-salman-foundation.webp', h: 66, w: 80 },
+  { name: 'Literature, Publishing & Translation Commission', src: '/logos/lptc.webp', h: 56, w: 134 },
+  { name: 'Film Commission', src: '/logos/film-commission.webp', h: 40, w: 199 },
+  { name: 'Jameel Finance', src: '/logos/jameel-finance.webp', h: 64, w: 78 },
+  { name: 'Hawi', src: '/logos/hawi.webp', h: 44, w: 170 },
+  { name: 'innovaDigits', src: '/logos/innovadigits.webp', h: 34, w: 207 },
 ];
 
 const focusAreas = ['CX Design', 'UX Design', 'UX Research', 'Experience Strategy', 'Service Design', 'Information Architecture', 'Web & Mobile Experiences'];
@@ -465,7 +465,7 @@ function Testimonials() {
   const last = Math.min(view.first + view.visible, testimonials.length);
   return (
     <div data-reveal>
-      <ul className="testi-list" ref={track} tabIndex={0} role="region" aria-label="Testimonials, scrolls sideways">
+      <ul className="testi-list" ref={track} tabIndex={0} role="list" aria-label="Testimonials, scrolls sideways">
         {testimonials.map((t) => (
           <li key={t.name}>
             <figure className="testi">
@@ -760,7 +760,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
             <ul className={`marquee-track${paused ? ' is-paused' : ''}`}>
               {[0, 1].map((copy) => clients.map((client) => (
                 <li key={`${copy}-${client.name}`} aria-hidden={copy === 1 ? 'true' : undefined}>
-                  <img src={client.src} alt={copy === 0 ? client.name : ''} style={{ height: client.h }} loading="lazy" />
+                  <img src={client.src} alt={copy === 0 ? client.name : ''} width={client.w} height={client.h} style={{ height: client.h, width: 'auto' }} loading="lazy" />
                 </li>
               )))}
             </ul>
@@ -917,7 +917,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
               <ul>
                 <li><a href={BEHANCE} target="_blank" rel="noopener noreferrer">Behance</a></li>
                 <li><a href={LINKEDIN} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-                <li><a href="/cv.pdf" target="_blank" rel="noopener noreferrer" aria-label="Resume, PDF, opens in a new tab">Resume (PDF)</a></li>
+                <li><a href="/cv.pdf" target="_blank" rel="noopener noreferrer" aria-label="Resume (PDF), opens in a new tab">Resume (PDF)</a></li>
               </ul>
             </div>
           </div>

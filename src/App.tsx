@@ -760,7 +760,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
             <ul className={`marquee-track${paused ? ' is-paused' : ''}`}>
               {[0, 1].map((copy) => clients.map((client) => (
                 <li key={`${copy}-${client.name}`} aria-hidden={copy === 1 ? 'true' : undefined}>
-                  <img src={client.src} alt={copy === 0 ? client.name : ''} width={client.w} height={client.h} style={{ height: client.h, width: 'auto' }} loading="lazy" />
+                  <img src={client.src} alt={copy === 0 ? client.name : ''} width={client.w} height={client.h} style={{ '--h': `${client.h}px` } as CSSProperties} loading="lazy" />
                 </li>
               )))}
             </ul>

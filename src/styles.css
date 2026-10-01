@@ -122,7 +122,7 @@ h2 em { font-style: normal; color: var(--muted); }
 .marquee-track { display: flex; align-items: center; width: max-content; animation: marquee 30s linear infinite; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 .marquee-track li { display: flex; align-items: center; justify-content: center; height: 84px; padding: 0 clamp(28px, 4vw, 60px); }
-.marquee-track img { width: auto; max-width: 210px; object-fit: contain; filter: var(--logo-filter); transition: filter 300ms var(--ease), scale 300ms var(--ease); }
+.marquee-track img { width: auto; height: var(--h); max-width: 210px; object-fit: contain; filter: var(--logo-filter); transition: filter 300ms var(--ease), scale 300ms var(--ease); }
 .marquee-track li:hover img { filter: none; scale: 1.06; }
 
 /* ---------- Gallery ---------- */
@@ -921,8 +921,50 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
 @media (min-width: 721px) { .testi-rel { min-height: 4.1em; } }
 @media (max-width: 1100px) { .testi-list > li { flex-basis: calc((100% - var(--testi-gap)) / 2); } }
 @media (max-width: 720px) {
-  .testi-list { display: grid; grid-template-columns: 1fr; margin: 0; padding: 0; overflow: visible; }
-  .testi-list > li { flex: none; }
-  .testi-nav { display: none; }
+  .testi-list > li { flex: 0 0 88%; }
 }
 @media (prefers-reduced-motion: reduce) { .testi, .testi:hover, .testi-arrows button { transition: none; translate: none; } }
+
+/* ---------- Phones: a calmer scale (the desktop sizes were too big on a 390px screen) ---------- */
+@media (max-width: 720px) {
+  :root { --fs-md: 17px; }
+  .section { padding-top: 64px; }
+  .section-head { margin-bottom: 32px; }
+  .section-head p { margin-top: 16px; font-size: 16px; }
+  h1 { font-size: clamp(46px, 14.5vw, 64px); }
+  h2 { font-size: clamp(30px, 9vw, 40px); }
+  .eyebrow { margin-bottom: 16px; font-size: var(--fs-xs); }
+  .hero { bottom: 80px; }
+  .hero-kicker { margin-bottom: 16px; font-size: 14px; }
+  .hero-note { margin: 16px 0 16px; font-size: 15px; line-height: 1.5; }
+  .btn { min-height: 44px; padding: 10px 20px; font-size: 15px; }
+  .hero-actions { gap: 8px; }
+  .clients { padding: 16px 0 20px; }
+  .clients-head { margin-bottom: 8px; }
+  .clients-title { font-size: 14px; }
+  .marquee-toggle { min-height: 40px; padding: 6px 14px; font-size: 14px; }
+  .marquee-track li { height: 60px; padding: 0 22px; }
+  .marquee-track img { height: calc(var(--h) * 0.7); }
+  .about-lead { font-size: 22px; }
+  .stats { margin-top: 40px; }
+  .stats li, .stats li + li { padding: 18px 0; }
+  .stat-num { font-size: 44px; }
+  .stat-label { margin-top: 8px; font-size: 15px; }
+  .card { aspect-ratio: 6 / 5; }
+  .card-info h3 { font-size: 20px; }
+  .services li { padding: 24px 0 28px; }
+  .services h3 { font-size: 22px; }
+  .services p { margin-top: 10px; font-size: 15px; }
+  .manifesto-statement { font-size: clamp(28px, 8vw, 36px); }
+  .manifesto-list { margin-top: 40px; }
+  .manifesto-list li { padding: 20px 0; }
+  .manifesto-list h3 { font-size: 24px; }
+  .manifesto-list p { font-size: 15px; }
+  .testi { padding: 24px; }
+  .testi-mark { font-size: 64px; }
+  .testi blockquote { margin: 16px 0 20px; }
+  .testi blockquote p { font-size: 15px; }
+  .footer-cta h2 { font-size: clamp(30px, 9vw, 40px); }
+  .footer-mail { font-size: 19px; }
+  .footer-cols li a { font-size: 16px; }
+}

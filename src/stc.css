@@ -218,3 +218,22 @@
   .stc-tags button, .stc-tags button svg { transition: none; }
   .stc-tags button:hover svg { translate: none; }
 }
+
+/* ---------- Phones ---------- */
+@media (max-width: 720px) {
+  .stc .cs-hero h1 { font-size: clamp(32px, 10vw, 40px); }
+  .stc-stats dd { font-size: 32px; }
+  .stc-roles li, .stc-map > li, .stc-handoffs li, .stc-dec > li { padding: 18px; border-radius: 16px; }
+  .stc-roles h3 { font-size: 22px; }
+  .stc-pains h4, .stc-map h4, .stc-flowlist strong, .stc-ho-dir { font-size: 17px; }
+  .stc-found-sum { margin-top: 16px; font-size: 16px; }
+  .stc-map header span, .stc-handoffs span, .stc-count b { font-size: 24px; }
+  .stc-dec-n { font-size: 30px; }
+  .stc-dec h3 { margin-top: 12px; font-size: 20px; }
+  .stc-dec p.stc-dec-we { font-size: 16px; }
+  .stc-panel { padding: 16px; }
+  .stc-panel h3 { margin-top: 12px; font-size: 20px; }
+  .stc-flow-wrap { margin-top: 16px; padding: 10px; border-radius: 16px; }
+}
+@media (max-width: 900px) { .stc-life-row { grid-template-columns: minmax(0, 1fr); } .stc-life-row > * { min-width: 0; } }
+@media (max-width: 560px) { .stc-life li.is-branch { flex-wrap: wrap; max-width: 100%; } }

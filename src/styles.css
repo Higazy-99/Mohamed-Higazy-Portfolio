@@ -927,7 +927,7 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
 
 /* ---------- Phones: a calmer scale (the desktop sizes were too big on a 390px screen) ---------- */
 @media (max-width: 720px) {
-  :root { --fs-md: 17px; }
+  :root { --fs-md: 16px; --fs-sm: 15px; --fs-xs: 13px; }
   .section { padding-top: 64px; }
   .section-head { margin-bottom: 32px; }
   .section-head p { margin-top: 16px; font-size: 16px; }
@@ -967,4 +967,151 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
   .footer-cta h2 { font-size: clamp(30px, 9vw, 40px); }
   .footer-mail { font-size: 19px; }
   .footer-cols li a { font-size: 16px; }
+}
+
+/* ---------- Phones: hero in normal flow (buttons were hidden behind the footer strip), stats in one row ---------- */
+@media (max-width: 720px) {
+  .portfolio-shell { height: auto; min-height: max(100svh, 600px); display: flex; flex-direction: column; justify-content: flex-end; padding-top: calc(64px + 62vw); }
+  .hero { position: static; margin-inline: var(--gutter); }
+  .hero-footer { position: static; margin: 20px var(--gutter) 0; padding: 10px 0 14px; }
+  .hero-footer::before { display: none; }
+  .hero-footer a { height: 40px; width: 40px; }
+  .stats { grid-template-columns: repeat(3, 1fr); margin-top: 32px; }
+  .stats li, .stats li + li { padding: 16px 0 0; border-top: 0; }
+  .stats li + li { padding-left: 12px; border-left: 1px solid var(--line); }
+  .stat-num { font-size: 34px; }
+  .stat-label { margin-top: 6px; font-size: 13px; line-height: 1.35; }
+}
+
+/* ---------- Phones: recommendation cards ---------- */
+.testi-more { display: none; }
+@media (max-width: 720px) {
+  .testi-list { align-items: flex-start; }
+  .testi blockquote.is-clamped p { display: -webkit-box; -webkit-line-clamp: 7; line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; }
+  .testi-more { display: inline-flex; align-items: center; align-self: flex-start; min-height: 44px; margin: -12px 0 8px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .testi { gap: 0; }
+  .testi figcaption { padding-top: 16px; }
+  .testi-rel { margin-top: 10px; padding-top: 10px; }
+}
+
+/* ---------- Phones: case studies (shared parts and Fan-ID) ---------- */
+@media (max-width: 720px) {
+  .cs { padding-top: 84px; }
+  .cs-section { padding-top: 56px; }
+  .cs h2 { font-size: clamp(26px, 8vw, 32px); }
+  .cs-hero h1 { font-size: clamp(34px, 10.5vw, 44px); }
+  .cs-lead, .cs-sub, .cs-band-sub, .cs-finale p, .fid-sub-lead { margin-top: 14px; font-size: 16px; line-height: 1.55; }
+  .cs-facts div { padding: 16px 0; }
+  .cs-facts dd { font-size: 15px; }
+  .cs-meta dd { font-size: 15px; }
+  .cs-toc a { padding: 6px 12px; font-size: 14px; }
+  .cs-band { margin-top: 56px; }
+  .cs-band-inner { padding-block: 48px; }
+  .cs-band-list { grid-template-columns: 1fr; margin-top: 32px; }
+  .cs-band-list li { padding: 20px 0; }
+  .cs-band-list h3, .fid .cs-band-list h3 { margin-top: 8px; font-size: 20px; }
+  .cs-band-list p { font-size: 15px; }
+  .cs-finale { padding-block: 56px; }
+  .fid-sub { margin-top: 40px; font-size: 24px; }
+  .fid-answers { margin-top: 40px; }
+  .fid-answers h3 { margin-bottom: 16px; font-size: 22px; }
+  .fid-steps { grid-template-columns: 1fr; }
+  .fid-steps li, .fid-steps li:not(:nth-child(3n + 1)) { padding: 20px 0 24px; border-left: 0; }
+  .fid-steps span { margin-bottom: 10px; font-size: 14px; }
+  .fid-steps h3 { font-size: 20px; }
+  .fid-steps p { font-size: 15px; }
+  .fid-bench { grid-template-columns: 1fr; gap: 16px; }
+  .fid-bench > li { padding: 20px; border-radius: 16px; }
+  .fid-shot { margin-bottom: 16px; padding: 12px; }
+  .fid-shot .cs-zoom img { max-height: 170px; }
+  .fid-year { font-size: 40px; }
+  .fid-bench h3 { margin-top: 14px; font-size: 20px; }
+  .fid-lead { font-size: 15px; }
+  .fid-bench h4 { margin-top: 20px; }
+  .fid-bench > li > ul li { padding: 10px 0; font-size: 14px; }
+  .fid-guide { grid-template-columns: 1fr; gap: 16px; }
+  .fid-guide > li { padding: 20px; border-radius: 16px; }
+  .fid-guide span { font-size: 30px; }
+  .fid-guide h3 { margin-top: 14px; font-size: 20px; }
+  .fid-guide p { font-size: 15px; }
+  .fid-filter { margin-bottom: 20px; }
+  .fid-filter button { min-height: 40px; padding: 6px 12px; font-size: 14px; }
+  .fid-table-wrap { overflow-x: auto; border-radius: 16px; }
+  .fid-table { font-size: 14px; }
+  .fid-table td, .fid-table tbody th { padding: 16px 14px; }
+  .fid-t, .fid-ck .fid-t { font-size: 16px; }
+  .fid-persona { grid-template-columns: 1fr; gap: 16px; }
+  .fid-persona-card { padding: 20px; border-radius: 16px; }
+  .fid-persona-photo { max-width: 130px; margin-bottom: 16px; }
+  .fid-persona-card h3 { margin-top: 16px; font-size: 26px; }
+  .fid-persona-grid { grid-template-columns: 1fr; gap: 16px; }
+  .fid-persona-grid > div { padding: 18px; border-radius: 16px; }
+  .fid-persona-grid li, .fid-persona-grid p { font-size: 14px; }
+  .fid-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .fid-stats div { padding: 14px 10px 14px 0; }
+  .fid-stats div + div { padding-left: 10px; }
+  .fid-stats div:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
+  .fid-stats dd { font-size: 30px; }
+  .fid-stats dt { font-size: 12px; line-height: 1.3; }
+  .fid-cell { padding: 16px; font-size: 14px; }
+  .fid-chips { gap: 6px; margin-bottom: 20px; }
+  .fid-chips li { padding: 6px 12px; font-size: 14px; }
+  .fid-trends { font-size: 14px; }
+  .fid-trends span { padding: 6px 12px; }
+  .fid-ck-grid { grid-template-columns: 1fr; gap: 12px; }
+  .fid-ck { min-height: 0; padding: 16px; gap: 8px; border-radius: 16px; }
+  .fid-ck-n { font-size: 26px; }
+  .fid-dec { gap: 16px; }
+  .fid-dec > li { padding: 20px; border-radius: 16px; }
+  .fid-dec h3 { gap: 10px; font-size: 20px; }
+  .fid-dec h3 span { font-size: 18px; }
+  .fid-dec-row, .fid-dec-cols { margin-top: 16px; padding-top: 16px; }
+  .fid-dec-we { font-size: 16px; }
+  .fid-dec-opts li { padding: 6px 12px; font-size: 14px; }
+  .fid-dec-cols p { font-size: 14px; }
+  .fid-poc { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
+  .fid-screen { padding: 14px 8px; border-radius: 14px; }
+  .fid-screen .cs-zoom { height: 250px; border-radius: 18px; }
+  .fid-step { gap: 8px; margin-top: 12px; }
+  .fid-step span { font-size: 13px; }
+  .fid-step strong { font-size: 15px; }
+  .fid-poc > li > p { font-size: 13px; line-height: 1.45; }
+}
+
+@media (max-width: 720px) {
+  .fid-stage-cards { gap: 12px; }
+  .fid-stage-cards > li { padding: 16px; }
+  .fid-stage-top h3 { font-size: 18px; }
+  .fid-meter { margin: 12px 0 10px; }
+  .fid-stage-cards p, .fid-stage-cards dd { font-size: 14px; line-height: 1.5; }
+  .fid-stage-cards .fid-feeling { margin-bottom: 4px; font-size: 15px; }
+  .fid-stage-cards dl { margin-top: 12px; }
+  .fid-stage-cards dl div { padding: 8px 0; }
+  .fid-stage-cards dt { font-size: 12px; }
+}
+
+/* ---------- Phones: Wijha case ---------- */
+@media (max-width: 720px) {
+  .cs-two { gap: 24px; }
+  .cs-users { gap: 16px; }
+  .cs-users-main, .cs-panel { padding: 18px; border-radius: 16px; }
+  .cs-users-main h3, .cs-panel h3 { font-size: 20px; }
+  .cs-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cs-stats li, .cs-stats li + li { padding: 18px 12px 18px 0; border-top: 0; border-left: 0; }
+  .cs-stats li:nth-child(even) { padding-left: 12px; padding-right: 0; border-left: 1px solid var(--line); }
+  .cs-stats strong { font-size: 36px; }
+  .cs-stats h4 { margin-top: 6px; font-size: 16px; }
+  .cs-stats p { font-size: 13px; line-height: 1.4; }
+  .cs-req li { gap: 12px; padding: 14px 0; font-size: 15px; }
+  .cs-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+  .cs-stages li { padding-top: 14px; }
+  .cs-stages span { margin-bottom: 10px; font-size: 32px; }
+  .cs-stages h3, .cs-decisions h3 { font-size: 18px; }
+  .cs-stages p, .cs-decisions p { margin-top: 8px; font-size: 14px; }
+  .cs-two-cols { gap: 20px; margin-top: 28px; }
+  .cs-two-cols h3 { padding-top: 12px; font-size: 19px; }
+  .cs-screens { gap: 48px; }
+  .cs-screen-head h3 { font-size: 24px; }
+  .cs-screen-head p { font-size: 15px; }
+  .cs-close .cs-panel p { font-size: 15px; }
 }

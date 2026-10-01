@@ -430,3 +430,35 @@
 .fs-rec li .fsd-rn.is-medium { background: var(--sev-med); color: #1c1c1a; }
 @media (prefers-reduced-motion: reduce) { .ia-list summary svg, .fl-list summary svg { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .fs-tasks summary svg { transition: none; } }
+
+/* ---------- Phones ---------- */
+@media (max-width: 720px) {
+  .film .cs-hero h1 { font-size: clamp(30px, 9.5vw, 38px); }
+  .fs-sub { margin: 36px 0 16px; font-size: 22px; }
+  .fs-goals li, .fs-scope > li, .fs-tasks > li, .fs-roadmap > li, .jm-cards > li, .ia-list > li, .fl-list > li { padding: 16px; border-radius: 14px; }
+  .fs-goals b { top: 16px; right: 18px; font-size: 16px; }
+  .fs-goals h3 { margin-top: 14px; font-size: 19px; }
+  .fs-scope > li > span, .fs-tasks > li > span { font-size: 26px; }
+  .fs-scope h4, .fs-tasks h4 { margin-top: 10px; font-size: 18px; }
+  .fs-scale li { padding: 16px; gap: 8px; }
+  .fs-chapter h3 { margin-top: 10px; font-size: 24px; }
+  .fs-card-body { padding: 18px; }
+  .fs-num { font-size: 24px; }
+  .fs-card h4 { margin-top: 10px; font-size: 19px; }
+  .fs-shots { min-height: 0; padding: 14px; gap: 12px; }
+  .fs-turn > div { padding: 28px 18px; border-radius: 20px; }
+  .fs-turn h2 { margin-top: 14px; font-size: clamp(26px, 8vw, 32px); }
+  .fs-roadmap > li { padding: 18px; }
+  .fs-road-head > span:first-child { font-size: 26px; }
+  .fs-road-head h3 { font-size: 20px; }
+  .fs-glance li { padding: 20px 0; }
+  .fs-glance h3 { font-size: 20px; }
+  .fs-tasks summary > span { font-size: 22px; }
+  .jm-cards-top h3 { font-size: 18px; }
+  .fk-num { font-size: 20px; }
+  .fk-title { padding: 8px 14px 0; font-size: 17px; }
+  .fsd-body { padding: 18px; }
+  .fsd-body h2 { font-size: 24px; }
+  .fl-lane { padding: 12px; }
+}
+@media (max-width: 720px) { .fl-list { grid-template-columns: minmax(0, 1fr); } .fl-list > li { min-width: 0; overflow-wrap: anywhere; } }

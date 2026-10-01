@@ -428,6 +428,22 @@ function CountUp({ value, suffix = '' }: { value: number; suffix?: string }) {
 }
 
 
+/** The words are never shortened; on phones a long quote is cut to a few lines and opens with Read more. */
+function TestiQuote({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  const long = text.length > 260;
+  return (
+    <>
+      <blockquote className={long && !open ? 'is-clamped' : undefined}><p>{text}</p></blockquote>
+      {long && (
+        <button type="button" className="testi-more" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+          {open ? 'Show less' : 'Read more'}
+        </button>
+      )}
+    </>
+  );
+}
+
 function Testimonials() {
   const track = useRef<HTMLUListElement>(null);
   const [view, setView] = useState({ first: 0, visible: 3, prev: false, next: true });
@@ -470,7 +486,7 @@ function Testimonials() {
           <li key={t.name}>
             <figure className="testi">
               <span className="testi-mark" aria-hidden="true">&ldquo;</span>
-              <blockquote><p>{t.quote}</p></blockquote>
+              <TestiQuote text={t.quote} />
               <figcaption>
                 <span className="testi-id">
                   <span className="testi-av" aria-hidden="true">{initialsOf(t.name)}</span>

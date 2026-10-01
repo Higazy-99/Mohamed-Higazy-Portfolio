@@ -1,0 +1,214 @@
+[
+  {
+    "id": 1000000001,
+    "url": "/work/wijha",
+    "cover": "/case/wijha/cover.webp",
+    "category": "UX Concept · B2B SaaS",
+    "title": "Wijha – Dispatch Engine",
+    "description": "Turning operational decisions into explainable assignments.",
+    "color": "#0f3b34",
+    "position": "64% 50%",
+    "preview": {
+      "facts": [
+        [
+          "Role",
+          "CX-UX Designer"
+        ],
+        [
+          "Status",
+          "UX concept, in progress"
+        ]
+      ],
+      "cta": "View the full case study",
+      "problem": "Once a work item enters the system, the hard question is who should handle it, and why them.",
+      "did": [
+        "Designed how the engine's reasoning (eligibility, fit, cost, balance) is shown to a person.",
+        "Kept every assignment traceable and the final decision human-controlled."
+      ]
+    }
+  },
+  {
+    "id": 1000000002,
+    "url": "/work/fan-id",
+    "cover": "/case/fan-id/cover.webp",
+    "category": "UX Case Study · Digital identity · 2025",
+    "title": "Fan-ID – AFC Asian Cup",
+    "description": "Benchmarking, fan journey and UX principles for a tournament-wide digital identity, taken through to a proof of concept.",
+    "color": "#1f4bb6",
+    "preview": {
+      "facts": [
+        [
+          "Role",
+          "UX Designer, with a Product Designer (UI)"
+        ],
+        [
+          "Year",
+          "2025"
+        ],
+        [
+          "Status",
+          "Proof of concept delivered"
+        ],
+        [
+          "Tools",
+          "Figma, FigJam, Miro"
+        ]
+      ],
+      "numbers": [
+        [
+          "4",
+          "tournaments benchmarked"
+        ],
+        [
+          "14",
+          "criteria"
+        ],
+        [
+          "8",
+          "journey stages"
+        ]
+      ],
+      "cta": "View the full case study",
+      "problem": "Fans cross airports, hotels, fan zones, metro lines and stadium gates, and one Fan-ID had to work at every one of them.",
+      "did": [
+        "Built the research foundation: four tournaments benchmarked against 14 criteria.",
+        "Mapped the eight-stage fan journey and wrote five UX principles."
+      ]
+    }
+  },
+  {
+    "id": 1000000003,
+    "url": "/work/film-saudi",
+    "cover": "/case/film-saudi/cover.webp",
+    "category": "UX Audit · Heuristic evaluation · 2025",
+    "title": "Film Saudi – UX Audit",
+    "description": "A heuristic evaluation of a film-industry platform: 10 findings rated by severity, with recommendations, an improved journey, flows and information architecture.",
+    "color": "#173a56",
+    "preview": {
+      "facts": [
+        [
+          "Role",
+          "UX Designer, with a Product Designer"
+        ],
+        [
+          "Year",
+          "2025"
+        ],
+        [
+          "Status",
+          "Audit delivered"
+        ],
+        [
+          "Tools",
+          "Miro"
+        ]
+      ],
+      "numbers": [
+        [
+          "10",
+          "findings"
+        ],
+        [
+          "4",
+          "High severity"
+        ],
+        [
+          "5",
+          "improved paths"
+        ]
+      ],
+      "cta": "View the full case study",
+      "problem": "To use a film incentive in Saudi Arabia, a filmmaker moves across three platforms, and the journey breaks in several places.",
+      "did": [
+        "Ran a heuristic evaluation of four areas and rated 10 findings by severity.",
+        "Redrew the journey, the user flows and the information architecture."
+      ]
+    }
+  },
+  {
+    "id": 1000000004,
+    "url": "/work/stc-inspector",
+    "cover": "/case/stc-inspector/cover.webp",
+    "category": "UX Case Study · Field inspection · 2025",
+    "title": "STC Inspector – Field Inspection MVP",
+    "description": "One workflow for the inspector on site and the admin behind the desk, delivered as an MVP.",
+    "color": "#4f008c",
+    "preview": {
+      "facts": [
+        [
+          "Role",
+          "UX Designer"
+        ],
+        [
+          "Team",
+          "Product Designer (UI), developers"
+        ],
+        [
+          "Year",
+          "2025"
+        ],
+        [
+          "Status",
+          "MVP delivered"
+        ]
+      ],
+      "numbers": [
+        [
+          "2",
+          "roles"
+        ],
+        [
+          "44",
+          "user stories"
+        ],
+        [
+          "15",
+          "MVP screens"
+        ]
+      ],
+      "cta": "View the full case study",
+      "problem": "The inspector works in the field. The admin assigns, reviews and closes each inspection. The product had to keep both in step.",
+      "did": [
+        "Wrote the user stories and the flows for the inspector app and the admin hub.",
+        "Followed the design through developer reviews until hand-off."
+      ]
+    },
+    "position": "12% 50%"
+  },
+  {
+    "id": 229885305,
+    "url": "https://www.behance.net/gallery/229885305/Redesign-Task",
+    "cover": "https://mir-s3-cdn-cf.behance.net/projects/max_808_webp/94ad96229885305.Y3JvcCw5MjksNzI3LDExOSww.png",
+    "category": "UX Redesign",
+    "title": "Redesign Task",
+    "description": "A case study on redesigning the Instalments and Card Activation flows in the TRU app, based on user research and analytics.",
+    "color": "#2b3495"
+  },
+  {
+    "id": 193697229,
+    "url": "https://www.behance.net/gallery/193697229/Banktica-Fintech-APP",
+    "cover": "https://mir-s3-cdn-cf.behance.net/projects/max_808_webp/84e8f9193697229.Y3JvcCw0NjAyLDM2MDAsMCww.png",
+    "category": "App Design · UI/UX",
+    "title": "Banktica – Fintech App",
+    "description": "A comprehensive mobile fintech application that gives users a seamless, intuitive way to manage their financial activities.",
+    "color": "#1c1c1a"
+  },
+  {
+    "id": 166302045,
+    "url": "https://www.behance.net/gallery/166302045/UX-Case-Study-New-Features-InDrive-App",
+    "cover": "https://mir-s3-cdn-cf.behance.net/projects/max_808_webp/0fba03166302045.Y3JvcCw1MTc3LDQwNTAsNDQ4LDA.png",
+    "category": "UX Case Study",
+    "title": "New Features, InDrive App",
+    "description": "New payment options for a transportation app: credit card, PayPal and wallet.",
+    "color": "#05367d"
+  },
+  {
+    "id": 191522991,
+    "url": "https://www.behance.net/gallery/191522991/UI-Showcase-NexMoney-App",
+    "cover": "https://mir-s3-cdn-cf.behance.net/projects/max_808_webp/0f9f7d191522991.Y3JvcCwzODM1LDMwMDAsMCww.png",
+    "category": "UI Showcase",
+    "title": "NexMoney App",
+    "description": "A mobile app for fast, convenient money transfers between users, using phone numbers and usernames instead of bank account details.",
+    "color": "#2352c9"
+  }
+]

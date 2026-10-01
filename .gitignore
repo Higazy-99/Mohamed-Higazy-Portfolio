@@ -1,0 +1,51 @@
+# dependencies and build output
+node_modules
+dist
+dist-ssr
+.vercel
+.env
+.env.*
+!.env.example
+*.local
+*.tsbuildinfo
+
+# editor / OS
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# working files that should not be published
+versions/
+scripts/script_*.js
+scripts/behance_state.json
+scripts/meta.json
+scripts/app_tail.tsx
+scripts/apply_v*.py
+scripts/fix_mobile.py
+scripts/case_study*.css
+extract_frames.py
+extract_info.py
+
+# one-off helper scripts used while building the site (not needed to build or deploy)
+scripts/apply_sections.py
+scripts/cover_colors.py
+scripts/extract_*.py
+scripts/fanid.css
+scripts/fetch_behance.py
+scripts/make_fanid_cover.py
+scripts/prepare_release.py
+scripts/process_logos.py
+
+# source assets that the site does not use
+public/character.mp4
+public/WhatsApp*
+public/*.png
+public/*.jpeg
+public/frames/[0-9]*.webp
+
+# assistant notes (local only)
+CLAUDE.md
+
+# raw source images moved out of public/
+_raw-assets/

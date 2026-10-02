@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Download, Minus, MoveDownRight, Pause, Play, Plus, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react';
@@ -1073,6 +1074,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
         <div className="footer-mark" aria-hidden="true">HIGAZY</div>
       </footer>
       <ProjectPreview project={preview} onClose={closePreview} onOpen={navigate} />
+      <Analytics />
       <SpeedInsights />
     </>
   );

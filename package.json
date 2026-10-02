@@ -10,6 +10,7 @@
     "og": "python scripts/make_og.py"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
     "@vitejs/plugin-react": "^6.1.1",
     "lucide-react": "^1.48.0",
     "motion": "^13.4.6",

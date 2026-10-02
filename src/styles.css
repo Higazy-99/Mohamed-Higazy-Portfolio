@@ -1164,3 +1164,22 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
   .ep-body ul { gap: 6px; margin-top: 12px; }
   .ep-body li { padding: 5px 12px; font-size: 13px; }
 }
+
+/* ---------- Page frame: two margin lines ----------
+   The old grid ran four columns of lines behind the content, so cards, buttons and headings cut them.
+   Now there is one line in each side margin, outside the content, so nothing ever crosses it.
+   Light page only: full-width bands (hero, dark bands, footer) cover it, which is where it should stop. */
+.grid-lines-inner { display: block; position: relative; padding-inline: 0; }
+.grid-lines-inner span { display: none; }
+.grid-lines-inner::before, .grid-lines-inner::after { content: ''; position: absolute; inset-block: 0; width: 1px; background: color-mix(in oklab, var(--ink) 9%, transparent); }
+.grid-lines-inner::before { left: calc(var(--gutter) / 2); }
+.grid-lines-inner::after { right: calc(var(--gutter) / 2); }
+@media (max-width: 720px) { .grid-lines { display: none; } }
+
+/* ---------- Touch targets shared by all case pages ---------- */
+@media (max-width: 768px) {
+  .cs-toc { gap: 8px; }
+  .cs-toc a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; }
+  .cs-dialog-close { min-width: 44px; min-height: 44px; }
+}
+.cs-stack:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }

@@ -1,7 +1,7 @@
 import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Download, Minus, MoveDownRight, Pause, Play, Plus, X } from 'lucide-react';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react';
 import projects from './projects.json';
-import { DitherSpotlight } from './components/mellow/dither-spotlight';
+import { DitherSpotlight, cappedDpr, useMotionAllowed } from './components/mellow/dither-spotlight';
 import { ExpandingPanels, useNarrow } from './components/mellow/expanding-panels';
 import { WordReveal } from './components/mellow/word-reveal';
 import CaseStudy from './CaseStudy';
@@ -10,6 +10,9 @@ import { applyRouteHead } from './seo/head';
 import FanIdCase from './FanIdCase';
 import FilmSaudiCase from './FilmSaudiCase';
 import StcInspectorCase from './StcInspectorCase';
+// styles.css is also imported by main.tsx; importing it here fixes the order so that home-a11y.css always comes after it
+import './styles.css';
+import './home-a11y.css';
 
 const FRAME_COUNT = 64;
 const TAU = Math.PI * 2;
@@ -126,8 +129,35 @@ function loadImage(source: string) {
 }
 
 
-// The canvas has the frame's 16:9 ratio, so the portrait is drawn whole; CSS positions and feathers it.
+const PORTRAIT_SRC = '/frames/center.webp';
+
+/**
+ * The portrait. A plain <img> of the resting, front-facing frame is always in the HTML: it is what
+ * touch and reduced-motion users see, and what stays if the canvas cannot run. The gaze-following
+ * canvas (and its 64 frames) is only mounted for a fine pointer without a reduced-motion preference.
+ */
 function CharacterCanvas() {
+  const interactive = useMotionAllowed() === true;
+  const [covered, setCovered] = useState(false);
+  return (
+    <>
+      <img
+        className={`character-canvas character-fallback${interactive && covered ? ' is-covered' : ''}`}
+        src={PORTRAIT_SRC}
+        width={1280}
+        height={720}
+        alt="Portrait of Mohamed Higazy"
+        decoding="async"
+        fetchPriority="high"
+        draggable={false}
+      />
+      {interactive && <GazeCanvas onReady={setCovered} />}
+    </>
+  );
+}
+
+// The canvas has the frame's 16:9 ratio, so the portrait is drawn whole; CSS positions and feathers it.
+function GazeCanvas({ onReady }: { onReady: (ready: boolean) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef<Point | null>(null);
   const [ready, setReady] = useState(false);
@@ -138,16 +168,18 @@ function CharacterCanvas() {
     let angle = 0;
     let images: (HTMLImageElement | null)[] = [];
     let centerImage: HTMLImageElement | null = null;
+    let drawn: HTMLImageElement | null = null;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext('2d');
     if (!context) return;
 
     const preload = async () => {
-      centerImage = await loadImage('/frames/center.webp');
+      centerImage = await loadImage(PORTRAIT_SRC);
       if (!active) return;
-      setReady(true);
       render();
+      setReady(true);
+      onReady(true);
       const sources = Array.from({ length: FRAME_COUNT }, (_, index) => `/frames/frame-${String(index).padStart(2, '0')}.webp`);
       const loaded = await Promise.all(sources.map((source) => loadImage(source).catch(() => null)));
       if (!active) return;
@@ -156,19 +188,24 @@ function CharacterCanvas() {
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = cappedDpr();
       canvas.width = Math.round(rect.width * dpr);
       canvas.height = Math.round(rect.height * dpr);
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawn = null;
     };
 
     const drawFrame = (image: HTMLImageElement, rect: DOMRect) => {
+      // nothing changed since the last frame: keep what is on the canvas
+      if (image === drawn) return;
+      drawn = image;
       context.clearRect(0, 0, rect.width, rect.height);
       context.drawImage(image, 0, 0, rect.width, rect.height);
     };
 
     const render = () => {
       if (!active || !centerImage) return;
+      cancelAnimationFrame(raf);
       const rect = canvas.getBoundingClientRect();
       if (rect.bottom < 0) {
         raf = requestAnimationFrame(render);
@@ -211,6 +248,7 @@ function CharacterCanvas() {
     preload().catch((error) => {
       console.error(error);
       setReady(false);
+      onReady(false);
     });
     return () => {
       active = false;
@@ -218,10 +256,11 @@ function CharacterCanvas() {
       window.removeEventListener('resize', resize);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerleave', onPointerLeave);
+      onReady(false);
     };
-  }, []);
+  }, [onReady]);
 
-  return <canvas ref={canvasRef} className={`character-canvas${ready ? ' is-ready' : ''}`} aria-label="Interactive portrait of Mohamed Higazy that follows the cursor" role="img" />;
+  return <canvas ref={canvasRef} className={`character-canvas character-live${ready ? ' is-ready' : ''}`} aria-hidden="true" />;
 }
 
 /* ---------- Custom magnetic cursor (fine pointers only) ---------- */
@@ -260,7 +299,8 @@ function Cursor() {
         document.documentElement.classList.add('cursor-visible');
       }
       const target = event.target as HTMLElement | null;
-      const interactive = target?.closest<HTMLElement>('a, button');
+      // the process panels keep the plain ring, as they did before they became buttons
+      const interactive = target?.closest<HTMLElement>('a, button:not(.ep-trigger)');
       const card = target?.closest<HTMLElement>('[data-cursor="view"]');
       ring.classList.toggle('is-active', !!interactive && !card);
       ring.classList.toggle('is-view', !!card);
@@ -347,8 +387,9 @@ function useReveal(deps: unknown[]) {
   }, deps);
 }
 
-function useSpotlight() {
+function useSpotlight(enabled: boolean) {
   useEffect(() => {
+    if (!enabled) return;
     const onMove = (event: PointerEvent) => {
       const el = (event.target as HTMLElement | null)?.closest<HTMLElement>('[data-spot]');
       if (!el) return;
@@ -358,7 +399,73 @@ function useSpotlight() {
     };
     window.addEventListener('pointermove', onMove, { passive: true });
     return () => window.removeEventListener('pointermove', onMove);
-  }, []);
+  }, [enabled]);
+}
+
+/**
+ * Phones (<= 720px): the nav slides away while scrolling down and comes back on any scroll up.
+ * It is always shown near the top of the page and while keyboard focus is inside it.
+ * Only transform / opacity change (see home-a11y.css), so nothing in the page moves.
+ */
+function useNavAutoHide(ref: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const nav = ref.current;
+    if (!nav) return;
+    const small = window.matchMedia('(max-width: 720px)');
+    const TOP = 80; // always visible above this scroll position
+    const SLOP = 6; // ignore jitter smaller than this
+    let last = window.scrollY;
+    let raf = 0;
+    let keyboardInside = false;
+
+    const show = () => nav.removeAttribute('data-hidden');
+    const hide = () => nav.setAttribute('data-hidden', 'true');
+
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      if (!small.matches || y < TOP || keyboardInside) {
+        show();
+        last = y;
+        return;
+      }
+      if (Math.abs(y - last) < SLOP) return;
+      if (y > last) hide();
+      else show();
+      last = y;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target as HTMLElement | null;
+      let viaKeyboard = true;
+      try {
+        viaKeyboard = !!target?.matches(':focus-visible');
+      } catch {
+        // no :focus-visible support: treat every focus as keyboard focus
+      }
+      if (!viaKeyboard) return;
+      keyboardInside = true;
+      show();
+    };
+    const onFocusOut = () => {
+      keyboardInside = false;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    small.addEventListener('change', onScroll);
+    nav.addEventListener('focusin', onFocusIn);
+    nav.addEventListener('focusout', onFocusOut);
+    return () => {
+      cancelAnimationFrame(raf);
+      show();
+      window.removeEventListener('scroll', onScroll);
+      small.removeEventListener('change', onScroll);
+      nav.removeEventListener('focusin', onFocusIn);
+      nav.removeEventListener('focusout', onFocusOut);
+    };
+  }, [ref]);
 }
 
 function ScrollProgress({ onActive }: { onActive: (id: string) => void }) {
@@ -431,12 +538,13 @@ function CountUp({ value, suffix = '' }: { value: number; suffix?: string }) {
 /** The words are never shortened; on phones a long quote is cut to a few lines and opens with Read more. */
 function TestiQuote({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
+  const quoteId = useId();
   const long = text.length > 260;
   return (
     <>
-      <blockquote className={long && !open ? 'is-clamped' : undefined}><p>{text}</p></blockquote>
+      <blockquote id={quoteId} className={long && !open ? 'is-clamped' : undefined}><p>{text}</p></blockquote>
       {long && (
-        <button type="button" className="testi-more" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+        <button type="button" className="testi-more" aria-expanded={open} aria-controls={quoteId} onClick={() => setOpen((value) => !value)}>
           {open ? 'Show less' : 'Read more'}
         </button>
       )}
@@ -446,6 +554,7 @@ function TestiQuote({ text }: { text: string }) {
 
 function Testimonials() {
   const track = useRef<HTMLUListElement>(null);
+  const trackId = useId();
   const [view, setView] = useState({ first: 0, visible: 3, prev: false, next: true });
   useEffect(() => {
     const el = track.current;
@@ -474,16 +583,25 @@ function Testimonials() {
     const el = track.current;
     const card = el?.children[0] as HTMLElement | undefined;
     if (!el || !card) return;
+    if (dir === 1 ? !view.next : !view.prev) return;
     const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     el.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: reduced ? 'auto' : 'smooth' });
   };
+  // Left / right arrows move one card, but only when the track itself has focus (not a control inside a card).
+  const onTrackKey = (event: KeyboardEvent<HTMLUListElement>) => {
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    go(event.key === 'ArrowRight' ? 1 : -1);
+  };
   const last = Math.min(view.first + view.visible, testimonials.length);
   return (
-    <div data-reveal>
-      <ul className="testi-list" ref={track} tabIndex={0} role="list" aria-label="Testimonials, scrolls sideways">
-        {testimonials.map((t) => (
+    <div data-reveal role="group" aria-roledescription="carousel" aria-label="Testimonials">
+      <ul className="testi-list" id={trackId} ref={track} tabIndex={0} role="list" aria-label="Testimonials, scrolls sideways. Use the left and right arrow keys." onKeyDown={onTrackKey}>
+        {testimonials.map((t, index) => (
           <li key={t.name}>
+            <div className="testi-slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${testimonials.length}`}>
             <figure className="testi">
               <span className="testi-mark" aria-hidden="true">&ldquo;</span>
               <TestiQuote text={t.quote} />
@@ -495,14 +613,15 @@ function Testimonials() {
                 <span className="testi-rel">{t.relation}</span>
               </figcaption>
             </figure>
+            </div>
           </li>
         ))}
       </ul>
       <div className="testi-nav">
         <p className="testi-count" aria-live="polite">{view.first + 1}{last > view.first + 1 ? `\u2013${last}` : ''} of {testimonials.length}</p>
         <div className="testi-arrows">
-          <button type="button" onClick={() => go(-1)} disabled={!view.prev} aria-label="Previous testimonials" data-magnetic><ArrowLeft size={18} strokeWidth={1.6} aria-hidden="true" /></button>
-          <button type="button" onClick={() => go(1)} disabled={!view.next} aria-label="Next testimonials" data-magnetic><ArrowRight size={18} strokeWidth={1.6} aria-hidden="true" /></button>
+          <button type="button" onClick={() => go(-1)} aria-disabled={!view.prev} aria-controls={trackId} aria-label="Previous testimonial" data-magnetic><ArrowLeft size={18} strokeWidth={1.6} aria-hidden="true" /></button>
+          <button type="button" onClick={() => go(1)} aria-disabled={!view.next} aria-controls={trackId} aria-label="Next testimonial" data-magnetic><ArrowRight size={18} strokeWidth={1.6} aria-hidden="true" /></button>
         </div>
       </div>
     </div>
@@ -704,7 +823,11 @@ function App({ initialPath }: { initialPath?: string } = {}) {
     applyRouteHead(path);
   }, [path]);
   useReveal([showAll, path]);
-  useSpotlight();
+  // false on the server and on the first render; true only for a fine pointer without reduced motion
+  const pointerEffects = useMotionAllowed() === true;
+  useSpotlight(pointerEffects);
+  const navRef = useRef<HTMLElement>(null);
+  useNavAutoHide(navRef);
 
   return (
     <>
@@ -712,10 +835,10 @@ function App({ initialPath }: { initialPath?: string } = {}) {
         <div className="grid-lines-inner"><span /><span /><span /><span /></div>
       </div>
       <a className="skip-link" href="#main">Skip to content</a>
-      <Cursor />
+      {pointerEffects && <Cursor />}
       <ScrollProgress onActive={setActive} />
 
-      <header className="nav-wrap">
+      <header className="nav-wrap" ref={navRef}>
         <nav className="nav-pill" aria-label="Main navigation">
           {isCase ? (
             <>
@@ -820,11 +943,10 @@ function App({ initialPath }: { initialPath?: string } = {}) {
             {featured.map((project, index) => <ProjectCard key={project.id} project={project} index={index} onPreview={openPreview} />)}
           </ul>
 
-          {showAll && (
-            <ul className="gallery gallery-more" id="more-projects">
-              {rest.map((project, index) => <ProjectCard key={project.id} project={project} index={featured.length + index} onPreview={openPreview} />)}
-            </ul>
-          )}
+          {/* always in the DOM, so the button's aria-controls points at a real element in both states */}
+          <ul className="gallery gallery-more" id="more-projects" hidden={!showAll}>
+            {showAll && rest.map((project, index) => <ProjectCard key={project.id} project={project} index={featured.length + index} onPreview={openPreview} />)}
+          </ul>
 
           <div className="section-foot" data-reveal>
             <button className="btn btn-line" type="button" aria-expanded={showAll} aria-controls="more-projects" onClick={() => setShowAll((open) => !open)} data-magnetic>

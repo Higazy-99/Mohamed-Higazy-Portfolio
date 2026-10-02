@@ -1,6 +1,7 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight, BadgePercent, Building2, ChevronDown, ChevronLeft, ChevronRight, FileCheck2, MapPin, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { SafeImg, Zoomable } from './CaseStudy';
+import { ArrowLeft, ArrowRight, ArrowUpRight, BadgePercent, Building2, ChevronDown, ChevronLeft, ChevronRight, FileCheck2, MapPin, MoveHorizontal, X } from 'lucide-react';
+import { useEffect, useId, useRef, useState } from 'react';
+import type { ReactNode, RefObject } from 'react';
+import { SafeImg } from './CaseStudy';
 import { FlowDiagram, FlowList, IaDiagram, IaList, JourneyMap, flowDeltas, flowFacts, iaToBe } from './FilmDiagrams';
 import './film.css';
 
@@ -8,17 +9,47 @@ import './film.css';
 
 const BASE = '/case/film-saudi';
 
-function useNarrow() {
-  const q = '(max-width: 900px)';
-  const [narrow, setNarrow] = useState(false);
+/* Which sides of a horizontal scroller still hide content. Read after mount only (the page is prerendered). */
+function useScrollEdges(ref: RefObject<HTMLElement | null>, dep?: unknown) {
+  const [edges, setEdges] = useState({ start: false, end: false });
   useEffect(() => {
-    const m = window.matchMedia(q);
-    const on = () => setNarrow(m.matches);
-    on();
-    m.addEventListener('change', on);
-    return () => m.removeEventListener('change', on);
-  }, []);
-  return narrow;
+    const el = ref.current;
+    if (!el) return;
+    const read = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      const start = el.scrollLeft > 4;
+      const end = max - el.scrollLeft > 4;
+      setEdges((e) => (e.start === start && e.end === end ? e : { start, end }));
+    };
+    read();
+    el.addEventListener('scroll', read, { passive: true });
+    window.addEventListener('resize', read);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(read) : null;
+    ro?.observe(el);
+    return () => {
+      el.removeEventListener('scroll', read);
+      window.removeEventListener('resize', read);
+      ro?.disconnect();
+    };
+  }, [ref, dep]);
+  return edges;
+}
+
+/* A wide diagram in a horizontal scroller: a visible hint and an edge fade show that there is more to the side. */
+function ScrollFigure({ label, children }: { label: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const edges = useScrollEdges(ref);
+  const hintId = useId();
+  return (
+    <div className="fs-fig-wrap" data-more-start={edges.start ? '' : undefined} data-more-end={edges.end ? '' : undefined}>
+      <p className="fs-swipe" id={hintId}><MoveHorizontal size={16} strokeWidth={1.8} aria-hidden="true" />Swipe or scroll sideways to see the whole diagram.</p>
+      <div className="fs-fig-box">
+        <div className="fs-fig-scroll" ref={ref} tabIndex={0} role="region" aria-label={label} aria-describedby={hintId}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const meta = [
@@ -42,12 +73,11 @@ const stats = [
 const toc = [
   ['context', 'Context'],
   ['method', 'Method'],
-  ['journey-today', 'Journey today'],
-  ['flows-today', 'Flows today'],
+  ['as-is', 'Journey and flows today'],
   ['findings', 'Findings'],
   ['to-be', 'To-be'],
   ['ia', 'Structure'],
-  ['next', 'Next steps'],
+  ['next', 'Recommendations'],
 ];
 
 const story = [
@@ -245,6 +275,26 @@ const roadmap = [
   { label: 'Validate', tone: 'Low', items: ['Prioritise the fixes by severity and effort', 'Create design mockups of the recommended changes', 'Implement the High fixes first', 'Schedule the Medium improvements for the next development cycle', 'Run usability testing after implementation'] },
 ];
 
+const refsOf = (text: string) => (text.match(/\((\d{2}(?:, \d{2})*)\)\s*$/)?.[1] ?? '').split(', ').filter(Boolean).map(Number);
+const plan = themes.map((theme) => ({
+  ...theme,
+  fixes: roadmap
+    .filter((col) => col.tone !== 'Low')
+    .flatMap((col) => col.items.filter((text) => refsOf(text).some((n) => theme.refs.includes(n))).map((text) => ({ text, tone: col.tone as 'High' | 'Medium' }))),
+}));
+const validate = roadmap[roadmap.length - 1];
+
+type View = 'journey' | 'flows';
+
+/** One section holds the journey map and the flows; this switches between the two. */
+function ViewSwitch({ label, value, onChange, ids }: { label: string; value: View; onChange: (view: View) => void; ids: [string, string] }) {
+  return (
+    <div className="fs-seg" role="group" aria-label={label}>
+      <button type="button" aria-pressed={value === 'journey'} aria-controls={ids[0]} onClick={() => onChange('journey')} data-magnetic>Journey map</button>
+      <button type="button" aria-pressed={value === 'flows'} aria-controls={ids[1]} onClick={() => onChange('flows')} data-magnetic>User flows</button>
+    </div>
+  );
+}
 
 function Sev({ level }: { level: 'High' | 'Medium' | 'Low' }) {
   return <span className={`fs-sev is-${level.toLowerCase()}`}>{level}</span>;
@@ -258,17 +308,20 @@ const stageShort: Record<string, string> = { a: 'Arriving', b: 'Programmes', c: 
 const stageOf = (n: number) => chapters.find((c) => c.ids.includes(n))!;
 const firstShot = (f: Finding) => f.shots[0];
 
-function FindingsMap({ onOpen }: { onOpen: (n: number) => void }) {
+type OpenFn = (n: number, from?: HTMLElement | null) => void;
+const findingName = (f: Finding) => `Finding ${f.n}, ${f.severity} severity, ${f.area}: ${f.title}`;
+
+function FindingsMap({ onOpen }: { onOpen: OpenFn }) {
   return (
     <div className="fs-heat" role="table" aria-label="Findings by area and severity">
-      <div className="fs-heat-row is-head" role="row"><span role="columnheader" /><span role="columnheader"><Sev level="High" /></span><span role="columnheader"><Sev level="Medium" /></span></div>
+      <div className="fs-heat-row is-head" role="row"><span role="columnheader"><span className="sr-only">Area</span></span><span role="columnheader"><Sev level="High" /></span><span role="columnheader"><Sev level="Medium" /></span></div>
       {areas.map((area) => (
         <div key={area} className="fs-heat-row" role="row">
           <span className="fs-heat-area" role="rowheader">{area}</span>
           {(['High', 'Medium'] as const).map((level) => (
             <span key={level} className="fs-heat-cell" role="cell">
               {findings.filter((f) => f.area === area && f.severity === level).map((f) => (
-                <button key={f.n} type="button" onClick={() => onOpen(f.n)} className={`fs-dot is-${level.toLowerCase()}`} aria-label={`Open finding ${f.n}: ${f.title}`} data-magnetic>{f.n}</button>
+                <button key={f.n} type="button" onClick={(e) => onOpen(f.n, e.currentTarget)} className={`fs-dot is-${level.toLowerCase()}`} aria-haspopup="dialog" aria-label={findingName(f)} data-magnetic>{f.n}</button>
               ))}
             </span>
           ))}
@@ -278,13 +331,19 @@ function FindingsMap({ onOpen }: { onOpen: (n: number) => void }) {
   );
 }
 
-function FindingsCarousel({ onOpen }: { onOpen: (n: number) => void }) {
+function FindingsCarousel({ onOpen }: { onOpen: OpenFn }) {
   const [stage, setStage] = useState<string>('all');
   const track = useRef<HTMLUListElement>(null);
   const list = findings.filter((f) => stage === 'all' || stageOf(f.n).id === stage);
   const chapter = chapters.find((c) => c.id === stage);
-  useEffect(() => { track.current?.scrollTo({ left: 0 }); }, [stage]);
-  const step = (dir: 1 | -1) => track.current?.scrollBy({ left: dir * Math.max(320, track.current.clientWidth * 0.8), behavior: 'smooth' });
+  useEffect(() => { track.current?.scrollTo({ left: 0, behavior: 'instant' as ScrollBehavior }); }, [stage]);
+  const edges = useScrollEdges(track, stage);
+  const step = (dir: 1 | -1) => {
+    const el = track.current;
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollBy({ left: dir * Math.max(320, el.clientWidth * 0.8), behavior: reduced ? 'auto' : 'smooth' });
+  };
   return (
     <div className="fk">
       <div className="fk-top">
@@ -295,17 +354,17 @@ function FindingsCarousel({ onOpen }: { onOpen: (n: number) => void }) {
           ))}
         </div>
         <div className="fk-arrows">
-          <button type="button" onClick={() => step(-1)} aria-label="Previous findings" data-magnetic><ChevronLeft size={20} strokeWidth={1.6} aria-hidden="true" /></button>
-          <button type="button" onClick={() => step(1)} aria-label="Next findings" data-magnetic><ChevronRight size={20} strokeWidth={1.6} aria-hidden="true" /></button>
+          <button type="button" onClick={() => step(-1)} aria-label="Previous findings" aria-disabled={!edges.start} data-magnetic><ChevronLeft size={20} strokeWidth={1.6} aria-hidden="true" /></button>
+          <button type="button" onClick={() => step(1)} aria-label="Next findings" aria-disabled={!edges.end} data-magnetic><ChevronRight size={20} strokeWidth={1.6} aria-hidden="true" /></button>
         </div>
       </div>
       {chapter && <p className="fk-story"><b>{chapter.title}.</b> {chapter.story}</p>}
-      <ul className="fk-track" ref={track} tabIndex={0} aria-label="Findings, scroll sideways">
+      <ul className="fk-track" ref={track} tabIndex={0} aria-label="Findings, scroll sideways" data-more-start={edges.start ? '' : undefined} data-more-end={edges.end ? '' : undefined}>
         {list.map((f) => {
           const shot = firstShot(f);
           return (
             <li key={f.n}>
-              <button type="button" className={`fk-card is-${f.severity.toLowerCase()}`} onClick={() => onOpen(f.n)} data-cursor="view" aria-haspopup="dialog" aria-label={`Finding ${f.n}, ${f.severity} severity: ${f.title}. Opens the full finding`}>
+              <button type="button" className={`fk-card is-${f.severity.toLowerCase()}`} onClick={(e) => onOpen(f.n, e.currentTarget)} data-cursor="view" aria-haspopup="dialog" aria-label={`${findingName(f)}. Read the finding`}>
                 <span className={`fk-thumb${shot.w < 700 ? ' is-small' : ''}`}><img src={`${BASE}/${shot.src}`} alt="" loading="lazy" /></span>
                 <span className="fk-meta"><span className="fk-num">{String(f.n).padStart(2, '0')}</span><Sev level={f.severity} /><span className="fk-area">{f.area}</span></span>
                 <span className="fk-title">{f.title}</span>
@@ -319,7 +378,7 @@ function FindingsCarousel({ onOpen }: { onOpen: (n: number) => void }) {
   );
 }
 
-function FindingDialog({ n, onClose, onStep }: { n: number | null; onClose: () => void; onStep: (dir: 1 | -1) => void }) {
+function FindingDialog({ n, onClose, onStep, returnTo }: { n: number | null; onClose: () => void; onStep: (dir: 1 | -1) => void; returnTo: RefObject<HTMLElement | null> }) {
   const ref = useRef<HTMLDialogElement>(null);
   const last = useRef<number | null>(null);
   if (n !== null) last.current = n;
@@ -329,7 +388,8 @@ function FindingDialog({ n, onClose, onStep }: { n: number | null; onClose: () =
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    const handle = () => closeRef.current();
+    /* the close event arrives a frame late: ignore it if the dialog has been opened again since */
+    const handle = () => { if (!d.open) closeRef.current(); };
     d.addEventListener('close', handle);
     return () => d.removeEventListener('close', handle);
   });
@@ -337,10 +397,14 @@ function FindingDialog({ n, onClose, onStep }: { n: number | null; onClose: () =
     const d = ref.current;
     if (!d) return;
     if (n !== null && !d.open) d.showModal();
-    if (n === null && d.open) d.close();
+    if (n === null && d.open) {
+      d.close();
+      /* back to the control that opened the finding, without moving the page */
+      returnTo.current?.focus({ preventScroll: true });
+    }
     document.documentElement.classList.toggle('is-modal', n !== null);
     return () => document.documentElement.classList.remove('is-modal');
-  }, [n]);
+  }, [n, returnTo]);
   useEffect(() => {
     if (n === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -350,15 +414,21 @@ function FindingDialog({ n, onClose, onStep }: { n: number | null; onClose: () =
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [n, onStep]);
+  useEffect(() => {
+    const d = ref.current;
+    if (n === null || !d) return;
+    d.querySelector<HTMLElement>('.fsd-scroll')?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    if (!d.contains(document.activeElement)) d.querySelector<HTMLElement>('.fsd-close')?.focus({ preventScroll: true });
+  }, [n]);
   if (!f) return <dialog ref={ref} className="fsd" aria-hidden="true" />;
   const ch = stageOf(f.n);
   return (
-    <dialog ref={ref} className="fsd" aria-labelledby="fsd-title" onClick={(e) => { if (e.target === ref.current) onClose(); }}>
+    <dialog ref={ref} className="fsd" aria-labelledby="fsd-title" onCancel={(e) => { e.preventDefault(); onClose(); }} onClick={(e) => { if (e.target === ref.current) onClose(); }}>
       <div className="fsd-card">
         <header className="fsd-bar">
           <div className="fsd-nav">
             <button type="button" onClick={() => onStep(-1)} aria-label="Previous finding" data-magnetic><ChevronLeft size={18} strokeWidth={1.6} aria-hidden="true" /></button>
-            <span>{f.n} of {findings.length}</span>
+            <span aria-live="polite" aria-atomic="true">{f.n} of {findings.length}<span className="sr-only">: {f.title}, {f.severity} severity</span></span>
             <button type="button" onClick={() => onStep(1)} aria-label="Next finding" data-magnetic><ChevronRight size={18} strokeWidth={1.6} aria-hidden="true" /></button>
           </div>
           <span className="fsd-stage">{ch.stage ? `Stage ${ch.stage} · ${ch.title}` : ch.title}</span>
@@ -417,11 +487,12 @@ function FlowLegend() {
 }
 
 export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
-  const narrow = useNarrow();
+  const [asisView, setAsisView] = useState<View>('journey');
+  const [tobeView, setTobeView] = useState<View>('journey');
   const [openFinding, setOpenFinding] = useState<number | null>(null);
   const opener = useRef<HTMLElement | null>(null);
-  const openF = (n: number) => { opener.current = document.activeElement as HTMLElement | null; setOpenFinding(n); };
-  const closeF = () => { setOpenFinding(null); window.setTimeout(() => opener.current?.focus({ preventScroll: true }), 0); };
+  const openF: OpenFn = (n, from) => { opener.current = from ?? (document.activeElement as HTMLElement | null); setOpenFinding(n); };
+  const closeF = () => setOpenFinding(null);
   const stepF = (dir: 1 | -1) => setOpenFinding((cur) => (cur === null ? cur : ((cur - 1 + dir + findings.length) % findings.length) + 1));
   return (
     <article className="cs film" aria-labelledby="fs-title">
@@ -483,7 +554,7 @@ export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
           <p>A heuristic evaluation is an expert review: I walk through the product against Jakob Nielsen's ten well-known usability principles and record every place where the design breaks one. It is a fast way to find problems, and each finding is a hypothesis to validate. The principle behind each finding is shown on its card.</p>
         </header>
         <h3 className="fs-sub" data-reveal>What I reviewed</h3>
-        <ol className="fs-scope" data-reveal>
+        <ol className="fs-scope is-compact" data-reveal>
           {scope.map((item, index) => (
             <li key={item.area}>
               <span>{String(index + 1).padStart(2, '0')}</span>
@@ -494,64 +565,59 @@ export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
           ))}
         </ol>
         <h3 className="fs-sub" data-reveal>Four tasks I tested</h3>
-        <ol className="fs-tasks" data-reveal>
+        <ol className="fs-tasks is-compact" data-reveal>
           {tasks.map((task, index) => (
             <li key={task.title}>
-              {narrow ? (
-                <details>
-                  <summary>
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                    <h4>{task.title}</h4>
-                    <small>{task.steps.length} steps</small>
-                    <ChevronDown size={18} strokeWidth={1.8} aria-hidden="true" />
-                  </summary>
-                  <ol>{task.steps.map((step) => <li key={step}>{step}</li>)}</ol>
-                </details>
-              ) : (
-                <>
+              <details>
+                <summary>
                   <span>{String(index + 1).padStart(2, '0')}</span>
                   <h4>{task.title}</h4>
-                  <ol>{task.steps.map((step) => <li key={step}>{step}</li>)}</ol>
-                </>
-              )}
+                  <small>{task.steps.length} steps</small>
+                  <ChevronDown size={18} strokeWidth={1.8} aria-hidden="true" />
+                </summary>
+                <ol>{task.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+              </details>
             </li>
           ))}
         </ol>
         <h3 className="fs-sub" data-reveal>How I rated severity</h3>
-        <ul className="fs-scale" data-reveal>
+        <ul className="fs-scale is-compact" data-reveal>
           {scale.map((item) => <li key={item.level}><Sev level={item.level as 'High' | 'Medium' | 'Low'} /><p>{item.text}</p></li>)}
         </ul>
       </section>
 
-      <section className="cs-section" id="journey-today" aria-labelledby="fs-jt">
-        <header className="section-head" data-reveal>
-          <span className="eyebrow">03 · <Badge mode="asis" /> The journey today</span>
-          <h2 id="fs-jt">What filmmakers do today, <em>and what blocks them</em></h2>
-          <p>Mapping the journey shows where the friction is. The first two stages carry nine of the thirteen blockers recorded. And there is no stage for what happens after a request is submitted: users cannot follow it from account settings.</p>
-        </header>
-        <div data-reveal><JourneyMap mode="asis" /></div>
-        <p className="cs-note">The emotion line follows the feelings row of the audit board: confused, confused, overwhelmed, confused.</p>
-      </section>
-
-      <section className="cs-section" id="flows-today" aria-labelledby="fs-ft">
-        <header className="section-head" data-reveal>
-          <span className="eyebrow">04 · <Badge mode="asis" /> The paths today</span>
-          <h2 id="fs-ft">Five paths that work today, <em>and one that is missing</em></h2>
-          <p>Every path starts on the home page and ends with a check on whether the task was completed. Two things stand out: the programme path asks users to apply twice, and there is no path at all for changing account details.</p>
-        </header>
-        <FlowLegend />
-        <figure className="fs-figure" data-reveal>
-          <div className="fs-fig-scroll" tabIndex={0} role="region" aria-label="Current user flow, scrolls horizontally">
-            <FlowDiagram mode="asis" />
-          </div>
-          <FlowList mode="asis" />
-          <figcaption>Six goals run in parallel from the home page. In the programme path, users without an account first create one, upload files and verify their data, then log in.</figcaption>
-        </figure>
+      <section className="cs-section" id="as-is" aria-label="The journey and the paths today">
+        <div className="fs-view-top" data-reveal>
+          <span className="eyebrow">03 · <Badge mode="asis" /> How it works today</span>
+          <ViewSwitch label="As-is view" value={asisView} onChange={setAsisView} ids={['journey-today', 'flows-today']} />
+        </div>
+        <div id="journey-today" hidden={asisView !== 'journey'}>
+          <header className="section-head">
+            <h2 id="fs-jt">What filmmakers do today, <em>and what blocks them</em></h2>
+            <p>Mapping the journey shows where the friction is. The first two stages carry nine of the thirteen blockers recorded. And there is no stage for what happens after a request is submitted: users cannot follow it from account settings.</p>
+          </header>
+          <JourneyMap mode="asis" />
+          <p className="cs-note">The emotion line follows the feelings row of the audit board: confused, confused, overwhelmed, confused.</p>
+        </div>
+        <div id="flows-today" hidden={asisView !== 'flows'}>
+          <header className="section-head">
+            <h2 id="fs-ft">Five paths that work today, <em>and one that is missing</em></h2>
+            <p>Every path starts on the home page and ends with a check on whether the task was completed. Two things stand out: the programme path asks users to apply twice, and there is no path at all for changing account details.</p>
+          </header>
+          <FlowLegend />
+          <figure className="fs-figure">
+            <ScrollFigure label="Current user flow, scrolls horizontally">
+              <FlowDiagram mode="asis" />
+            </ScrollFigure>
+            <FlowList mode="asis" />
+            <figcaption>Six goals run in parallel from the home page. In the programme path, users without an account first create one, upload files and verify their data, then log in.</figcaption>
+          </figure>
+        </div>
       </section>
 
       <section className="cs-section" id="findings" aria-labelledby="fs-findings">
         <header className="section-head" data-reveal>
-          <span className="eyebrow">05 · <Badge mode="asis" /> The findings</span>
+          <span className="eyebrow">04 · <Badge mode="asis" /> The findings</span>
           <h2 id="fs-findings">Ten places where the journey breaks, <em>four that stop the task</em></h2>
           <p>Findings are grouped by the journey stage where they appear. Open any card to read the full finding: the issue, why it matters, the recommendation, the heuristics it breaks, and the screen.</p>
         </header>
@@ -562,22 +628,6 @@ export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
         <div data-reveal><FindingsCarousel onOpen={openF} /></div>
       </section>
 
-      <section className="cs-band" id="themes" aria-labelledby="fs-themes">
-        <div className="cs-band-inner">
-          <span className="eyebrow" data-reveal>06 · Themes</span>
-          <h2 id="fs-themes" data-reveal>Four patterns behind the ten findings</h2>
-          <ul className="cs-band-list">
-            {themes.map((item, index) => (
-              <li key={item.title} data-reveal style={{ transitionDelay: `${(index % 2) * 80}ms` }}>
-                <span>{String(index + 1).padStart(2, '0')}</span><h3>{item.title}</h3>
-                <p>{item.text}</p>
-                <small className="fid-applied">Findings {item.refs.map((r) => String(r).padStart(2, '0')).join(', ')}</small>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       <section className="cs-section fs-turn" id="to-be" aria-labelledby="fs-turn">
         <div data-reveal>
           <Badge mode="tobe" />
@@ -586,38 +636,41 @@ export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
         </div>
       </section>
 
-      <section className="cs-section fs-tight" id="journey-tobe" aria-labelledby="fs-jb">
-        <header className="section-head" data-reveal>
-          <span className="eyebrow">07 · <Badge mode="tobe" /> The improved journey</span>
-          <h2 id="fs-jb">After users apply, <em>the journey should not stop</em></h2>
-          <p>The four stages stay, and a fifth is added: following requests and managing the account, so users are not left guessing after they submit. Each stage ends with one opportunity, a concrete improvement to design.</p>
-        </header>
-        <div data-reveal><JourneyMap mode="tobe" /></div>
-        <p className="cs-note">On the audit board every stage of the improved journey shows the same relieved face. The line here separates the stages that still carry a pain point (2, 3 and 4, relieved but with some effort) from those that do not (1 and 5).</p>
-      </section>
-
-      <section className="cs-section fs-tight" id="flows-tobe" aria-labelledby="fs-fb">
-        <header className="section-head" data-reveal>
-          <span className="eyebrow">08 · <Badge mode="tobe" /> The paths, redrawn</span>
-          <h2 id="fs-fb">Ten steps change, <em>and one path is new</em></h2>
-          <p>The paths keep the same structure, so users are not asked to relearn the platform. {flowFacts.changed} steps are new or changed, the repeated Apply is removed, and a new path lets users edit their details. What changes is listed under the diagram.</p>
-        </header>
-        <FlowLegend />
-        <figure className="fs-figure" data-reveal>
-          <div className="fs-fig-scroll" tabIndex={0} role="region" aria-label="To-be user flow, scrolls horizontally">
-            <FlowDiagram mode="tobe" />
-          </div>
-          <FlowList mode="tobe" />
-          <figcaption>Same layout as the current flow, so each path can be read against its before. Scroll sideways on smaller screens to see the end of the flow.</figcaption>
-        </figure>
-        <ul className="fs-deltas" data-reveal>
-          {flowDeltas.map((d) => <li key={d.goal}><b>{d.goal}</b><span>{d.text}</span></li>)}
-        </ul>
+      <section className="cs-section fs-tight" id="to-be-views" aria-label="The improved journey and paths">
+        <div className="fs-view-top" data-reveal>
+          <span className="eyebrow">05 · <Badge mode="tobe" /> How it should work</span>
+          <ViewSwitch label="To-be view" value={tobeView} onChange={setTobeView} ids={['journey-tobe', 'flows-tobe']} />
+        </div>
+        <div id="journey-tobe" hidden={tobeView !== 'journey'}>
+          <header className="section-head">
+            <h2 id="fs-jb">After users apply, <em>the journey should not stop</em></h2>
+            <p>The four stages stay, and a fifth is added: following requests and managing the account, so users are not left guessing after they submit. Each stage ends with one opportunity, a concrete improvement to design.</p>
+          </header>
+          <JourneyMap mode="tobe" />
+          <p className="cs-note">On the audit board every stage of the improved journey shows the same relieved face. The line here separates the stages that still carry a pain point (2, 3 and 4, relieved but with some effort) from those that do not (1 and 5).</p>
+        </div>
+        <div id="flows-tobe" hidden={tobeView !== 'flows'}>
+          <header className="section-head">
+            <h2 id="fs-fb">Ten steps change, <em>and one path is new</em></h2>
+            <p>The paths keep the same structure, so users are not asked to relearn the platform. {flowFacts.changed} steps are new or changed, the repeated Apply is removed, and a new path lets users edit their details. What changes is listed under the diagram.</p>
+          </header>
+          <FlowLegend />
+          <figure className="fs-figure">
+            <ScrollFigure label="To-be user flow, scrolls horizontally">
+              <FlowDiagram mode="tobe" />
+            </ScrollFigure>
+            <FlowList mode="tobe" />
+            <figcaption>Same layout as the current flow, so each path can be read against its before. Scroll sideways on smaller screens to see the end of the flow.</figcaption>
+          </figure>
+          <ul className="fs-deltas">
+            {flowDeltas.map((d) => <li key={d.goal}><b>{d.goal}</b><span>{d.text}</span></li>)}
+          </ul>
+        </div>
       </section>
 
       <section className="cs-section" id="ia" aria-labelledby="fs-ia">
         <header className="section-head" data-reveal>
-          <span className="eyebrow">09 · Structure</span>
+          <span className="eyebrow">06 · Structure</span>
           <h2 id="fs-ia">One structure, <em>with a clear exit to Abde'a</em></h2>
           <p>The proposed information architecture organises the platform into nine main tabs, with the sections and sub pages under each. Daw comes inside as a sub page, and Abde'a stays external but clearly marked, so users always know when they are leaving the platform.</p>
         </header>
@@ -626,27 +679,35 @@ export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
         </ul>
         <h3 className="fs-sub" data-reveal><Badge mode="tobe" /> The proposed structure</h3>
         <figure className="fs-figure fs-ia-fig" data-reveal>
-          <div className="fs-fig-scroll" tabIndex={0} role="region" aria-label="Proposed structure, scrolls horizontally">
+          <ScrollFigure label="Proposed structure, scrolls horizontally">
             <IaDiagram data={iaToBe} label="The proposed structure: the home page and its sections, above nine main tabs with their sections and sub pages" />
-          </div>
+          </ScrollFigure>
           <IaList data={iaToBe} />
         </figure>
       </section>
 
       <section className="cs-section" id="next" aria-labelledby="fs-next">
         <header className="section-head" data-reveal>
-          <span className="eyebrow">10 · Recommendations</span>
-          <h2 id="fs-next">What to do, <em>in what order</em></h2>
+          <span className="eyebrow">07 · Themes and recommendations</span>
+          <h2 id="fs-next">Four patterns behind the ten findings, <em>and what to do about each</em></h2>
           <p>High findings first, because they stop users from completing a task. Medium improvements follow, and every change should be validated with users. The numbers point back to the findings.</p>
         </header>
-        <ol className="fs-roadmap" data-reveal>
-          {roadmap.map((col, index) => (
-            <li key={col.label}>
-              <div className="fs-road-head"><span>{String(index + 1).padStart(2, '0')}</span><h3>{col.label}</h3><Sev level={col.tone as 'High' | 'Medium' | 'Low'} /></div>
-              <ul>{col.items.map((item) => <li key={item}>{item}</li>)}</ul>
+        <ol className="fs-plan">
+          {plan.map((item, index) => (
+            <li key={item.title} data-reveal style={{ transitionDelay: `${(index % 2) * 80}ms` }}>
+              <div className="fs-plan-head"><span>{String(index + 1).padStart(2, '0')}</span><h3>{item.title}</h3></div>
+              <p>{item.text}</p>
+              <h4>What to do</h4>
+              <ul>
+                {item.fixes.map((fix) => <li key={fix.text}><Sev level={fix.tone} /><span>{fix.text}</span></li>)}
+              </ul>
             </li>
           ))}
         </ol>
+        <div className="fs-validate" data-reveal>
+          <h3>{validate.label}</h3>
+          <ol>{validate.items.map((item) => <li key={item}>{item}</li>)}</ol>
+        </div>
       </section>
 
       <section className="cs-section cs-close">
@@ -670,7 +731,7 @@ export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
         </div>
         <p className="cs-disclaimer">UX work only. Film Saudi and its logo belong to their owners and are shown to explain the audit.</p>
       </section>
-      <FindingDialog n={openFinding} onClose={closeF} onStep={stepF} />
+      <FindingDialog n={openFinding} onClose={closeF} onStep={stepF} returnTo={opener} />
     </article>
   );
 }

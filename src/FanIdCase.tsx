@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowUpRight, ChevronLeft, ChevronRight, X } from 'lucide-re
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { SafeImg, Zoomable } from './CaseStudy';
 import './film.css';
+import './fanid-mobile.css';
 
 /* UX case study: Fan-ID for the AFC Asian Cup 2027. UX work up to the proof of concept; the UI was designed by a Product Designer. */
 
@@ -249,8 +250,12 @@ function JourneyGrid() {
     { label: 'Pain points', render: (s) => <ul className="fid-pains">{s.pains.map((a) => <li key={a}>{a}</li>)}</ul> },
   ];
   const insight = { label: 'Benchmark insight', render: (s: Stage) => <p className="fid-insight">{s.insight}</p> };
+  const [atEnd, setAtEnd] = useState(false);
   return (
-    <div className="fid-journey-scroll" tabIndex={0} role="region" aria-label="Fan journey map, scrolls horizontally">
+    <div className="fid-journey-block">
+    <p className="fid-scroll-hint" id="fid-journey-hint">Scroll sideways to see all eight stages</p>
+    <div className="fid-journey-frame" data-end={atEnd ? 'true' : undefined}>
+    <div className="fid-journey-scroll" tabIndex={0} role="region" aria-labelledby="fid-journey" aria-describedby="fid-journey-hint" onScroll={(e) => { const el = e.currentTarget; setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 8); }}>
       <div className="fid-journey">
         <div className="fid-label fid-corner">Stage</div>
         {stages.map((stage, index) => (
@@ -269,6 +274,8 @@ function JourneyGrid() {
           {stages.map((stage) => <div key={stage.name} className="fid-cell">{insight.render(stage)}</div>)}
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 }
@@ -298,6 +305,7 @@ type Criterion = (typeof criteria)[number];
 
 function CriterionDialog({ list, index, onClose, onStep }: { list: Criterion[]; index: number | null; onClose: () => void; onStep: (dir: 1 | -1) => void }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
   const last = useRef<Criterion | null>(null);
   const item = index !== null ? list[index] : undefined;
   if (item) last.current = item;
@@ -314,7 +322,7 @@ function CriterionDialog({ list, index, onClose, onStep }: { list: Criterion[]; 
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (index !== null && !d.open) d.showModal();
+    if (index !== null && !d.open) { d.showModal(); closeBtn.current?.focus(); }
     if (index === null && d.open) d.close();
     document.documentElement.classList.toggle('is-modal', index !== null);
     return () => document.documentElement.classList.remove('is-modal');
@@ -336,11 +344,11 @@ function CriterionDialog({ list, index, onClose, onStep }: { list: Criterion[]; 
         <header className="fsd-bar">
           <div className="fsd-nav">
             <button type="button" onClick={() => onStep(-1)} aria-label="Previous criterion" data-magnetic><ChevronLeft size={18} strokeWidth={1.6} aria-hidden="true" /></button>
-            <span>{pos} of {list.length}</span>
+            <span aria-live="polite" aria-atomic="true">{pos} of {list.length}<span className="sr-only">: {f.title}</span></span>
             <button type="button" onClick={() => onStep(1)} aria-label="Next criterion" data-magnetic><ChevronRight size={18} strokeWidth={1.6} aria-hidden="true" /></button>
           </div>
           <span className="fsd-stage">{f.group}</span>
-          <button type="button" className="fsd-close" onClick={onClose} aria-label="Close criterion" data-magnetic><X size={18} strokeWidth={1.6} aria-hidden="true" /></button>
+          <button ref={closeBtn} type="button" className="fsd-close" onClick={onClose} aria-label="Close criterion" data-magnetic><X size={18} strokeWidth={1.6} aria-hidden="true" /></button>
         </header>
         <div className="fsd-scroll">
           <div className="fsd-body">
@@ -377,12 +385,13 @@ function CriteriaMatrix() {
     <>
       <div className="fid-filter" role="group" aria-label="Filter criteria by group">
         {(['All', ...groups] as const).map((group) => (
-          <button key={group} type="button" aria-pressed={filter === group} onClick={() => setFilter(group)} data-magnetic>
+          <button key={group} type="button" aria-pressed={filter === group} aria-controls="fid-ck-list" onClick={() => setFilter(group)} data-magnetic>
             {group === 'All' ? 'All criteria' : group}<b>{group === 'All' ? criteria.length : criteria.filter((c) => c.group === group).length}</b>
           </button>
         ))}
       </div>
-      <ul className="fid-ck-grid">
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">Showing {list.length} of {criteria.length} criteria{filter === 'All' ? '' : ` in ${filter}`}</p>
+      <ul className="fid-ck-grid" id="fid-ck-list">
         {list.map((item) => (
           <li key={item.n}>
             <button type="button" className="fid-ck" data-ck={item.n} onClick={() => setOpen(item.n)} aria-haspopup="dialog" aria-label={`Criterion ${item.n}: ${item.title}${inPoc.has(item.n) ? ', in the proof of concept' : ''}. Opens the details`} data-cursor="view">
@@ -418,8 +427,16 @@ function CriteriaMatrix() {
 }
 
 export default function FanIdCase({ onBack }: { onBack: () => void }) {
+  const root = useRef<HTMLElement>(null);
+  /* Zoomable lives in CaseStudy.tsx (shared). Its opener and dialog get their dialog semantics here, after mount. */
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    el.querySelectorAll('button.cs-zoom').forEach((button) => button.setAttribute('aria-haspopup', 'dialog'));
+    el.querySelectorAll('dialog.cs-dialog').forEach((dialog) => dialog.setAttribute('aria-label', 'Enlarged image'));
+  }, []);
   return (
-    <article className="cs fid" aria-labelledby="fid-title">
+    <article ref={root} className="cs fid" aria-labelledby="fid-title">
       <header className="cs-hero">
         <p className="eyebrow">UX case study · Digital identity · Sports events</p>
         <h1 id="fid-title">Fan-ID: <span>the UX foundation for a tournament-wide digital identity</span></h1>
@@ -621,7 +638,7 @@ export default function FanIdCase({ onBack }: { onBack: () => void }) {
         </ol>
 
         <div className="fid-answers" data-reveal>
-          <h3>How the proof of concept answers the research</h3>
+          <h3 id="fid-answers-title">How the proof of concept answers the research</h3>
           <div className="fid-table-wrap">
             <table className="fid-table fid-map">
               <caption className="sr-only">What the research asked for, where it comes from, and how the proof of concept answers it</caption>
@@ -640,6 +657,18 @@ export default function FanIdCase({ onBack }: { onBack: () => void }) {
               </tbody>
             </table>
           </div>
+          <ul className="fid-map-cards" aria-labelledby="fid-answers-title">
+            {answers.map((row) => (
+              <li key={row.asks}>
+                <h4>{row.asks}</h4>
+                <dl>
+                  <div><dt>Source</dt><dd>{row.source}</dd></div>
+                  <div className="fid-map-why"><dt>How the proof of concept answers it</dt><dd>{row.answer}</dd></div>
+                  <div><dt>Screens</dt><dd className="fid-scr">{row.screens}</dd></div>
+                </dl>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

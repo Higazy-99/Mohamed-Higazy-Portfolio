@@ -475,3 +475,155 @@
   .fs-flowkey li { min-width: 0; }
   .jm-meter { max-width: none; }
 }
+
+/* ---------- Mobile UX and accessibility pass (Film Saudi page only) ---------- */
+
+/* keyboard focus on the collapsible rows */
+.fs-tasks summary:focus-visible, .fl-list summary:focus-visible, .ia-list summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 8px; }
+
+/* findings carousel: arrows show when there is nothing more on that side */
+.fk-arrows button[aria-disabled='true'] { opacity: 0.4; cursor: default; }
+.fk-arrows button[aria-disabled='true']:hover { background: var(--surface); color: var(--ink); }
+
+/* wide diagrams: hint and edge fade while the scroller hides content */
+.fs-swipe { display: none; }
+.fs-fig-box { position: relative; }
+@media (max-width: 1100px) {
+  .fs-fig-wrap[data-more-start] .fs-swipe, .fs-fig-wrap[data-more-end] .fs-swipe { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
+  .fs-swipe svg { flex: none; }
+  .fs-fig-box::before, .fs-fig-box::after { content: ""; position: absolute; top: 1px; bottom: 1px; z-index: 1; width: 56px; opacity: 0; pointer-events: none; transition: opacity 200ms var(--ease); }
+  .fs-fig-box::before { left: 1px; border-radius: 19px 0 0 19px; background: linear-gradient(to left, color-mix(in oklab, var(--surface) 0%, transparent), var(--surface)); }
+  .fs-fig-box::after { right: 1px; border-radius: 0 19px 19px 0; background: linear-gradient(to right, color-mix(in oklab, var(--surface) 0%, transparent), var(--surface)); }
+  .fs-fig-wrap[data-more-start] .fs-fig-box::before, .fs-fig-wrap[data-more-end] .fs-fig-box::after { opacity: 1; }
+}
+
+/* touch targets: 44px hit areas without larger glyphs */
+@media (max-width: 900px), (pointer: coarse) {
+  .jm-btn { min-height: 44px; }
+  .fsd-nav button, .fsd-close { width: 44px; height: 44px; flex: none; }
+  .film .fid-filter { gap: 8px; }
+  .film .fid-filter button { min-height: 44px; }
+  .film .cs-toc { gap: 8px; }
+  .film .cs-toc a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+@media (max-width: 900px) {
+  .fs-fig-wrap { display: none; }
+  .fs-tasks summary, .fl-list summary, .ia-list summary { min-height: 44px; }
+
+  /* heat table dots: the button is the 44px hit area, the coloured dot is drawn inside it */
+  .fs-dot { --dot: 34px; position: relative; isolation: isolate; width: 44px; height: 44px; padding: 0; border: 0; }
+  .fs-dot.is-high, .fs-dot.is-medium { background: transparent; }
+  .fs-dot::before { content: ""; position: absolute; z-index: -1; inset: calc((44px - var(--dot)) / 2); border-radius: 50%; }
+  .fs-dot.is-high::before { background: var(--sev-high); }
+  .fs-dot.is-medium::before { background: var(--sev-med); }
+  .fs-dot:focus-visible { outline: none; }
+  .fs-dot:focus-visible::before { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .fs-heat-cell { gap: 8px; min-height: 44px; }
+
+  /* findings track: fade the side that still hides cards */
+  .fk-track[data-more-end] { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
+  .fk-track[data-more-start] { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 40px), transparent); }
+  .fk-track[data-more-start][data-more-end] { -webkit-mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent); }
+}
+
+@media (max-width: 720px) {
+  /* heat table: the area name sits above its two severity cells, so three 44px targets fit in a cell */
+  .fs-dot { --dot: 26px; width: 44px; height: 44px; }
+  .fs-heat-row { position: relative; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; }
+  .fs-heat-row.is-head > span:first-child { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
+  .fs-heat-row > .fs-heat-area { grid-column: 1 / -1; padding: 12px 10px 0; }
+  .fs-heat-row > .fs-heat-cell { align-content: flex-start; gap: 8px; padding: 2px 4px 6px 1px; }
+  .fs-heat-cell + .fs-heat-cell { border-left: 1px solid var(--line); }
+  .fs-heat-row.is-head > span + span + span { border-left: 1px solid var(--line); }
+  .fk-meta { padding: 14px 14px 0; }
+  .fk-more { padding: 14px 14px 16px; }
+}
+
+/* touch screens: no hover lift left behind after a tap */
+@media (hover: none) {
+  .fk-card:hover { translate: none; box-shadow: var(--shadow-sm); }
+  .fs-dot:hover { scale: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fk-card, .fk-card:hover { translate: none; transition: none; }
+  .fs-dot, .fs-dot:hover { scale: none; transition: none; }
+  .fk-track, .fs-fig-scroll, .jm-scroll, .fsd-scroll { scroll-behavior: auto; }
+  .fs-fig-box::before, .fs-fig-box::after { transition: none; }
+}
+
+/* finding dialog open: keep the scrollbar gutter, so the page behind does not reflow or shift */
+html.is-modal:has(.film .fsd[open]) { scrollbar-gutter: stable; }
+
+/* ---------- Shorter Method: compact scope, tasks that open on demand, one-row severity scale ---------- */
+.film #method .fs-sub { margin-top: clamp(32px, 3.4vw, 52px); margin-bottom: 16px; font-size: clamp(20px, 1.8vw, 26px); }
+.fs-scope.is-compact > li { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; align-items: baseline; padding: 20px; }
+.fs-scope.is-compact > li > span { font-size: 20px; line-height: 1; }
+.fs-scope.is-compact h4 { margin-top: 0; font-size: 19px; }
+.fs-scope.is-compact p { grid-column: 1 / -1; margin-top: 8px; font-size: var(--fs-xs); line-height: 1.5; }
+.fs-scope.is-compact p + p { margin-top: 6px; font-size: var(--fs-sm); }
+.fs-tasks.is-compact { align-items: start; }
+.fs-tasks.is-compact > li { padding: 0; }
+.fs-tasks.is-compact summary { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 20px; list-style: none; cursor: pointer; border-radius: inherit; }
+.has-cursor .fs-tasks.is-compact summary { cursor: none; }
+.fs-tasks.is-compact summary::-webkit-details-marker { display: none; }
+.fs-tasks.is-compact summary > span { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1; letter-spacing: -0.04em; color: var(--accent); }
+.fs-tasks.is-compact summary h4 { margin: 0; font-size: 17px; line-height: 1.2; }
+.fs-tasks.is-compact summary small { margin-left: auto; font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+.fs-tasks.is-compact summary svg { flex: none; transition: rotate 200ms var(--ease); }
+.fs-tasks.is-compact details[open] > summary svg { rotate: 180deg; }
+.fs-tasks.is-compact details > ol { margin: 0; padding: 0 20px 18px 40px; }
+.fs-scale.is-compact { gap: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+.fs-scale.is-compact li { gap: 8px; padding: 16px 20px; border: 0; border-radius: 0; background: none; }
+.fs-scale.is-compact li + li { border-left: 1px solid var(--line); }
+.fs-scale.is-compact p { font-size: var(--fs-xs); line-height: 1.5; }
+@media (max-width: 900px) {
+  .fs-scale.is-compact li { flex-direction: row; align-items: baseline; gap: 12px; padding: 12px 16px; }
+  .fs-scale.is-compact li + li { border-left: 0; border-top: 1px solid var(--line); }
+  .fs-scale.is-compact .fs-sev { flex: none; min-width: 64px; text-align: center; }
+  .fs-scope.is-compact > li { padding: 14px 16px; }
+  .fs-tasks.is-compact summary { min-height: 56px; padding: 8px 16px; }
+  .fs-tasks.is-compact details > ol { padding: 0 16px 14px 36px; }
+}
+
+/* ---------- Themes and recommendations as one section ---------- */
+.fs-plan { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.fs-plan > li { display: flex; flex-direction: column; padding: clamp(20px, 2.2vw, 32px); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.fs-plan-head { display: flex; align-items: baseline; gap: 12px; }
+.fs-plan-head > span { font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: -0.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.fs-plan-head h3 { font-family: var(--display); font-size: clamp(20px, 1.8vw, 26px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; }
+.fs-plan > li > p { margin-top: 10px; font-size: var(--fs-sm); line-height: 1.55; color: var(--muted); }
+.fs-plan h4 { margin-top: 18px; font-size: var(--fs-xs); font-weight: 600; color: var(--accent); }
+.fs-plan ul { margin-top: 4px; }
+.fs-plan ul li { display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: var(--fs-sm); line-height: 1.5; }
+.fs-plan ul li:first-child { border-top: 0; }
+.fs-plan ul .fs-sev { flex: none; min-width: 68px; text-align: center; }
+.fs-validate { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 4fr); gap: 12px 32px; align-items: start; margin-top: 20px; padding: clamp(20px, 2.2vw, 32px); border: 1px solid var(--line); border-radius: 20px; }
+.fs-validate h3 { font-family: var(--display); font-size: clamp(20px, 1.8vw, 26px); font-weight: 600; letter-spacing: -0.03em; }
+.fs-validate ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 32px; padding-left: 20px; list-style: decimal; font-size: var(--fs-sm); line-height: 1.5; }
+@media (max-width: 900px) {
+  .fs-plan { grid-template-columns: 1fr; gap: 12px; }
+  .fs-plan > li { padding: 16px; border-radius: 14px; }
+  .fs-plan-head h3 { font-size: 19px; }
+  .fs-validate { grid-template-columns: 1fr; margin-top: 12px; padding: 16px; border-radius: 14px; }
+  .fs-validate ol { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .fs-tasks.is-compact summary svg { transition: none; } }
+
+/* ---------- Journey map and user flows share one section, with a switch ---------- */
+.fs-view-top { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: clamp(20px, 2.4vw, 32px); }
+.fs-view-top .eyebrow { margin-bottom: 0; }
+.fs-seg { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.fs-seg button { min-height: 44px; padding: 8px 20px; border: 0; border-radius: 999px; background: transparent; font: inherit; font-size: var(--fs-sm); font-weight: 500; color: var(--ink); cursor: pointer; transition: background-color 200ms var(--ease), color 200ms var(--ease); }
+.has-cursor .fs-seg button { cursor: none; }
+.fs-seg button:hover { background: color-mix(in oklab, var(--accent) 8%, var(--surface)); }
+.fs-seg button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
+.fs-seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#as-is > [hidden], #to-be-views > [hidden] { display: none; }
+@media (max-width: 720px) {
+  .fs-view-top { flex-direction: column; align-items: flex-start; }
+  .fs-seg { display: flex; width: 100%; }
+  .fs-seg button { flex: 1 1 0; padding: 8px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .fs-seg button { transition: none; } }

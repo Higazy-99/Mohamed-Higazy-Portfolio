@@ -232,7 +232,7 @@ function Foundation() {
       <button type="button" className="stc-more stc-tasks-btn" aria-expanded={tasksOpen} aria-controls="stc-tasks" onClick={() => setTasksOpen((v) => !v)} data-magnetic>
         {tasksOpen ? `Hide the ${role.tasks.length} tasks` : `Show the ${role.tasks.length} tasks`}
       </button>
-      {tasksOpen && <ul className="stc-tasks" id="stc-tasks" aria-label="User tasks">{role.tasks.map((t) => <li key={t}>{t}</li>)}</ul>}
+      <ul className="stc-tasks" id="stc-tasks" aria-label="User tasks" hidden={!tasksOpen}>{role.tasks.map((t) => <li key={t}>{t}</li>)}</ul>
       <h3 className="stc-small-h">User stories</h3>
       <ol className="stc-map">
         {role.groups.map((g, gi) => {
@@ -243,7 +243,7 @@ function Foundation() {
           return (
             <li key={g.name}>
               <header><span>{String(gi + 1).padStart(2, '0')}</span><h4>{g.name}</h4><small>{g.stories.length} {g.stories.length === 1 ? 'story' : 'stories'}</small></header>
-              <ul>
+              <ul id={`stc-stories-${key}`}>
                 {shown.map((st) => {
                   const [want, so] = st.split(', so that ');
                   const lead = want.startsWith('the ') ? '' : 'to ';
@@ -251,7 +251,7 @@ function Foundation() {
                 })}
               </ul>
               {more > 0 && !all && (
-                <button type="button" className="stc-more" aria-expanded={isOpen} onClick={() => setOpen((o) => ({ ...o, [key]: !isOpen }))} data-magnetic>
+                <button type="button" className="stc-more" aria-expanded={isOpen} aria-controls={`stc-stories-${key}`} onClick={() => setOpen((o) => ({ ...o, [key]: !isOpen }))} data-magnetic>
                   {isOpen ? 'Show fewer' : `Show ${more} more`}
                 </button>
               )}

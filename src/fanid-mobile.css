@@ -1,0 +1,76 @@
+/* ---------- Fan-ID case: mobile UX and accessibility overrides ----------
+   Loaded after styles.css and film.css. Desktop layout is unchanged except for the
+   scroll hint and edge fade on the journey map, which only exists above 900px. */
+
+/* Focus: one visible ring everywhere on this page, including inside the dialogs */
+.fid a:focus-visible,
+.fid button:focus-visible,
+.fid [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.fid .cs-band a:focus-visible,
+.fid .cs-band button:focus-visible { outline-color: var(--m-accent); }
+.fid .cs-dialog-close:focus-visible { outline-color: #fff; }
+.fid .fid-journey-scroll:focus-visible { outline-offset: 4px; }
+
+/* The benchmarking table is kept for assistive technology only (the cards are the visual form).
+   styles.css turns every .fid-table into blocks under 900px, which drops the table semantics. */
+.fid .sr-only .fid-table { display: table; }
+.fid .sr-only .fid-table thead { position: static; display: table-header-group; width: auto; height: auto; clip-path: none; }
+.fid .sr-only .fid-table tbody { display: table-row-group; }
+.fid .sr-only .fid-table tr { display: table-row; }
+.fid .sr-only .fid-table th,
+.fid .sr-only .fid-table td { display: table-cell; }
+
+/* Journey map (above 900px): a labelled scroll region with a hint and an edge fade */
+.fid-journey-frame { position: relative; }
+.fid-scroll-hint { margin: 0 0 12px; font-size: var(--fs-xs); color: var(--muted); }
+.fid .fid-journey-scroll { overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+.fid-journey-frame::after { content: ''; position: absolute; top: 1px; right: 1px; bottom: 1px; z-index: 3; width: 56px; border-radius: 0 20px 20px 0; background: linear-gradient(to right, transparent, var(--surface)); pointer-events: none; transition: opacity 200ms var(--ease); }
+.fid-journey-frame[data-end='true']::after { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .fid-journey-frame::after { transition: none; } }
+
+/* Answers: the real table above 900px, stacked cards from the same data at 900px and below */
+.fid-map-cards { display: none; }
+@media (max-width: 900px) {
+  .fid-journey-block { display: none; }
+  .fid-answers .fid-table-wrap { display: none; }
+  .fid-map-cards { display: grid; gap: 12px; }
+  .fid-map-cards > li { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); }
+  .fid-map-cards h4 { font-family: var(--display); font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+  .fid-map-cards dl { margin: 12px 0 0; }
+  .fid-map-cards dl > div { padding: 12px 0; border-top: 1px solid var(--line); }
+  .fid-map-cards dl > div:last-child { padding-bottom: 0; }
+  .fid-map-cards dt { font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
+  .fid-map-cards dd { margin: 4px 0 0; font-size: var(--fs-sm); line-height: 1.55; overflow-wrap: anywhere; }
+  .fid-map-cards .fid-map-why dd { font-weight: 500; }
+  .fid-map-cards dd.fid-scr { font-weight: 600; font-variant-numeric: tabular-nums; }
+}
+@media (max-width: 720px) {
+  .fid-map-cards > li { padding: 16px; }
+  .fid-map-cards h4 { font-size: 16px; }
+}
+
+/* Touch targets: 44px minimum, 8px between neighbours */
+@media (max-width: 768px) {
+  .fid .cs-toc { gap: 8px; }
+  .fid .cs-toc a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 0; }
+  .fid .fid-filter { gap: 8px; }
+  .fid .fid-filter button { min-height: 44px; }
+  .fid .fid-ck { min-height: 44px; }
+  .fid .fsd-nav button,
+  .fid .fsd-close,
+  .fid .cs-dialog-close { width: 44px; height: 44px; }
+  .fid .fsd-nav { gap: 8px; }
+  .fid .fid-source a { display: inline-flex; align-items: center; min-height: 44px; }
+  .fid .cs-actions { gap: 12px; }
+  .fid .cs-actions .btn { min-height: 44px; }
+  .fid .cs-zoom { min-width: 44px; min-height: 44px; }
+}
+
+/* Long words and chips must wrap instead of widening the page */
+@media (max-width: 720px) {
+  .fid .fid-persona-grid li { flex-wrap: wrap; }
+  .fid .fid-persona-grid li > span { min-width: 0; overflow-wrap: anywhere; }
+  .fid .fid-g, .fid .fid-inpoc, .fid .fid-persona-grid li em { white-space: normal; }
+  .fid .fid-links li, .fid .fid-dec-opts li, .fid .fid-trends span { overflow-wrap: anywhere; }
+  .fid .fid-poc > li > *, .fid .fid-bench > li > *, .fid .fid-dec > li > * { min-width: 0; }
+}

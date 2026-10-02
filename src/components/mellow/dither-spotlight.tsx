@@ -26,6 +26,30 @@ function useCssRgb(name: string, fallback: string): string {
   return rgb;
 }
 
+/**
+ * Whether pointer-driven effects may run: a fine pointer that can hover, and no reduced-motion preference.
+ * `null` until the first effect has run (server render and first browser render), then true / false.
+ * Follows changes of all three media queries.
+ */
+export function useMotionAllowed(): boolean | null {
+  const [allowed, setAllowed] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const queries = ['(pointer: coarse)', '(hover: none)', '(prefers-reduced-motion: reduce)'].map((query) => window.matchMedia(query));
+    const sync = () => setAllowed(!queries.some((query) => query.matches));
+    sync();
+    queries.forEach((query) => query.addEventListener('change', sync));
+    return () => queries.forEach((query) => query.removeEventListener('change', sync));
+  }, []);
+
+  return allowed;
+}
+
+/** Canvas pixel ratio: capped at 2, and at 1.5 on small screens. */
+export function cappedDpr() {
+  return Math.min(window.devicePixelRatio || 1, window.innerWidth <= 720 ? 1.5 : 2);
+}
+
 function parseRgb(rgb: string): [number, number, number] {
   const parts = rgb
     .split(',')
@@ -191,11 +215,13 @@ export function DitherSpotlight({
   const targetRef = useRef({ x: 0, y: 0 });
   const activeRef = useRef(0);
   const hasPointerRef = useRef(false);
+  // null: not known yet. false: touch device or reduced motion, so one still frame and no pointer tracking.
+  const live = useMotionAllowed();
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const host = wrapper?.parentElement;
-    if (!wrapper || !host) return;
+    if (!wrapper || !host || !live) return;
 
     const toLocal = (event: PointerEvent) => {
       const rect = wrapper.getBoundingClientRect();
@@ -221,11 +247,12 @@ export function DitherSpotlight({
       host.removeEventListener('pointerenter', onPointerEnter);
       host.removeEventListener('pointermove', onPointerMove);
       host.removeEventListener('pointerleave', onPointerLeave);
+      hasPointerRef.current = false;
     };
-  }, []);
+  }, [live]);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (live === null || !canvasRef.current) return;
     const canvas: HTMLCanvasElement = canvasRef.current;
     const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' });
     if (!gl) return;
@@ -249,13 +276,14 @@ export function DitherSpotlight({
 
     const ink = parseRgb(inkRgb);
     const background = parseRgb(backgroundRgb);
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const still = !live;
+    if (still) activeRef.current = 0;
     let rafId = 0;
     const start = performance.now();
 
     function resize() {
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio, 2);
+      const dpr = cappedDpr();
       const width = Math.max(1, Math.floor(rect.width * dpr));
       const height = Math.max(1, Math.floor(rect.height * dpr));
 
@@ -271,14 +299,14 @@ export function DitherSpotlight({
       pointerRef.current.y += (targetRef.current.y - pointerRef.current.y) * followSpeed;
 
       const targetActive = hasPointerRef.current ? 1 : 0;
-      activeRef.current = reduced ? targetActive : activeRef.current + (targetActive - activeRef.current) * followSpeed;
+      activeRef.current = still ? 0 : activeRef.current + (targetActive - activeRef.current) * followSpeed;
 
       context.useProgram(program);
       context.uniform2f(uniforms.resolution, canvas.width, canvas.height);
       context.uniform2f(uniforms.pointer, pointerRef.current.x * dpr, pointerRef.current.y * dpr);
       context.uniform3f(uniforms.ink, ink[0], ink[1], ink[2]);
       context.uniform3f(uniforms.background, background[0], background[1], background[2]);
-      context.uniform1f(uniforms.time, (now - start) / 1000);
+      context.uniform1f(uniforms.time, still ? 0 : (now - start) / 1000);
       context.uniform1f(uniforms.radius, radius * dpr);
       context.uniform1f(uniforms.softness, Math.min(Math.max(softness, 0.01), 0.95));
       context.uniform1f(uniforms.dotScale, Math.max(2, dotScale * dpr));
@@ -305,7 +333,7 @@ export function DitherSpotlight({
 
     resize();
     draw(start);
-    if (!reduced) rafId = requestAnimationFrame(frame);
+    if (!still) rafId = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(rafId);
@@ -313,7 +341,7 @@ export function DitherSpotlight({
       visibility.disconnect();
       context.deleteProgram(program);
     };
-  }, [backgroundRgb, dotScale, followSpeed, inkRgb, intensity, radius, softness]);
+  }, [backgroundRgb, dotScale, followSpeed, inkRgb, intensity, live, radius, softness]);
 
   return (
     <div ref={wrapperRef} className={['dither', className].filter(Boolean).join(' ')} style={style}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type CSSProperties } from 'react';
+import React, { useEffect, useId, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 export interface ExpandingPanelItem {
@@ -44,9 +44,12 @@ export function useNarrow(maxWidth = 720) {
 }
 
 /**
- * An editorial menu of numbered panels. Hover (or focus) one and it blooms into
- * a full-height accent panel with its content, while the others compress into
- * slim rails with vertical titles.
+ * An editorial menu of numbered panels. Each panel is a real button (the trigger) and a sibling
+ * region (the content it controls). Opening one blooms it into a full-height accent panel, while
+ * the others compress into slim rails with vertical titles.
+ *
+ * A mouse opens a panel by hovering; a tap or click opens it; Enter / Space toggles it.
+ * Closed content is inert and hidden from assistive technology.
  */
 export function ExpandingPanels({
   items,
@@ -60,22 +63,30 @@ export function ExpandingPanels({
   className,
   label,
 }: ExpandingPanelsProps) {
-  const [active, setActive] = useState<number | null>(defaultActive);
+  // `from` is the panel that was open before the last change: it decides how the content fades in.
+  const [state, setState] = useState<{ active: number | null; from: number | null }>({ active: defaultActive, from: defaultActive });
+  const { active, from } = state;
   const reduced = useReducedMotion();
+  const uid = useId();
 
   const set = (index: number | null) => {
-    setActive(index);
+    if (index === active) return;
+    setState({ active: index, from: active });
     onActiveChange?.(index);
   };
 
   const spring = reduced ? ({ duration: 0 } as const) : ({ type: 'spring', stiffness, damping } as const);
   const ease = [0.22, 1, 0.36, 1] as const;
-  const infoEnter = reduced ? { duration: 0 } : { duration: 0.4, delay: 0.12, ease };
-  const railEnter = reduced ? { duration: 0 } : { duration: 0.3, delay: 0.14, ease };
-  const infoExit = { duration: 0 };
-  const railExit = reduced ? { duration: 0 } : { duration: 0.2, ease: [0.4, 0, 1, 1] as const };
-  const wash = reduced ? { duration: 0 } : { duration: 0.3, ease };
-  const contentFade = reduced ? { duration: 0 } : { duration: 0.28, delay: 0.08, ease };
+  const none = { duration: 0 } as const;
+  const infoEnter = reduced ? none : { duration: 0.4, delay: 0.12, ease };
+  const railEnter = reduced ? none : { duration: 0.3, delay: 0.14, ease };
+  const infoExit = none;
+  const railExit = reduced ? none : { duration: 0.2, ease: [0.4, 0, 1, 1] as const };
+  const wash = reduced ? none : { duration: 0.3, ease };
+  // Content of a panel opened from rest (its title block is already on screen).
+  const contentFade = reduced ? none : { duration: 0.28, delay: 0.08, ease };
+  // Content of a panel opened from a rail: wait for the rail to leave (0.2s) and come in with the title block.
+  const contentAfterRail = reduced ? none : { duration: 0.4, delay: 0.32, ease };
 
   return (
     <div
@@ -83,7 +94,9 @@ export function ExpandingPanels({
       style={{ height }}
       role="group"
       aria-label={label}
-      onMouseLeave={() => set(defaultActive)}
+      onPointerLeave={(event) => {
+        if (event.pointerType === 'mouse') set(defaultActive);
+      }}
     >
       {items.map((item, i) => {
         const isOpen = active === i;
@@ -91,55 +104,76 @@ export function ExpandingPanels({
         const accent = item.accent ?? 'var(--muted)';
         const fg = item.foreground ?? '#fff';
         const numeral = item.numeral ?? String(i + 1).padStart(2, '0');
+        const triggerId = `${uid}-trigger-${i}`;
+        const contentId = `${uid}-content-${i}`;
+        const contentTransition = isOpen ? (from === null ? contentFade : contentAfterRail) : active === null ? contentFade : none;
 
         return (
           <motion.div
             key={item.title}
-            role="button"
-            tabIndex={0}
-            aria-expanded={isOpen}
-            aria-label={`${numeral} — ${item.title}`}
             animate={{ flexGrow: isOpen ? grow : 1 }}
             transition={spring}
-            onMouseEnter={() => set(i)}
-            onFocus={() => set(i)}
-            onClick={() => set(i)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                set(isOpen ? null : i);
-              }
+            onPointerEnter={(event) => {
+              if (event.pointerType === 'mouse') set(i);
             }}
-            className="ep-panel"
+            className={`ep-panel${isOpen ? ' is-open' : ''}`}
+            data-state={mode}
             data-magnetic-off
           >
             <motion.div aria-hidden="true" initial={false} animate={{ opacity: mode === 'open' ? 1 : 0 }} transition={wash} className="ep-wash" style={{ background: accent }} />
 
-            <AnimatePresence mode="wait" initial={false}>
-              {mode === 'rail' ? (
-                <motion.div key="rail" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: railExit }} transition={railEnter} className="ep-rail">
-                  <span className="ep-numeral" style={{ '--ac': accent } as CSSProperties}>{numeral}</span>
-                  <span className="ep-rail-title">{item.title}</span>
-                </motion.div>
-              ) : (
-                <motion.div key="info" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: infoExit }} transition={infoEnter} className="ep-info">
-                  <span className="ep-numeral ep-numeral-lg" style={(mode === 'open' ? { color: fg } : { '--ac': accent }) as CSSProperties}>{numeral}</span>
+            <button
+              type="button"
+              id={triggerId}
+              className="ep-trigger"
+              aria-expanded={isOpen}
+              aria-controls={contentId}
+              onClick={(event) => {
+                // detail === 0: activated from the keyboard (Enter / Space) or by assistive tech, which toggles.
+                // A pointer click only opens, because a mouse has already opened the panel by hovering.
+                if (event.detail === 0) set(isOpen ? null : i);
+                else set(i);
+              }}
+            >
+              <span className="sr-only">{`${numeral}. ${item.title}${item.subtitle ? `. ${item.subtitle}` : ''}`}</span>
 
-                  <motion.div initial={false} animate={{ opacity: mode === 'open' ? 1 : 0 }} transition={contentFade} className={`ep-content${mode === 'open' ? '' : ' is-hidden'}`} style={{ color: fg }}>
-                    {item.content}
-                  </motion.div>
+              <AnimatePresence mode="wait" initial={false}>
+                {mode === 'rail' ? (
+                  <motion.span key="rail" aria-hidden="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: railExit }} transition={railEnter} className="ep-rail">
+                    <span className="ep-numeral" style={{ '--ac': accent } as CSSProperties}>{numeral}</span>
+                    <span className="ep-rail-title">{item.title}</span>
+                  </motion.span>
+                ) : (
+                  <motion.span key="info" aria-hidden="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: infoExit }} transition={infoEnter} className="ep-info">
+                    <span className="ep-numeral ep-numeral-lg" style={(mode === 'open' ? { color: fg } : { '--ac': accent }) as CSSProperties}>{numeral}</span>
 
-                  <div className="ep-foot">
-                    <div className="ep-title" style={{ color: mode === 'open' ? fg : 'var(--ink)' }}>{item.title}</div>
-                    {item.subtitle && (
-                      <div className="ep-subtitle" style={{ color: mode === 'open' ? `color-mix(in oklab, ${fg} 70%, transparent)` : 'var(--muted)' }}>
-                        {item.subtitle}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    <span className="ep-foot">
+                      <span className="ep-title" style={{ color: mode === 'open' ? fg : 'var(--ink)' }}>{item.title}</span>
+                      {item.subtitle && (
+                        <span className="ep-subtitle" style={{ color: mode === 'open' ? `color-mix(in oklab, ${fg} 70%, transparent)` : 'var(--muted)' }}>
+                          {item.subtitle}
+                        </span>
+                      )}
+                    </span>
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </button>
+
+            <motion.div
+              id={contentId}
+              role="region"
+              aria-labelledby={triggerId}
+              aria-hidden={!isOpen}
+              inert={!isOpen}
+              initial={false}
+              animate={{ opacity: isOpen ? 1 : 0 }}
+              transition={contentTransition}
+              className={`ep-content${isOpen ? '' : ' is-hidden'}`}
+              style={{ color: fg }}
+            >
+              {item.content}
+            </motion.div>
           </motion.div>
         );
       })}

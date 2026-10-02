@@ -86,7 +86,7 @@ const toBeStages: JStage[] = [
 
 function Dots({ n }: { n: number }) {
   return (
-    <span className="jm-dots" aria-label={`${n} blockers`}>
+    <span className="jm-dots" aria-hidden="true">
       {Array.from({ length: 5 }, (_, i) => <i key={i} className={i < n ? 'is-on' : undefined} />)}
     </span>
   );
@@ -131,12 +131,12 @@ export function JourneyMap({ mode }: { mode: 'asis' | 'tobe' }) {
   return (
     <div className={`jm-wrap is-${mode}`}>
       <div className="jm-tools">
-        <button type="button" className="jm-btn" onClick={() => setOpen(stages.map(() => !allOpen))} data-magnetic>
+        <button type="button" className="jm-btn" aria-expanded={allOpen} aria-controls={`${uid}-map ${uid}-cards`} onClick={() => setOpen(stages.map(() => !allOpen))} data-magnetic>
           {allOpen ? 'Hide all details' : 'Show all details'}
         </button>
       </div>
       <div className="jm-scroll" tabIndex={0} role="region" aria-label={`${mode === 'asis' ? 'Current' : 'Improved'} user journey, scrolls horizontally`}>
-        <div className="jm" style={{ ['--cols' as string]: stages.length }}>
+        <div className="jm" id={`${uid}-map`} style={{ ['--cols' as string]: stages.length }}>
           <div className="jm-label jm-corner">Stage</div>
           {stages.map((s, i) => (
             <div key={s.name} className={`jm-chev${s.added ? ' is-added' : ''}`}>
@@ -173,7 +173,7 @@ export function JourneyMap({ mode }: { mode: 'asis' | 'tobe' }) {
           ))}
         </div>
       </div>
-      <ol className="jm-cards">
+      <ol className="jm-cards" id={`${uid}-cards`}>
         {stages.map((s, i) => (
           <li key={s.name} className={s.added ? 'is-added' : undefined}>
             <div className="jm-cards-top"><span>{String(i + 1).padStart(2, '0')}</span><h3>{s.name}</h3></div>
@@ -301,7 +301,8 @@ export function FlowDiagram({ mode }: { mode: 'asis' | 'tobe' }) {
   const H = y + 40;
   const midY = (laneY[0] + laneY[laneY.length - 1]) / 2;
   const items: ReactElement[] = [];
-  const arrow = (key: string, x1: number, y1: number, x2: number, y2: number) => <line key={key} className="fd-arrow" x1={x1} y1={y1} x2={x2} y2={y2} markerEnd="url(#fo-head)" />;
+  const head = `url(#fo-head-${mode})`;
+  const arrow = (key: string, x1: number, y1: number, x2: number, y2: number) => <line key={key} className="fd-arrow" x1={x1} y1={y1} x2={x2} y2={y2} markerEnd={head} />;
   const box = (key: string, x: number, cy: number, s: LStep, kind: 'step' | 'decision' = 'step') => {
     if (kind === 'decision') {
       return (
@@ -330,7 +331,7 @@ export function FlowDiagram({ mode }: { mode: 'asis' | 'tobe' }) {
     <g key="start">
       <rect className="fd-term is-start" x={0} y={midY - 19} width={78} height={38} rx={19} />
       <text className="fd-t is-term" x={39} y={midY} textAnchor="middle" dominantBaseline="central">Start</text>
-      <line className="fd-arrow" x1={79} y1={midY} x2={100} y2={midY} markerEnd="url(#fo-head)" />
+      <line className="fd-arrow" x1={79} y1={midY} x2={100} y2={midY} markerEnd={head} />
       <rect className="fd-node fd-home" x={101} y={midY - 22} width={64} height={44} rx={10} />
       <text className="fd-t is-main" x={133} y={midY} textAnchor="middle" dominantBaseline="central">Home</text>
     </g>,
@@ -385,7 +386,7 @@ export function FlowDiagram({ mode }: { mode: 'asis' | 'tobe' }) {
       const by = cy + 74;
       const bx = dx + (FW + FG) - 6;
       const branch = ['Create a new account', 'Upload the files', 'Verify the data'];
-      items.push(<path key="brk" className="fd-arrow" d={`M${dx + FW / 2} ${cy + 35} V${by}`} fill="none" markerEnd="url(#fo-head)" />);
+      items.push(<path key="brk" className="fd-arrow" d={`M${dx + FW / 2} ${cy + 35} V${by}`} fill="none" markerEnd={head} />);
       items.push(<text key="no" className="fd-yes" x={dx + FW / 2 + 8} y={cy + 52}>No</text>);
       branch.forEach((b, k) => {
         const x = dx - 0 + FW / 2 + 28 + k * (FW + FG - 8) - (k === 0 ? 0 : 0);
@@ -397,24 +398,24 @@ export function FlowDiagram({ mode }: { mode: 'asis' | 'tobe' }) {
       items.push(<line key="bl0" className="fd-arrow" x1={dx + FW / 2} y1={by} x2={dx + FW / 2 + 11} y2={by} />);
       const backX = dx + FW + FG + FW / 2;
       const endBranch = dx + FW / 2 + 12 + 2 * (FW + 20) + FW;
-      items.push(<path key="back" className="fd-arrow is-dashed" d={`M${endBranch} ${by} H${endBranch + 14} V${cy + 44} H${backX} V${cy + FH / 2 + 1}`} fill="none" markerEnd="url(#fo-head)" />);
+      items.push(<path key="back" className="fd-arrow is-dashed" d={`M${endBranch} ${by} H${endBranch + 14} V${cy + 44} H${backX} V${cy + FH / 2 + 1}`} fill="none" markerEnd={head} />);
       items.push(<text key="backl" className="fd-cap" x={endBranch + 20} y={cy + 40}>then log in</text>);
     }
   });
 
   // join, decision, end, loop
   items.push(<line key="join" className="fd-rail" x1={joinX} y1={laneY[0]} x2={joinX} y2={laneY[laneY.length - 1]} />);
-  items.push(<line key="join-out" className="fd-arrow" x1={joinX} y1={midY} x2={decX - 2} y2={midY} markerEnd="url(#fo-head)" />);
+  items.push(<line key="join-out" className="fd-arrow" x1={joinX} y1={midY} x2={decX - 2} y2={midY} markerEnd={head} />);
   items.push(
     <g key="dec">
       <polygon className="fd-node fd-decision" points={`${decX},${midY - 40} ${decX + 60},${midY} ${decX},${midY + 40} ${decX - 60},${midY}`} transform="translate(60 0)" />
       <text className="fd-t" x={decX + 60} y={midY - 7} textAnchor="middle" dominantBaseline="central">Task</text>
       <text className="fd-t" x={decX + 60} y={midY + 8} textAnchor="middle" dominantBaseline="central">completed?</text>
-      <line className="fd-arrow" x1={decX + 121} y1={midY} x2={decX + 150} y2={midY} markerEnd="url(#fo-head)" />
+      <line className="fd-arrow" x1={decX + 121} y1={midY} x2={decX + 150} y2={midY} markerEnd={head} />
       <text className="fd-yes" x={decX + 136} y={midY - 8} textAnchor="middle">Yes</text>
       <rect className="fd-term is-end" x={decX + 151} y={midY - 19} width={62} height={38} rx={19} />
       <text className="fd-t is-term" x={decX + 182} y={midY} textAnchor="middle" dominantBaseline="central">End</text>
-      <path className="fd-arrow is-loop" d={`M${decX + 60} ${midY - 41} V${8} H133 V${midY - 23}`} fill="none" markerEnd="url(#fo-head)" />
+      <path className="fd-arrow is-loop" d={`M${decX + 60} ${midY - 41} V${8} H133 V${midY - 23}`} fill="none" markerEnd={head} />
       <text className="fd-yes" x={decX + 70} y={midY - 50}>No</text>
       <text className="fd-cap" x={(decX + 60 + 133) / 2} y={0}>Back to the home page</text>
     </g>,
@@ -423,7 +424,7 @@ export function FlowDiagram({ mode }: { mode: 'asis' | 'tobe' }) {
   return (
     <svg className="fd-svg fd-overview" viewBox={`-4 -12 ${W + 8} ${H + 12}`} role="img" aria-label={`${mode === 'asis' ? 'Current' : 'To-be'} user flow: from the home page, six goals run in parallel, each as a chain of steps, and all end in a check on whether the task was completed`} preserveAspectRatio="xMinYMin meet">
       <defs>
-        <marker id="fo-head" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="currentColor" /></marker>
+        <marker id={`fo-head-${mode}`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="currentColor" /></marker>
       </defs>
       {items}
     </svg>
@@ -531,7 +532,7 @@ export function IaDiagram({ data, label }: { data: IaData; label: string }) {
       const h = lines.length * 14 + 16;
       const cy = ny + h / 2;
       kids.push(
-        <g key={n.t}>
+        <g key={`${col.tab}-${n.t}`}>
           <path className="fd-rail" d={`M${railX} ${cy} H${x + 24}`} />
           <rect className={`fd-node fd-${n.kind}`} x={x + 24} y={ny} width={IW - 24} height={h} rx={8} />
           <Label className="fd-t" lines={lines} x={x + 24 + (IW - 24) / 2} y={cy} />

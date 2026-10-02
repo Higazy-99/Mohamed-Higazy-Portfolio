@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowUpRight, ClipboardList, Eye, FileCheck, Hand, Maximize2, Percent, RefreshCw, ShieldCheck, SlidersHorizontal, ToggleRight, UserX, X, type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import './wijha-mobile.css';
 
 /* UX concept: Wijha, a proof-of-concept dispatch engine (in progress).
    Copy is adapted from the original write-up; sector-specific wording is generalized. */
@@ -221,6 +222,38 @@ function FlowDiagram() {
   );
 }
 
+/* The same flow as a vertical stepper for phones. Built from flowNodes (the diagram's own data),
+   in diagram order; the two branch nodes are listed under the decision they belong to. */
+const flowText = (parts: string[]) => parts.join(' ');
+const isBranch = (node: FlowNode) => node.y !== 142 && node.tone !== 'hex';
+const flowBranches = flowNodes.filter(isBranch);
+const flowSteps = flowNodes.filter((node) => !isBranch(node));
+
+function FlowStepper() {
+  return (
+    <ol className="process-stepper" role="list">
+      {flowSteps.map((node, index) => {
+        const title = flowText(node.title);
+        const text = node.desc.length ? flowText(node.desc) : stack.find((item) => item.title === title)?.text;
+        return (
+          <li key={title} className={node.tone === 'accent' ? 'is-accent' : node.tone ? `is-${node.tone}` : undefined}>
+            <div className="ps-rail"><span className="ps-num" aria-hidden="true">{index + 1}</span></div>
+            <div className="ps-body">
+              <h3>{title}</h3>
+              {text && <p>{text}</p>}
+              {node.tone === 'accent' && <p className="ps-extra"><b>Factors:</b> Eligibility · Ranking · Dispatch · Decision</p>}
+              {node.tone === 'hex' && (
+                <ul className="ps-options" role="list">
+                  {flowBranches.map((branch) => <li key={flowText(branch.title)}><b>{flowText(branch.title)}</b> {flowText(branch.desc)}</li>)}
+                </ul>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
 
 /** Image that loads eagerly and shows a readable fallback (with a direct link) if the file cannot be loaded. */
 export function SafeImg({ src, alt, width, height, className, loading }: { src: string; alt: string; width: number; height: number; className?: string; loading?: 'lazy' | 'eager' }) {
@@ -249,11 +282,11 @@ export function Zoomable({ src, alt, w, h, className }: { src: string; alt: stri
 
   return (
     <>
-      <button type="button" className={`cs-zoom ${className ?? ''}`} onClick={() => setOpen(true)} data-cursor="view" aria-label={`Enlarge image: ${alt}`}>
+      <button type="button" className={`cs-zoom ${className ?? ''}`} onClick={() => setOpen(true)} data-cursor="view" aria-haspopup="dialog" aria-label={`Enlarge image: ${alt}`}>
         <SafeImg src={src} alt={alt} width={w} height={h} loading="lazy" />
         <span className="cs-zoom-hint" aria-hidden="true"><Maximize2 size={15} strokeWidth={1.6} /> Enlarge</span>
       </button>
-      <dialog ref={dialogRef} className="cs-dialog" onClose={() => setOpen(false)} onClick={(event) => event.target === dialogRef.current && setOpen(false)}>
+      <dialog ref={dialogRef} className="cs-dialog" aria-label="Enlarged image" onClose={() => setOpen(false)} onClick={(event) => event.target === dialogRef.current && setOpen(false)}>
         <button type="button" className="cs-dialog-close" onClick={() => setOpen(false)} aria-label="Close enlarged image"><X size={18} strokeWidth={1.6} /></button>
         {open && <img src={src} alt={alt} />}
       </dialog>
@@ -430,13 +463,14 @@ export default function CaseStudy({ onBack }: { onBack: () => void }) {
           <p>The end-to-end flow, from the moment a work item arrives to the moment the result returns to the client system.</p>
         </header>
         <div className="cs-flow" data-reveal><FlowDiagram /></div>
-        <ol className="cs-stack" data-reveal>
+        <ol className="cs-stack" data-reveal tabIndex={0} aria-label="How Wijha routes a work item, scrolls sideways">
           {stack.map((item, index) => (
             <li key={item.title} className={item.accent ? 'is-accent' : undefined}>
               <span>{index + 1}</span><h4>{item.title}</h4><p>{item.text}</p>
             </li>
           ))}
         </ol>
+        <FlowStepper />
         <div className="cs-two-cols" data-reveal>
           <div><h3>Upstream</h3><p>The client system provides the work item and available context Wijha needs, so supervisors do not have to re-enter information already captured upstream.</p></div>
           <div><h3>Side by side</h3><p>Existing client systems remain the systems of record. Wijha adds the decision layer that determines who should handle each work item and why.</p></div>

@@ -165,7 +165,7 @@ function Stage({ tab, screenId, nextScreen, onGo }: { tab: Tab; screenId: string
   );
   return tab.kind === 'phone'
     ? <div className="stc-phone">{img}</div>
-    : <div className="stc-browser"><div className="stc-browser-bar" aria-hidden="true"><i /><i /><i /><span>inspection-hub</span></div>{img}</div>;
+    : <div className="stc-scroll" role="region" tabIndex={0} aria-label={`${tab.name} screen, scrolls sideways on small screens`}><div className="stc-browser"><div className="stc-browser-bar" aria-hidden="true"><i /><i /><i /><span>inspection-hub</span></div>{img}</div></div>;
 }
 
 export type ProtoTarget = { tab: Tab['id']; path: string; screen: string };

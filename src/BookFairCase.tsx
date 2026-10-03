@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Bell, CalendarCheck, Compass, DoorOpen, Gift, HeartHandshake, LayoutDashboard, MapPin, Medal, MessageSquareText, Navigation, PenLine, QrCode, Route, Search, Sparkles, Star, Target, Ticket, Trophy, UserCheck, Users, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Bell, Check, CircleCheck, ClipboardList, Lightbulb, Minus, Smartphone, X, CalendarCheck, Compass, DoorOpen, Gift, HeartHandshake, LayoutDashboard, MapPin, Medal, MessageSquareText, Navigation, PenLine, QrCode, Route, Search, Sparkles, Star, Target, Ticket, Trophy, UserCheck, Users, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 import { SafeImg, Zoomable } from './CaseStudy';
 import './bookfair.css';
@@ -50,11 +50,29 @@ const challenges = [
   { icon: BarChart3, title: 'Limited data for organisers', text: 'Organisers need live data on interaction, satisfaction and visitor behaviour, on peak times and on crowd flow, to make decisions on organisation and distribution.' },
 ];
 
-const compare = [
-  { capability: 'Finding the way to a stand or an event', usual: 'Random exploration', smart: 'A guided tour after the QR scan' },
-  { capability: 'A place at a book signing', usual: 'Standing in the waiting queue', smart: 'A digital ticket with an allotted time' },
-  { capability: 'Visitor feedback', usual: 'Traditional surveys after the visit', smart: 'A quick rating after each activity' },
-  { capability: 'Leaderboards', usual: 'Randomly distributed points', smart: 'Interactive boards in key areas' },
+type Mark = 'yes' | 'no' | 'partial';
+const capabilities = ['Interactive map', 'VR / AR navigation', 'Gamification', 'Crowd management', 'Event booking', 'Live surveys'];
+/* Checked against each product's own public pages (October 2026). "Partial" means an add-on, or only part of the capability. */
+const matrix: { app: string; kind: string; ours?: boolean; cells: [Mark, string?][] }[] = [
+  { app: 'Whova', kind: 'Conferences', cells: [['yes'], ['no'], ['yes'], ['no'], ['yes'], ['yes']] },
+  { app: 'Swapcard', kind: 'Expos', cells: [['yes'], ['no'], ['partial', 'Add-on'], ['no'], ['yes'], ['yes']] },
+  { app: 'PheedLoop', kind: 'Events', cells: [['yes'], ['no'], ['yes'], ['no'], ['yes'], ['yes']] },
+  { app: 'Cvent', kind: 'Large conferences', cells: [['yes'], ['no'], ['yes'], ['partial'], ['yes'], ['yes']] },
+  { app: 'Navigine', kind: 'Indoor navigation', cells: [['yes'], ['partial', 'AR only'], ['no'], ['partial', 'Heat maps'], ['no'], ['no']] },
+  { app: 'Smart Book Fair', kind: 'Our solution', ours: true, cells: [['yes'], ['yes', 'VR'], ['yes'], ['yes'], ['yes'], ['yes']] },
+];
+
+const research = [
+  { text: 'The Riyadh International Book Fair drew about 500,000 visitors over ten days in 2016, and needed queue systems, signage and crowd management procedures inside and outside the venue.', source: 'Crowd Dynamics', href: 'https://crowddynamics.com/riyadh-international-book-fair' },
+  { text: 'The Cairo International Book Fair recorded 445,029 visitors in a single day in 2025.', source: 'Maspero, Egyptian National Media Authority', href: 'https://www.maspero.eg/art-and-culture/2025/01/26/838326/445-%D8%A3%D9%84%D9%81-%D8%B2%D8%A7%D8%A6%D8%B1-%D8%AE%D9%84%D8%A7%D9%84-%D8%A7%D9%84%D9%8A%D9%88%D9%85-%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A-%D9%84%D9%85%D8%B9%D8%B1%D8%B6-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%84%D9%84%D9%83%D8%AA%D8%A7%D8%A8' },
+  { text: 'A study of a gamified AR navigation system for exhibitions found that visitors in game mode followed the intended route more closely.', source: 'Applied Sciences (MDPI), 2022', href: 'https://www.mdpi.com/2076-3417/12/6/2969' },
+];
+
+const impact = [
+  { value: '40%', label: 'Expected reduction in average wayfinding time' },
+  { value: '3×', label: 'Projected increase in visitor interaction rate' },
+  { value: '0 min', label: 'Queue time with the pre-booking system' },
+  { value: '500K+', label: 'Visitors the system is designed to handle' },
 ];
 
 const journey = [
@@ -102,7 +120,7 @@ const journey = [
 
 const shots = {
   vr: { src: 'vr-navigation.webp', w: 900, h: 1949, alt: 'App screen: a camera view of the fair hall with an arrow path on the floor, a "turn left, 50 m" instruction, and a label for the Egyptian pavilion marked as a crowded area' },
-  home: { src: 'home.webp', w: 900, h: 2726, alt: 'App home screen: a greeting, a search field, the competitions rating with a points total, browsing by country with flags, the top picks of books, and a row of top authors, above a bottom navigation bar' },
+  home: { src: 'home.webp', w: 900, h: 2422, alt: 'App home screen: a greeting, a search field, the competitions rating with a points total, browsing by country with flags, and the top picks of books, above a bottom navigation bar' },
   request: { src: 'signing-request.webp', w: 900, h: 1948, alt: "App screen: an author's page with her portrait, name, a 4.5 out of 5 rating, an About the author text, and two buttons, Request signing and Share" },
   checkin: { src: 'signing-checkin.webp', w: 900, h: 1948, alt: "App screen: an author's page with his portrait, name, a 4.5 out of 5 rating, a 03:47 countdown, a waiting list count of 14, an About the author text, and two buttons, Check in and Cancel request" },
   survey: { src: 'survey.webp', w: 900, h: 1948, alt: 'App screen, exit survey: a star rating for the events, a three-option question on how easy it was to move around the fair, a three-option question on satisfaction with the digital tools, a short optional note, a banner about extra points for completing the survey, and a Send rating button' },
@@ -161,14 +179,29 @@ const surveys = {
   organiser: 'A rich source of data on how visitors rate the experience, used to improve future editions and to support decisions based on real numbers and opinions.',
 };
 
-const bookingFlow: { icon: LucideIcon; title: string; text: string }[] = [
-  { icon: Search, title: "Open the author's page", text: 'Top authors are listed on the home screen. The page shows the author, a rating and an "About the author" text.' },
-  { icon: PenLine, title: 'Request the signing', text: 'Visitors book their place at the book signing through the app.' },
-  { icon: Ticket, title: 'Digital ticket', text: 'A ticket with an allotted time, without standing in the waiting queue.' },
-  { icon: Bell, title: 'Reminders', text: 'Timely notifications remind the visitor of the session, or of any changes to the schedule.' },
-  { icon: Navigation, title: 'VR guidance to the stand', text: 'When their time comes they get a notification, and use the app to reach the stand.' },
-  { icon: MapPin, title: 'Check in, skip the queue', text: 'The screen shows the countdown and the waiting list, with Check in and Cancel request.' },
-  { icon: Star, title: 'Rate the session', text: 'An instant survey with quick rating options, and extra points for completing it.' },
+const flowPhases: { phase: string; steps: { icon: LucideIcon; title: string; text: string }[] }[] = [
+  { phase: 'Discovery', steps: [
+    { icon: Search, title: 'Search', text: 'Browse by author name or book title' },
+    { icon: ClipboardList, title: 'Details', text: 'View author profile, available signing sessions, remaining spots' },
+  ] },
+  { phase: 'Booking', steps: [
+    { icon: Ticket, title: 'Book', text: 'Select session, confirm booking' },
+    { icon: Smartphone, title: 'Ticket', text: 'Receive digital ticket with QR code, time & seat number' },
+  ] },
+  { phase: 'Navigation', steps: [
+    { icon: Bell, title: 'Reminder', text: 'Push notification 30 min & 15 min before' },
+    { icon: Navigation, title: 'VR Guide', text: 'Tap \'Start Navigation\' → AR arrows guide to venue' },
+  ] },
+  { phase: 'Attendance', steps: [
+    { icon: CircleCheck, title: 'Check-in', text: 'Scan QR at venue → auto check-in → earn 50 points' },
+    { icon: Star, title: 'Rate', text: 'Quick 3-question survey → earn 20 bonus points' },
+  ] },
+];
+
+const compact = [
+  { id: 'book', icon: PenLine, title: 'Pre-booking system', shots: ['request', 'checkin'] as const, text: 'Visitors can book their place at book signings through the app, and receive a digital ticket with an allotted time, without standing in the waiting queue. Timely notifications remind them of signing sessions, or of any changes to the schedule.', visitor: 'No long wait for a favourite author', organiser: 'Real data on expected attendance' },
+  { id: 'crowd', icon: Users, title: 'Crowd management', shots: ['map'] as const, text: 'An interactive map is updated in real time to show the stands, the events and crowd density. The app alerts visitors when an area is congested, and suggests alternative routes and less crowded events.', visitor: 'Avoids congestion, decides faster', organiser: 'Better crowd flow, no bottlenecks' },
+  { id: 'survey', icon: MessageSquareText, title: 'Interactive surveys', shots: ['survey'] as const, text: 'Instead of traditional surveys after the visit has ended, the visitor rates the experience quickly after each activity, with extra points for taking part. The data is analysed in real time to give organisers direct feedback.', visitor: 'Their voice is heard', organiser: 'Decisions based on real numbers', note: 'Exit survey screen drawn for this case study in the visual style of the app.' },
 ];
 
 const dashboard = [
@@ -260,6 +293,20 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </ol>
       </section>
 
+      {/* Projected impact: design targets, not measured results */}
+      <section className="cs-section bf-impact" aria-labelledby="bf-impact">
+        <h2 id="bf-impact" className="bf-impact-title" data-reveal>Projected impact <small>Design targets, not measured results</small></h2>
+        <ul className="bf-impact-grid">
+          {impact.map((item, index) => (
+            <li key={item.label} data-reveal style={{ transitionDelay: `${index * 70}ms` }}>
+              <strong>{item.value}</strong>
+              <p>{item.label}</p>
+              <small>Design target</small>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       {/* 02 Challenge: dark band */}
       <section className="cs-band bf-challenge" id="challenge" aria-labelledby="bf-challenge">
         <div className="cs-band-inner">
@@ -278,30 +325,47 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </div>
       </section>
 
-      {/* 03 Research and discovery: comparison table */}
+      {/* 03 Research and discovery: competitive analysis matrix */}
       <section className="cs-section" id="discovery" aria-labelledby="bf-discovery">
         <header className="section-head" data-reveal>
           <span className="eyebrow">03 · Research and discovery</span>
-          <h2 id="bf-discovery">Existing practice, <em>and the gaps</em></h2>
-          <p>Where the usual way of running a fair falls short, and what the concept puts in its place.</p>
+          <h2 id="bf-discovery">Competitive analysis: <em>five event and exhibition apps</em></h2>
         </header>
-        <div className="bf-compare" data-reveal>
-          <table>
-            <caption className="sr-only">The usual fair experience compared with the Smart Book Fair concept</caption>
+        <p className="bf-scroll-hint" id="bf-matrix-hint">Swipe sideways to see all six capabilities.</p>
+        <div className="bf-matrix-scroll" role="region" aria-labelledby="bf-discovery" aria-describedby="bf-matrix-hint" tabIndex={0} data-reveal>
+          <table className="bf-matrix">
+            <caption className="sr-only">Six capabilities compared across five event and exhibition apps and Smart Book Fair</caption>
             <thead>
-              <tr><th scope="col">&nbsp;</th><th scope="col">The usual fair</th><th scope="col" className="is-smart">Smart Book Fair</th></tr>
+              <tr><th scope="col">App</th>{capabilities.map((name) => <th key={name} scope="col">{name}</th>)}</tr>
             </thead>
             <tbody>
-              {compare.map((row) => (
-                <tr key={row.capability}>
-                  <th scope="row">{row.capability}</th>
-                  <td><span className="bf-mark is-no" aria-hidden="true">✗</span><span className="sr-only">Not covered: </span>{row.usual}</td>
-                  <td className="is-smart"><span className="bf-mark is-yes" aria-hidden="true">✓</span><span className="sr-only">Covered: </span>{row.smart}</td>
+              {matrix.map((row) => (
+                <tr key={row.app} className={row.ours ? 'is-ours' : undefined}>
+                  <th scope="row"><b>{row.app}</b><small>{row.kind}</small></th>
+                  {row.cells.map(([mark, note], i) => (
+                    <td key={capabilities[i]}>
+                      <span className={`bf-m is-${mark}`}>
+                        {mark === 'yes' ? <Check size={15} strokeWidth={2.6} aria-hidden="true" /> : mark === 'no' ? <X size={15} strokeWidth={2.6} aria-hidden="true" /> : <Minus size={15} strokeWidth={2.6} aria-hidden="true" />}
+                        <span className={note || mark === 'partial' ? undefined : 'sr-only'}>{note ?? (mark === 'yes' ? 'Yes' : mark === 'no' ? 'No' : 'Partial')}</span>
+                      </span>
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        <p className="bf-insight" data-reveal><Lightbulb size={18} strokeWidth={1.8} aria-hidden="true" /><span>No single platform covers all six capabilities. Event apps such as Whova, PheedLoop and Cvent cover maps, gamification, booking and surveys, but none offers VR or AR navigation, and crowd management is partial at best. Navigine covers indoor navigation, but not the event side. Smart Book Fair combines all six in one experience designed for book fairs.</span></p>
+        <h3 className="bf-sub" data-reveal>Supporting research</h3>
+        <ol className="bf-research">
+          {research.map((item, index) => (
+            <li key={item.source} data-reveal style={{ transitionDelay: `${index * 80}ms` }}>
+              <span>{num(index)}</span>
+              <p>{item.text}</p>
+              <a href={item.href} target="_blank" rel="noopener noreferrer">Source: {item.source}<span className="sr-only"> (opens in a new tab)</span> <ArrowUpRight size={13} strokeWidth={1.8} aria-hidden="true" /></a>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* 04 Journey map: a drawn route with four stops */}
@@ -365,20 +429,26 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </ol>
         </div>
         <div id="bf-view-flow" hidden={view !== 'flow'}>
-          <div className="bf-flow-wrap">
-            <ol className="bf-flow">
-              {bookingFlow.map((step, index) => (
-                <li key={step.title}>
-                  <div className="bf-flow-node">
-                    <span className="bf-flow-ico" aria-hidden="true"><step.icon size={22} strokeWidth={1.6} /></span>
-                    <small>{num(index)}</small>
-                    <h3>{step.title}</h3>
-                  </div>
-                  <p>{step.text}</p>
+          <div className="bf-phases-scroll" role="region" aria-label="User flow: booking a book signing, scrolls sideways on small screens" tabIndex={0}>
+            <ol className="bf-phases">
+              {flowPhases.map((phase, p) => (
+                <li key={phase.phase} className={`is-s${p + 1}`}>
+                  <span className="bf-phase-name">Phase {p + 1} · {phase.phase}</span>
+                  <ol>
+                    {phase.steps.map((step, i) => (
+                      <li key={step.title}>
+                        <span className="bf-step-ico" aria-hidden="true"><step.icon size={24} strokeWidth={1.7} /></span>
+                        <small>Step {p * 2 + i + 1}</small>
+                        <h3>{step.title}</h3>
+                        <p>{step.text}</p>
+                      </li>
+                    ))}
+                  </ol>
                 </li>
               ))}
             </ol>
           </div>
+          <p className="bf-insight"><Lightbulb size={18} strokeWidth={1.8} aria-hidden="true" /><span>Notice how one flow connects 4 systems together: Pre-booking, VR Navigation, Gamification and Interactive Surveys. This is what makes the experience integrated, not just separate features.</span></p>
         </div>
         <figure className="bf-entry" data-reveal>
           <Zoomable src={`${BASE}/entry-point.webp`} alt='A visitor holds a phone in front of a "Scan here" kiosk with a touch screen, next to shelves of books. The logos of the Literature, Publishing & Translation Commission and of the Riyadh International Book Fair are on the wall.' w={2000} h={1125} />
@@ -409,7 +479,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </article>
         <Value visitor={vr.visitor} organiser={vr.organiser} />
 
-        {/* Gamification: four small cards */}
+        {/* Gamification: split screen, the app on one half and four cards on the other */}
         <article className="bf-game" aria-labelledby="bf-f-game">
           <div data-reveal>
             <FeatureHead index={1} id="bf-f-game" title="Gamification system" lead="Improving the overall experience and crowd management through gamification." />
@@ -428,60 +498,26 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </article>
         <Value visitor={gamification.visitor} organiser={gamification.organiser} />
 
-        {/* Pre-booking: a mini flow */}
-        <article className="bf-book" aria-labelledby="bf-f-book" data-reveal>
-          <FeatureHead index={2} id="bf-f-book" title="Pre-booking system" lead="Booking book fair events in advance (book signings)." />
-          <div className="bf-book-body">
-            <ol className="bf-mini">
-              {booking.steps.map((step) => (
-                <li key={step.title}>
-                  <span className="bf-ico" aria-hidden="true"><step.icon size={20} strokeWidth={1.6} /></span>
-                  <h4>{step.title}</h4>
-                  <p>{step.text}</p>
-                </li>
-              ))}
-            </ol>
-            <div className="bf-book-shots">
-              <Device shot={shots.request} />
-              <Device shot={shots.checkin} />
-            </div>
-          </div>
-        </article>
-        <Value visitor={booking.visitor} organiser={booking.organiser} />
-
-        {/* Crowd management: the live map on the phone, the alert next to it */}
-        <article className="bf-crowd" aria-labelledby="bf-f-crowd" data-reveal>
-          <Device shot={shots.map} />
-          <div className="bf-crowd-text">
-            <FeatureHead index={3} id="bf-f-crowd" title="Crowd management" lead="Managing crowds and controlling congestion." />
-            <div className="bf-crowd-lists">
-              <div><h4>Tracking visitor density</h4><ul>{crowd.tracking.map((item) => <li key={item}>{item}</li>)}</ul></div>
-              <div><h4>Dynamic guidance</h4><ul>{crowd.guidance.map((item) => <li key={item}>{item}</li>)}</ul></div>
-            </div>
-            <blockquote className="bf-push">
-              <span><Bell size={14} strokeWidth={2} aria-hidden="true" /> Example notification</span>
-              <p>{crowd.example}</p>
-            </blockquote>
-          </div>
-        </article>
-        <Value visitor={crowd.visitor} organiser={crowd.organiser} />
-
-        {/* Interactive surveys: the exit survey screen */}
-        <article className="bf-survey" aria-labelledby="bf-f-survey" data-reveal>
-          <div className="bf-survey-text">
-            <FeatureHead index={4} id="bf-f-survey" title="Interactive surveys" lead={surveys.lead} />
-            <ul className="bf-survey-points">
-              {surveys.points.map((item) => <li key={item.title}><MessageSquareText size={18} strokeWidth={1.6} aria-hidden="true" /><div><h4>{item.title}</h4><p>{item.text}</p></div></li>)}
-            </ul>
-            <p className="bf-note"><DoorOpen size={16} strokeWidth={1.8} aria-hidden="true" /> {surveys.exit}</p>
-          </div>
-          <figure className="bf-survey-shot">
-            <Device shot={shots.survey} />
-            <figcaption>Exit survey screen, drawn for this case study in the visual style of the app.</figcaption>
-          </figure>
-        </article>
-        <Value visitor={surveys.visitor} organiser={surveys.organiser} />
-
+        {/* Pre-booking, crowd management and surveys: three compact cards */}
+        <ul className="bf-compact">
+          {compact.map((item, index) => (
+            <li key={item.id} data-reveal style={{ transitionDelay: `${index * 80}ms` }}>
+              <div className={`bf-compact-shots${item.shots.length > 1 ? ' has-two' : ''}`}>
+                {item.shots.map((key) => <Device key={key} shot={shots[key]} />)}
+              </div>
+              <div className="bf-compact-body">
+                <span className="bf-compact-no">Feature {num(index + 2)}</span>
+                <h3><item.icon size={20} strokeWidth={1.7} aria-hidden="true" /> {item.title}</h3>
+                <p>{item.text}</p>
+                <ul className="bf-tags" aria-label="Added value">
+                  <li><b>Visitor</b>{item.visitor}</li>
+                  <li className="is-org"><b>Organiser</b>{item.organiser}</li>
+                </ul>
+                {item.note && <small className="bf-compact-note">{item.note}</small>}
+              </div>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* 06 Admin dashboard */}

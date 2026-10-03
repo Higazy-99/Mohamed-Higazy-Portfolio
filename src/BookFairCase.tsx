@@ -92,7 +92,7 @@ const journey = [
     title: 'Entry point',
     tag: 'QR code scan',
     does: ['Scans the QR code received with the ticket.', 'Chooses a publisher from the list and follows the steps to reach it.'],
-    app: ["Sends a welcome message with the day's highlights.", "Suggests events based on the visitor's preferences (phase 3).", 'Opens the live map with a route to the stand (AR guidance on top from phase 3).'],
+    app: ['Opens the app. If it is not installed, takes the visitor to download it.', "Sends a welcome message with the day's highlights.", "Suggests events based on the visitor's preferences (phase 3).", 'Opens the live map with a route to the stand (AR guidance on top from phase 3).'],
     touchpoints: ['QR code', 'App', 'Live map', 'AR guidance (phase 3)'],
     points: 'Registered automatically in the rewards system. Points start with the QR scan (from phase 2).',
     organiser: 'The QR scan and the positioning give a starting point for tracking: peak times and crowd flow in real time.',
@@ -153,14 +153,14 @@ const rewards = {
   solves: 'Solves problem 03 · Passive visitors',
   cards: [
     { icon: Star, title: 'Points', text: 'Visitors earn points when they attend events, visit stands and take part in challenges.' },
-    { icon: Target, title: 'Challenges', text: "Field challenges built into the app: attending a meeting with an author and documenting the attendance, visiting a set number of stands within a set time, or taking a photo in a distinctive spot such as the children's corner or a rare exhibit." },
+    { icon: Target, title: 'Challenges', text: "Field challenges built into the app: attending a meeting with an author and documenting the attendance, visiting a set number of stands within a set time, or taking a photo in a distinctive spot such as the children's corner or a rare exhibit. Quizzes, book-related competitions and workshops count as challenges too: workshops earn extra points, and exclusive ones unlock higher-value rewards." },
     { icon: Gift, title: 'Rewards', text: 'Points can be exchanged for digital rewards (such as e-books or discounts) or for rewards such as signed books or vouchers.' },
     { icon: MapPin, title: 'Rewards that move people', text: 'Organisers can attach a reward to a quieter area, for example a book discount or an exclusive event in Hall X.' },
   ],
   later: 'Leaderboards are held for phase 3.',
   visitor: 'Enjoyment and involvement: earning points for visiting stands or taking part in activities makes them an active participant.',
   organiser: 'A tool for motivating visitors to visit the less crowded stands, and a source of data on interests and the strongest points of interaction.',
-  kpi: 'Share of visitors who complete at least one challenge',
+  kpi: 'Share of visitors who complete at least one challenge, quiz or workshop',
 };
 
 const flowPhases: { phase: string; steps: { icon: LucideIcon; title: string; text: string }[] }[] = [
@@ -191,7 +191,7 @@ const compact = [
 const dashboard = [
   { title: 'Live monitoring of attendance and congestion', feeds: 'Fed by features 01 and 04', lead: 'A live map of the site that shows:', items: ['The number of visitors in each area.', 'Traffic-light signals for congestion.', 'The option to send alerts to visitors, to spread them across less crowded areas.'] },
   { title: 'Following ticket and event bookings', feeds: 'Fed by feature 03', items: ['The number of tickets booked, and daily tickets.', 'An updated events schedule, with the attendance rate for each event.', 'Notifications when bookings are full, or when expected attendance is low.'] },
-  { title: 'Managing the rewards system', feeds: 'Fed by feature 02 (phase 2)', items: ['The number of participants in the digital challenges.', 'Control over starting new challenges, or closing challenges when needed.'] },
+  { title: 'Managing the rewards system', feeds: 'Fed by feature 02 (phase 2)', items: ['The number of participants in challenges, quizzes and workshops.', 'Control over starting new challenges, or closing challenges when needed.'] },
   { title: 'Managing ratings and surveys', feeds: 'Fed by feature 05 (phase 2)', items: ['A board that shows micro-ratings and exit-survey results and classifies them (general satisfaction, suggestions, complaints).', 'Alerts about immediate negative ratings.', 'Filtering results by date or by type of event.'] },
   { title: 'Statistics and analytics', feeds: 'Fed by all five features', items: ['Total number of visitors by day and by hour.', 'The areas of highest activity inside the fair.', 'The average time a visitor stays inside the fair.', 'The rate of visitor participation in events and challenges.'] },
   { title: 'Sending notifications and alerts to visitors', feeds: 'Fed by features 03 and 04', lead: 'A panel for sending instant alerts to all visitors or to a specific group:', items: ['A change in the location of an event.', 'An alert about congestion.', 'A notice that an event or a signing is starting.'] },
@@ -210,7 +210,7 @@ const risks = [
 const measures = [
   { problem: 'Navigation difficulty', feature: 'Live map and AR wayfinding', kpi: 'Time to reach a first chosen stand' },
   { problem: 'Crowding and queues', feature: 'Book signing and crowd alerts', kpi: 'Average wait at book signings. Share of visitors who follow a reroute alert.' },
-  { problem: 'Passive visitors', feature: 'Rewards system', kpi: 'Share of visitors who complete at least one challenge' },
+  { problem: 'Passive visitors', feature: 'Rewards system', kpi: 'Share of visitors who complete at least one challenge, quiz or workshop' },
   { problem: 'Limited data for organisers', feature: 'Micro-ratings, exit survey and admin dashboard', kpi: 'Survey completion rate. Time from a crowd alert to action.' },
 ];
 
@@ -285,7 +285,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
           <p className="bf-overview-text" data-reveal>Digital tools that give visitors ease of access, navigation and interaction with the fair, with rewards and crowd management built in. The experience starts with the QR scan at the entrance and continues until the exit survey.</p>
         </div>
         <h3 className="bf-sub" data-reveal>Context</h3>
-        <p className="bf-context" data-reveal>A concept I developed for the Literature, Publishing &amp; Translation Commission and delivered in May 2025. The goal was to give the Commission one end-to-end visitor experience to align on before any detailed design or build.</p>
+        <p className="bf-context" data-reveal>A concept I developed for the Literature, Publishing &amp; Translation Commission and delivered in May 2025. The goal was to give the Commission one end-to-end visitor experience to align on before any detailed design or build. The phasing is my recommendation, not part of the original brief.</p>
         <h3 className="bf-sub" data-reveal>Four objectives</h3>
         <ol className="bf-objectives is-four">
           {objectives.map((item, index) => (

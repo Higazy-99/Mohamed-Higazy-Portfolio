@@ -643,7 +643,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         <div className="cs-panel" data-reveal>
           <span className="eyebrow">Where it stands</span>
           <p>Delivered to the Commission in May 2025 as a complete concept: a four-stage visitor journey, five features, an admin dashboard and a phased plan, ready to move into detailed design. It has not been tested with visitors yet. The first step would be to validate the riskiest assumptions on site, starting with signing queues and entry, before any build.</p>
-          <p className="fid-gap">Not yet covered here: usability testing, Arabic and right-to-left screens, consent flows, and the author's side of the signing experience.</p>
+          <p className="fid-gap">Not yet covered here: usability testing, an English (left-to-right) version of the screens, consent flows, and the author's side of the signing experience.</p>
         </div>
         <div className="cs-panel" data-reveal>
           <span className="eyebrow">What I'd take forward</span>

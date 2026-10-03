@@ -22,7 +22,7 @@
 .bf-objectives > li { position: relative; padding: clamp(20px, 2vw, 28px); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); transition: translate 400ms var(--ease), box-shadow 400ms var(--ease); }
 .bf-objectives > li:hover { translate: 0 -4px; box-shadow: var(--shadow-lg); }
 .bf-objectives b { position: absolute; top: clamp(20px, 2vw, 28px); right: clamp(20px, 2vw, 28px); font-family: var(--display); font-size: 16px; font-weight: 600; color: color-mix(in oklab, var(--ink) 62%, transparent); }
-.bf-objectives h4 { margin-top: 20px; font-family: var(--display); font-size: clamp(19px, 1.6vw, 23px); line-height: 1.15; letter-spacing: -0.03em; }
+.bf-objectives h4, .bf-objectives h3 { margin-top: 20px; font-family: var(--display); font-size: clamp(19px, 1.6vw, 23px); line-height: 1.15; letter-spacing: -0.03em; }
 .bf-objectives p { margin-top: 8px; font-size: var(--fs-sm); line-height: 1.55; color: var(--muted); }
 
 /* 02 challenge: dark band, big numerals */
@@ -45,7 +45,7 @@
 
 /* 03 competitive analysis matrix */
 .bf-scroll-hint { display: none; margin-bottom: 10px; font-size: var(--fs-xs); color: var(--muted); }
-.bf-matrix-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.bf-matrix-scroll { position: relative; overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
 .bf-matrix-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .bf-matrix { width: 100%; min-width: 860px; border-collapse: collapse; text-align: center; font-size: var(--fs-sm); }
 .bf-matrix thead th { padding: 16px 12px; background: var(--accent); font-size: var(--fs-xs); font-weight: 600; line-height: 1.3; color: #fff; }
@@ -98,6 +98,8 @@
 .is-s4 { --c: var(--bf-amber); }
 .bf-jm-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--c, var(--accent)); color: #fff; }
 .bf-jm-stage small { display: block; margin-top: 14px; font-size: var(--fs-xs); font-weight: 600; color: var(--c); }
+.bf-jm-stage.is-s4 small, .bf-jm-cards > li.is-s4 .bf-jm-cardhead small { color: var(--bf-kpi); }
+.bf-jm-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .bf-jm-stage h3 { margin-top: 4px; font-family: var(--display); font-size: clamp(18px, 1.5vw, 22px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; }
 .bf-jm-cell ul:not(.bf-jm-tags) li, .bf-jm-cards dd li { position: relative; padding: 3px 0 3px 16px; }
 .bf-jm-cell ul:not(.bf-jm-tags) li::before, .bf-jm-cards dd li::before { content: ''; position: absolute; left: 0; top: 12px; width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
@@ -188,7 +190,7 @@
 .bf-tags li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; padding: 8px 12px; border-radius: 12px; background: color-mix(in oklab, var(--accent) 8%, var(--surface)); font-size: var(--fs-xs); line-height: 1.4; }
 .bf-tags li.is-org { background: color-mix(in oklab, var(--bf-coral) 8%, var(--surface)); }
 .bf-tags b { font-weight: 600; color: var(--accent); }
-.bf-tags .is-org b { color: var(--bf-coral); }
+.bf-tags .is-org b { color: #a8362c; }
 .bf-tags li.is-kpi { background: color-mix(in oklab, var(--bf-kpi) 9%, var(--surface)); }
 .bf-tags .is-kpi b { color: var(--bf-kpi); }
 .bf-compact-note { display: block; margin-top: 12px; font-size: 12px; line-height: 1.4; color: var(--muted); }
@@ -315,7 +317,7 @@
   .bf-objectives > li { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 14px; padding: 16px; border-radius: 16px; }
   .bf-objectives .bf-ico { grid-row: span 2; width: 44px; height: 44px; }
   .bf-objectives b { display: none; }
-  .bf-objectives h4 { margin-top: 0; font-size: 18px; }
+  .bf-objectives h4, .bf-objectives h3 { margin-top: 0; font-size: 18px; }
   .bf-objectives p { margin-top: 4px; }
   .bf-problems { grid-template-columns: 1fr; margin-top: 32px; }
   .bf-problems > li, .bf-problems > li + li { display: grid; grid-template-columns: 48px minmax(0, 1fr); column-gap: 14px; padding: 20px 0; border-left: 0; border-top: 1px solid color-mix(in oklab, var(--bg) 26%, transparent); }

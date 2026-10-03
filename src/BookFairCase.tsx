@@ -327,7 +327,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </header>
         <h3 className="bf-sub bf-sub-first" data-reveal>Competitive analysis: five event and exhibition apps</h3>
         <p className="bf-scroll-hint" id="bf-matrix-hint">Swipe sideways to see all six capabilities.</p>
-        <div className="bf-matrix-scroll" role="region" aria-labelledby="bf-start" aria-describedby="bf-matrix-hint" tabIndex={0} data-reveal>
+        <div className="bf-matrix-scroll" role="region" aria-label="Competitor feature comparison, scrolls sideways on small screens" aria-describedby="bf-matrix-hint" tabIndex={0} data-reveal>
           <table className="bf-matrix">
             <caption className="sr-only">Six capabilities compared across five event and exhibition apps and Smart Book Fair</caption>
             <thead>
@@ -392,7 +392,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
             <li key={item.title} data-reveal style={{ transitionDelay: `${(index % 2) * 80}ms` }}>
               <span className="bf-ico" aria-hidden="true"><item.icon size={22} strokeWidth={1.6} /></span>
               <b>{num(index)}</b>
-              <h4>{item.title}</h4>
+              <h3>{item.title}</h3>
               <p>{item.text}</p>
               <p className="bf-tradeoff"><strong>Trade-off</strong> {item.tradeoff}</p>
             </li>
@@ -412,7 +412,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
           <button type="button" aria-pressed={view === 'flow'} aria-controls="bf-view-flow" onClick={() => setView('flow')} data-magnetic>User flow: booking a book signing</button>
         </div>
         <div id="bf-view-journey" hidden={view !== 'journey'}>
-        <div className="bf-jm-scroll">
+        <div className="bf-jm-scroll" role="region" aria-label="Visitor journey map, scrolls sideways on small screens" tabIndex={0}>
           <div className="bf-jm" role="table" aria-label="Visitor journey map: four stages from the QR scan to the exit">
             <div className="bf-jm-row" role="row">
               <div className="bf-jm-label" role="columnheader">Stage</div>

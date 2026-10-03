@@ -357,7 +357,7 @@ body { background: transparent; }
 .cs-stats li { padding: 28px 24px 0 0; }
 .cs-stats li + li { padding-left: 24px; border-left: 1px solid var(--line); }
 .cs-stats strong { display: block; font-family: var(--display); font-size: clamp(56px, 7vw, 120px); font-weight: 600; line-height: 0.95; letter-spacing: -0.05em; }
-.cs-stats h4 { margin-top: 16px; font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+.cs-stats h3 { margin-top: 16px; font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
 .cs-stats p { margin-top: 8px; max-width: 30ch; font-size: var(--fs-sm); color: var(--muted); }
 
 .cs-band { margin-top: clamp(96px, 12vw, 168px); background: var(--ink); color: var(--bg); }
@@ -627,7 +627,7 @@ body { background: transparent; }
 .fid-filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
 .fid-filter button { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; background: transparent; font-size: var(--fs-sm); cursor: pointer; transition: background-color 200ms var(--ease), color 200ms var(--ease), border-color 200ms var(--ease); }
 .has-cursor .fid-filter button { cursor: none; }
-.fid-filter button b { font-weight: 600; opacity: 0.55; font-variant-numeric: tabular-nums; }
+.fid-filter button b { font-weight: 600; opacity: 0.75; font-variant-numeric: tabular-nums; }
 .fid-filter button:hover { border-color: var(--ink); }
 .fid-filter button[aria-pressed='true'] { border-color: var(--ink); background: var(--ink); color: var(--bg); }
 .fid-table-wrap { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
@@ -1100,7 +1100,7 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
   .cs-stats li, .cs-stats li + li { padding: 18px 12px 18px 0; border-top: 0; border-left: 0; }
   .cs-stats li:nth-child(even) { padding-left: 12px; padding-right: 0; border-left: 1px solid var(--line); }
   .cs-stats strong { font-size: 36px; }
-  .cs-stats h4 { margin-top: 6px; font-size: 16px; }
+  .cs-stats h3 { margin-top: 6px; font-size: 16px; }
   .cs-stats p { font-size: 13px; line-height: 1.4; }
   .cs-req li { gap: 12px; padding: 14px 0; font-size: 15px; }
   .cs-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
@@ -1183,3 +1183,33 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
   .cs-dialog-close { min-width: 44px; min-height: 44px; }
 }
 .cs-stack:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+/* ---------- Project cards: say what each one is without needing hover ---------- */
+.card::after { opacity: 1; }
+.card-info { opacity: 1; translate: 0 0; }
+.card-info p { display: none; }
+@media (hover: hover) {
+  .card:hover .card-info p, .card:focus-visible .card-info p { display: -webkit-box; }
+}
+.card-type { position: absolute; top: 12px; right: 12px; z-index: 3; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; background: rgb(255 255 255 / 0.92); font-size: 12px; font-weight: 600; line-height: 1.3; color: #1c1c1a; }
+.card-type.is-concept { background: #1c1c1a; color: #f3f3f3; }
+.card-type.is-behance { background: rgb(28 28 26 / 0.72); color: #f3f3f3; }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- Preview dialog on phones: the main action stays in view ---------- */
+@media (max-width: 760px) {
+  .pv-actions { position: sticky; bottom: 0; margin-inline: -20px; margin-bottom: -26px; padding: 12px 20px calc(12px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--line); }
+}
+
+/* ---------- Fan-ID on tablets: columns instead of the phone stack ---------- */
+@media (min-width: 721px) and (max-width: 1024px) {
+  .fid-poc { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 20px; }
+  .fid-screen { padding: 16px 8px; }
+  .fid-screen .cs-zoom { height: 340px; }
+}
+@media (min-width: 640px) and (max-width: 900px) {
+  .fid-stage-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---------- Readable line length for notes ---------- */
+.cs-note { max-width: 72ch; }

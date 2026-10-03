@@ -83,7 +83,7 @@ const benchmarks = [
     title: 'FIFA World Cup, Russia',
     img: { src: 'russia-2018.webp', w: 1099, h: 853, alt: 'The 2018 FIFA World Cup Fan ID, front and back: a laminated card with a photo, personal data and a barcode' },
     about: 'The 2018 World Cup introduced the Fan ID, a mandatory laminated identification card containing personal data, a photo and an RFID barcode.',
-    source: { href: 'https://info.viselio.com/visa-vs-fan-id-apply/', label: 'info.viselio.com' },
+    source: { href: 'https://web.archive.org/web/20191017080514/https://info.viselio.com/visa-vs-fan-id-apply/', label: 'info.viselio.com (archived)' },
     learnings: [
       { label: 'One card, many services', text: 'Fans applied online with their ticket number, and the Fan ID gave visa-free entry, stadium access and free trains between host cities.' },
       { label: 'Accessibility', text: 'Efforts to serve fans with disabilities and to keep communication multilingual.' },

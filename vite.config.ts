@@ -9,7 +9,7 @@ function siteAddress() {
   const env = process.env;
   if (env.SITE_URL) return env.SITE_URL.replace(/\/+$/, '');
   // the live address; a fixed value because Vercel's own production-URL variable can still point to the old project name
-  if (env.VERCEL_ENV === 'production') return 'https://mohamedhigazy.vercel.app';
+  if (env.VERCEL_ENV === 'production') return 'https://www.mhigazy.com';
   const vercel = env.VERCEL_URL;
   if (vercel) return `https://${vercel}`;
   return 'http://127.0.0.1:4173';

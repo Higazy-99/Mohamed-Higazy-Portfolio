@@ -83,7 +83,7 @@ const toc = [
 const story = [
   { label: 'The situation', text: 'To use a film incentive in Saudi Arabia, a filmmaker moves across three platforms: Film Saudi, Daw and Abde\'a.' },
   { label: 'What I found', text: '10 usability issues in four areas. Four are High: they can stop a user from finishing a task.' },
-  { label: 'What I propose', text: 'A five-stage improved journey, six redrawn flows, a nine-tab structure, and a fix order that starts with the four High findings.' },
+  { label: 'What I propose', text: 'A five-stage improved journey, six flows with five of them redrawn, a nine-tab structure, and a fix order that starts with the four High findings.' },
 ];
 
 const goals = [
@@ -542,7 +542,7 @@ export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
           ))}
         </ol>
         <dl className="cs-facts fs-facts2" data-reveal>
-          <div><dt>The audit</dt><dd>Carried out in October 2025, as an expert review of the Film Saudi website and the connected platforms.</dd></div>
+          <div><dt>The audit</dt><dd>Carried out in November 2025, as an expert review of the Film Saudi website and the connected platforms.</dd></div>
           <div><dt>My role</dt><dd>UX Designer. I led the heuristic evaluation, rated the issues and wrote the recommendations. A Product Designer worked with me on the evaluation.</dd></div>
         </dl>
       </section>
@@ -610,7 +610,7 @@ export default function FilmSaudiCase({ onBack }: { onBack: () => void }) {
               <FlowDiagram mode="asis" />
             </ScrollFigure>
             <FlowList mode="asis" />
-            <figcaption>Six goals run in parallel from the home page. In the programme path, users without an account first create one, upload files and verify their data, then log in.</figcaption>
+            <figcaption>Six paths run in parallel from the home page. In the programme path, users without an account first create one, upload files and verify their data, then log in.</figcaption>
           </figure>
         </div>
       </section>

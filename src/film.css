@@ -1,6 +1,6 @@
 /* Film Saudi UX audit case. Uses the site design system; only the accent and the severity colours are specific to this case. */
 
-.cs.film { --accent: #173a56; --m-accent: #8fb4d6; --sev-high: #c62828; --sev-med: #d99400; --sev-low: #4a7bd6; }
+.cs.film { --accent: #173a56; --m-accent: #8fb4d6; --sev-high: #c62828; --sev-med: #d99400; --sev-low: #3562b8; }
 .film .cs-meta { grid-template-columns: repeat(4, 1fr); row-gap: 20px; }
 .film .cs-meta div:nth-child(4n + 1) { padding-left: 0; border-left: 0; }
 .film .cs-meta dd { font-size: clamp(15px, 1.2vw, 18px); }
@@ -26,7 +26,7 @@
 .fs-goals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .fs-goals li { position: relative; padding: clamp(22px, 2.4vw, 32px); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
 .fs-goal-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: color-mix(in oklab, var(--accent) 10%, var(--surface)); color: var(--accent); }
-.fs-goals b { position: absolute; top: 24px; right: 26px; font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: -0.03em; color: color-mix(in oklab, var(--ink) 25%, transparent); }
+.fs-goals b { position: absolute; top: 24px; right: 26px; font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: -0.03em; color: color-mix(in oklab, var(--ink) 62%, transparent); }
 .fs-goals h3 { margin-top: 24px; font-family: var(--display); font-size: 22px; font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; }
 .fs-goals p { margin-top: 8px; font-size: var(--fs-sm); line-height: 1.55; color: var(--muted); }
 .fs-lead-in { max-width: 62ch; margin-top: 32px; font-size: var(--fs-md); line-height: 1.6; color: var(--muted); }

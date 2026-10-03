@@ -3,13 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 import './wijha-mobile.css';
 
 /* UX concept: Wijha, a proof-of-concept dispatch engine (in progress).
-   Copy is adapted from the original write-up; sector-specific wording is generalized. */
+   Copy is adapted from the original write-up; sector-specific wording is generalised. */
 
 const BASE = '/case/wijha';
 
 const meta = [
   { label: 'Project', value: 'Wijha – Dispatch Engine UX Design' },
-  { label: 'Role', value: 'CX-UX Designer' },
+  { label: 'Role', value: 'CX / UX Designer' },
   { label: 'Sector', value: 'Service Ops' },
   { label: 'Type', value: 'UX concept · In progress' },
 ];
@@ -33,10 +33,10 @@ const problem = [
 ];
 
 const responsibilities = [
-  { title: 'Work Assignment & Routing', text: 'Registers incoming work items and routes them to the appropriate specialized team.' },
-  { title: 'Evaluating Resource Fit', text: 'Assesses specialized experience, current active workload, past performance speed, and skill match.' },
+  { title: 'Work Assignment & Routing', text: 'Registers incoming work items and routes them to the appropriate specialised team.' },
+  { title: 'Evaluating Resource Fit', text: 'Assesses specialised experience, current active workload, past performance speed, and skill match.' },
   { title: 'Exceptions & Redistribution', text: 'Coordinates overrides due to sudden unavailability, leaves of absence, or potential conflicts of interest.' },
-  { title: 'Monitoring Availability', text: 'Tracks active leaves, specialized training schedules, temporary transfers, and current field presence.' },
+  { title: 'Monitoring Availability', text: 'Tracks active leaves, specialised training schedules, temporary transfers, and current field presence.' },
 ];
 
 const pains = [
@@ -52,17 +52,17 @@ const workflow = [
 ];
 
 const stats = [
-  { value: '116', title: 'Locations nationwide', text: 'Branches spread across 116 regions and locations, each with varying specialization levels.' },
+  { value: '116', title: 'Locations nationwide', text: 'Branches spread across 116 regions and locations, each with varying specialisation levels.' },
   { value: '80%', title: 'Core work type', text: 'Most of the distribution workload is tied to one work type, which defined the scope of the first phase.' },
-  { value: '0', title: 'Unified mechanisms', text: 'No standardized distribution rules existed. Every assignment relied entirely on personal judgement.' },
+  { value: '0', title: 'Unified mechanisms', text: 'No standardised distribution rules existed. Every assignment relied entirely on personal judgement.' },
   { value: '18×', title: 'Duration variance', text: 'The gap between the shortest and longest work item is 18-fold, making workload prediction nearly impossible without a system.' },
 ];
 
 const demonstrates = [
-  { title: 'Document the decision', text: 'Every assignment carries a reason. The concept proves the interface can capture accountability without slowing down the supervisor.' },
+  { title: 'Document the decision', text: 'Every assignment carries a reason. The concept shows how the interface can capture accountability without slowing down the supervisor.' },
   { title: 'Make evaluation visible', text: 'Who was considered, who was excluded, and why, all visible in a single screen. No hidden logic.' },
   { title: 'Configure the rules', text: 'Eligibility criteria, ranking weights, and dispatch modes live in one screen that operations leads can tune without engineering.' },
-  { title: 'Keep human control', text: 'The system recommends. The supervisor decides. The record captures both, proving the interface supports trust, not blind automation.' },
+  { title: 'Keep human control', text: 'The system recommends. The supervisor decides. The record captures both, so the interface supports trust, not blind automation.' },
 ];
 
 const requirements: { icon: LucideIcon; text: string }[] = [
@@ -80,7 +80,7 @@ const stages = [
   { title: 'Align with Product', text: 'Aligned directly with the product team to understand the concept, scope, and intended role of Wijha before shaping the UX direction.' },
   { title: 'Explicit decision logic', text: 'Reviewed stakeholder questions and operational context to clarify the assignment problem and identify what the experience needed to make explicit.' },
   { title: 'AI-Assisted Exploration', text: 'Used AI-assisted tools to rapidly explore early structures, interaction directions, and alternative ways to represent the dispatch concept.' },
-  { title: 'Shape the Initial Concept', text: 'Synthesized the explored directions into a preliminary UX concept, expressed through four POC screens rather than a final production design.' },
+  { title: 'Shape the Initial Concept', text: 'Synthesised the explored directions into a preliminary UX concept, expressed through four POC screens rather than a final production design.' },
 ];
 
 const decisions: { icon: LucideIcon; title: string; text: string }[] = [
@@ -97,7 +97,7 @@ const stack = [
   { title: 'Apply eligibility', text: 'Determine eligibility criteria' },
   { title: 'Rank candidates', text: 'Evaluate and rank available resources' },
   { title: 'Assignment method', text: 'Auto-Assign or Recommend', accent: true },
-  { title: 'Assign', text: 'Finalize the assignment' },
+  { title: 'Assign', text: 'Finalise the assignment' },
   { title: 'Record decision', text: 'Log the assignment outcome' },
   { title: 'Return result', text: 'Output the final assignment result' },
 ];
@@ -120,11 +120,11 @@ const screens: Screen[] = [
   {
     id: 'layers',
     title: 'Layer Configuration',
-    subtitle: 'Where judgment becomes configuration.',
+    subtitle: 'Where judgement becomes configuration.',
     src: `${BASE}/layer-configuration.webp`, w: 1800, h: 1554,
     alt: 'Wijha dispatch rules and layer configuration: eligibility rules, ranking weights, dispatch mode and decision layers',
     points: [
-      { title: 'Mandatory gates are locked, not just labeled', text: "Conflict-of-interest exclusion isn't a toggle anyone can quietly switch off." },
+      { title: 'Mandatory gates are locked, not just labelled', text: "Conflict-of-interest exclusion isn't a toggle anyone can quietly switch off." },
       { title: 'Preview before save', text: 'A rule change previews its effect before it touches a single live work item.' },
       { title: 'One screen, not a settings maze', text: "Eligibility, ranking, and dispatch mode live together because they're one decision, not three." },
     ],
@@ -167,7 +167,7 @@ const flowNodes: FlowNode[] = [
   { x: 754, y: 138, w: 112, h: 104, title: ['Assignment', 'method'], desc: [], tone: 'hex' },
   { x: 900, y: 46, w: 112, h: 88, title: ['Auto-Assign'], desc: ['System automatically', 'allocates the work'] },
   { x: 900, y: 246, w: 112, h: 88, title: ['Recommend'], desc: ['System provides', 'recommendations'] },
-  { x: 1046, y: 142, w: 112, h: 96, title: ['Assign'], desc: ['Finalize the', 'assignment'] },
+  { x: 1046, y: 142, w: 112, h: 96, title: ['Assign'], desc: ['Finalise the', 'assignment'] },
   { x: 1192, y: 142, w: 112, h: 96, title: ['Record', 'decision'], desc: ['Log the', 'assignment outcome'] },
   { x: 1338, y: 142, w: 112, h: 96, title: ['Return', 'result'], desc: ['Output the final', 'assignment result'], tone: 'end' },
 ];
@@ -377,16 +377,15 @@ export default function CaseStudy({ onBack }: { onBack: () => void }) {
         <header className="section-head" data-reveal>
           <span className="eyebrow">03 · Scale of the challenge</span>
           <h2 id="cs-scale">Why this problem demanded a system, <em>not a workaround</em></h2>
-          <p>The numbers behind the manual distribution process that this concept was designed to replace.</p>
+          <p>The manual distribution process that this concept was designed to replace. The figures are approximate and reflect the project context.</p>
         </header>
         <ul className="cs-stats">
           {stats.map((item, index) => (
             <li key={item.title} data-reveal style={{ transitionDelay: `${index * 80}ms` }}>
-              <strong>{item.value}</strong><h4>{item.title}</h4><p>{item.text}</p>
+              <strong>{item.value}</strong><h3>{item.title}</h3><p>{item.text}</p>
             </li>
           ))}
         </ul>
-        <p className="cs-note" data-reveal>Figures reflect the project context and are illustrative.</p>
       </section>
 
       {/* ---- Demonstrates (inverted band) ---- */}
@@ -462,7 +461,7 @@ export default function CaseStudy({ onBack }: { onBack: () => void }) {
           <h2 id="cs-stack">Wijha had to fit the existing operational stack, <em>not compete with it</em></h2>
           <p>The end-to-end flow, from the moment a work item arrives to the moment the result returns to the client system.</p>
         </header>
-        <div className="cs-flow" data-reveal><FlowDiagram /></div>
+        <div className="cs-flow" data-reveal tabIndex={0} role="region" aria-label="User flow diagram, scrolls sideways"><FlowDiagram /></div>
         <ol className="cs-stack" data-reveal tabIndex={0} aria-label="How Wijha routes a work item, scrolls sideways">
           {stack.map((item, index) => (
             <li key={item.title} className={item.accent ? 'is-accent' : undefined}>
@@ -521,7 +520,7 @@ export default function CaseStudy({ onBack }: { onBack: () => void }) {
           <button type="button" className="btn btn-solid" onClick={onBack} data-magnetic><ArrowLeft size={16} strokeWidth={1.6} aria-hidden="true" /> Back to portfolio</button>
           <a className="btn btn-line" href="#contact" data-magnetic>Let's talk <ArrowUpRight size={16} strokeWidth={1.6} aria-hidden="true" /></a>
         </div>
-        <p className="cs-disclaimer">A proof-of-concept, still in progress. Names and sector-specific details are generalized, and the persona is fictional.</p>
+        <p className="cs-disclaimer">A proof of concept, still in progress. Names and sector-specific details are generalised, and the persona is fictional.</p>
       </section>
     </article>
   );

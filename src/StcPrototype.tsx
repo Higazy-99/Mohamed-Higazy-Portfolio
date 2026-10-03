@@ -156,7 +156,13 @@ function Stage({ tab, screenId, nextScreen, onGo }: { tab: Tab; screenId: string
             style={{ left: `${(spot.x / screen.cw) * 100}%`, top: `${(spot.y / screen.ch) * 100}%`, width: `${(spot.w / screen.cw) * 100}%`, height: `${(spot.h / screen.ch) * 100}%` }}
             aria-label={spot.label}
             aria-disabled={!spot.to}
-            onClick={() => spot.to && onGo(spot.to)}
+            onClick={(event) => {
+              if (!spot.to) return;
+              // the hotspot disappears with its screen: keep focus inside the prototype instead of dropping it to <body>
+              const stage = event.currentTarget.closest<HTMLElement>('.stc-stage');
+              onGo(spot.to);
+              window.requestAnimationFrame(() => (stage?.querySelector<HTMLElement>('.stc-spot.is-next') ?? stage)?.focus({ preventScroll: true }));
+            }}
             data-cursor="view"
           />
         );

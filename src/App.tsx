@@ -55,7 +55,7 @@ const services = [
   { title: 'UX Research', text: 'Interviews, surveys, field studies and usability testing that turn assumptions into evidence.' },
   { title: 'Journey Mapping & Personas', text: 'Journey maps, personas and user flows that keep product teams and stakeholders aligned.' },
   { title: 'Service Design', text: 'Service blueprints that connect what users see with the people, systems and policies behind it.' },
-  { title: 'UX Audits', text: 'Structured reviews of live products, with usability gaps and prioritized recommendations.' },
+  { title: 'UX Audits', text: 'Structured reviews of live products, with usability gaps and prioritised recommendations.' },
   { title: 'UI & Prototyping', text: 'Wireframes, interfaces and interactive prototypes in Figma for web and mobile.' },
 ];
 
@@ -63,7 +63,7 @@ const steps = [
   { title: 'Research', subtitle: 'Understand people', accent: '#274a5c', text: 'Interviews, surveys, analytics and stakeholder input, to understand the people and the context around them.', tags: ['Interviews', 'Surveys', 'Analytics'] },
   { title: 'Define', subtitle: 'Frame the problem', accent: '#b8492f', text: 'Personas, journey maps, service blueprints and UX specifications that fix scope, assumptions and constraints.', tags: ['Personas', 'Journey maps', 'Blueprints'] },
   { title: 'Design', subtitle: 'Shape the flows', accent: '#55643a', text: 'User flows, information architecture, wireframes and prototypes, reviewed with product and engineering.', tags: ['User flows', 'Wireframes', 'Prototypes'] },
-  { title: 'Validate', subtitle: 'Test and refine', accent: '#4b3a55', text: 'Usability tests and audits, then prioritized recommendations that feed the next iteration.', tags: ['Usability tests', 'UX audits', 'Recommendations'] },
+  { title: 'Validate', subtitle: 'Test and refine', accent: '#4b3a55', text: 'Usability tests and audits, then prioritised recommendations that feed the next iteration.', tags: ['Usability tests', 'UX audits', 'Recommendations'] },
 ];
 
 const principles = [
@@ -180,6 +180,13 @@ function GazeCanvas({ onReady }: { onReady: (ready: boolean) => void }) {
       render();
       setReady(true);
       onReady(true);
+    };
+
+    // the 64 gaze frames (about 3 MB) are only fetched once the visitor actually moves the pointer
+    let framesRequested = false;
+    const loadFrames = async () => {
+      if (framesRequested) return;
+      framesRequested = true;
       const sources = Array.from({ length: FRAME_COUNT }, (_, index) => `/frames/frame-${String(index).padStart(2, '0')}.webp`);
       const loaded = await Promise.all(sources.map((source) => loadImage(source).catch(() => null)));
       if (!active) return;
@@ -236,6 +243,7 @@ function GazeCanvas({ onReady }: { onReady: (ready: boolean) => void }) {
     const onPointerMove = (event: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
       pointerRef.current = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      void loadFrames();
     };
     const onPointerLeave = () => {
       pointerRef.current = null;
@@ -677,6 +685,8 @@ function useRoute(initialPath?: string) {
     current.current = to.replace(/\/$/, '') || '/';
     setPath(to.replace(/\/$/, '') || '/');
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    // keyboard and screen-reader users land on the new page, not on <body>
+    window.requestAnimationFrame(() => document.getElementById('main')?.focus({ preventScroll: true }));
   };
   return [path, navigate] as const;
 }
@@ -687,6 +697,8 @@ type Preview = { facts?: string[][]; numbers?: string[][]; cta?: string; problem
 
 function ProjectCard({ project, index, onPreview }: { project: Project; index: number; onPreview: (project: Project, opener: HTMLElement) => void }) {
   const internal = project.url.startsWith('/');
+  // what the card leads to, said on the card itself
+  const kind = !internal ? 'Behance' : project.category.startsWith('UX Concept') ? 'Concept' : 'Case study';
   return (
     <li data-reveal style={{ transitionDelay: `${(index % 3) * 80}ms` }}>
       <a
@@ -702,10 +714,11 @@ function ProjectCard({ project, index, onPreview }: { project: Project; index: n
         data-cursor="view"
         data-spot
         aria-haspopup="dialog"
-        aria-label={`${project.title}, ${project.category}. Opens a short preview`}
+        aria-label={`${project.title}, ${project.category}. ${kind}. Opens a short preview`}
       >
         <img src={project.cover} alt="" loading="lazy" referrerPolicy="no-referrer" style={project.position ? { objectPosition: project.position } : undefined} />
         <span className="card-no">{String(index + 1).padStart(2, '0')}</span>
+        <span className={`card-type is-${kind.toLowerCase().replace(' ', '-')}`}>{kind}{!internal && <ArrowUpRight size={12} strokeWidth={2} aria-hidden="true" />}</span>
         <div className="card-info">
           <span className="card-category">{project.category}</span>
           <h3>{project.title}</h3>
@@ -854,17 +867,17 @@ function App({ initialPath }: { initialPath?: string } = {}) {
       </header>
 
       {isCase ? (
-        <main id="main">
+        <main id="main" tabIndex={-1}>
           {isFanId ? <FanIdCase onBack={goWork} /> : isFilm ? <FilmSaudiCase onBack={goWork} /> : isStc ? <StcInspectorCase onBack={goWork} /> : <CaseStudy onBack={goWork} />}
         </main>
       ) : (
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <div className="portfolio-shell">
           <DitherSpotlight className="hero-dither" radius={230} dotScale={5} intensity={0.6} />
           <CharacterCanvas />
           <a className="wordmark" href="#top" aria-label="Mohamed Higazy, home"><span className="sr-only">H</span><HMark />IGAZY<span>.</span></a>
 
-          <section className="hero" id="top" aria-labelledby="hero-title">
+          <section className="hero" aria-labelledby="hero-title">
             <div className="hero-kicker"><i /> CX / UX Designer · Giza, Egypt</div>
             <h1 id="hero-title">Mohamed<br /><em>Higazy</em></h1>
             <p className="hero-note">I design digital products and services that are clear, useful and easy to use.</p>
@@ -909,12 +922,12 @@ function App({ initialPath }: { initialPath?: string } = {}) {
         <section className="section" id="about" aria-labelledby="about-title">
           <header className="section-head" data-reveal>
             <span className="eyebrow">02 / 07 · About</span>
-            <h2 id="about-title">Human-centered design, <em>grounded in research</em></h2>
+            <h2 id="about-title">Human-centred design, <em>grounded in research</em></h2>
           </header>
 
           <div className="about-grid">
             <p className="about-lead" data-reveal>
-              CX / UX Designer with {YEARS}+ years of experience designing <em>user-centered digital products and services</em>, from first research to final interface.
+              CX / UX Designer with {YEARS}+ years of experience designing <em>user-centred digital products and services</em>, from first research to final interface.
             </p>
             <div className="about-side" data-reveal>
               <p>I turn complex requirements into clear journeys, service blueprints and interfaces, working closely with product managers, developers and stakeholders.</p>
@@ -928,7 +941,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
           <ul className="stats" data-reveal>
             <li><CountUp value={YEARS} suffix="+" /><span className="stat-label">Years of experience</span></li>
             <li><CountUp value={projects.length} /><span className="stat-label">Case studies &amp; showcases</span></li>
-            <li><CountUp value={clients.length} /><span className="stat-label">Organizations worked with</span></li>
+            <li><CountUp value={clients.length} /><span className="stat-label">Organisations worked with</span></li>
           </ul>
         </section>
 
@@ -1040,7 +1053,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
 
           <div className="footer-cols">
             <div className="footer-about">
-              <a className="wordmark" href="#top" aria-label="Back to top"><span className="sr-only">H</span><HMark />IGAZY<span>.</span></a>
+              <a className="wordmark" href="#top" aria-label="Higazy, back to top"><span className="sr-only">H</span><HMark />IGAZY<span>.</span></a>
               <p>Based in Giza, Egypt. Tell me what needs to work better.</p>
             </div>
             <nav aria-label="Footer navigation">

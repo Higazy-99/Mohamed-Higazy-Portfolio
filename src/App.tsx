@@ -16,11 +16,10 @@ import BookFairCase from './BookFairCase';
 // styles.css is also imported by main.tsx; importing it here fixes the order so that home-a11y.css always comes after it
 import './styles.css';
 import './home-a11y.css';
+import { EYES, FRAME_COUNT, frameForAngle, gazeOfFrame } from './gaze';
 
-const FRAME_COUNT = 64;
 const TAU = Math.PI * 2;
 const FOLLOW_FACTOR = 0.26;
-const FACE_Y = 0.355;
 
 const EMAIL = 'eng.mohamedhigazy@gmail.com';
 const LINKEDIN = 'https://www.linkedin.com/in/mohamedhigazy91/';
@@ -163,6 +162,7 @@ function CharacterCanvas() {
 function GazeCanvas({ onReady }: { onReady: (ready: boolean) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef<Point | null>(null);
+  const debugRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -221,9 +221,11 @@ function GazeCanvas({ onReady }: { onReady: (ready: boolean) => void }) {
         raf = requestAnimationFrame(render);
         return;
       }
-      const face = { x: rect.width * 0.5, y: rect.height * FACE_Y };
+      // the gaze starts at the eyes in the picture, not at the middle of the canvas
+      const face = { x: rect.width * EYES.x, y: rect.height * EYES.y };
       const pointer = pointerRef.current;
       let image: HTMLImageElement;
+      let chosen = -1;
       if (!pointer) {
         image = centerImage;
       } else {
@@ -236,8 +238,16 @@ function GazeCanvas({ onReady }: { onReady: (ready: boolean) => void }) {
           // Source index 0 is the right-facing pose and proceeds clockwise on screen.
           const target = Math.atan2(dy, dx);
           angle = lerpAngle(angle, target, FOLLOW_FACTOR);
-          image = images[Math.round((normalizedAngle(angle) / TAU) * FRAME_COUNT) % FRAME_COUNT] ?? centerImage;
+          chosen = frameForAngle((normalizedAngle(angle) * 180) / Math.PI);
+          image = images[chosen] ?? centerImage;
         }
+      }
+      if (import.meta.env.DEV && debugRef.current) {
+        const px = pointer ? Math.round(pointer.x + rect.left) : null;
+        const py = pointer ? Math.round(pointer.y + rect.top) : null;
+        const col = px === null ? '-' : ['left', 'centre', 'right'][Math.min(2, Math.floor((px / window.innerWidth) * 3))];
+        const row = py === null ? '-' : ['top', 'middle', 'bottom'][Math.min(2, Math.max(0, Math.floor((py / window.innerHeight) * 3)))];
+        debugRef.current.textContent = `pointer ${px},${py} | zone ${row}-${col} | angle ${Math.round((normalizedAngle(angle) * 180) / Math.PI)} | frame ${chosen < 0 ? 'center' : `${String(chosen).padStart(2, '0')} (looks ${Math.round(gazeOfFrame(chosen))})`}`;
       }
       drawFrame(image, rect);
       raf = requestAnimationFrame(render);
@@ -271,7 +281,12 @@ function GazeCanvas({ onReady }: { onReady: (ready: boolean) => void }) {
     };
   }, [onReady]);
 
-  return <canvas ref={canvasRef} className={`character-canvas character-live${ready ? ' is-ready' : ''}`} aria-hidden="true" />;
+  return (
+    <>
+      <canvas ref={canvasRef} className={`character-canvas character-live${ready ? ' is-ready' : ''}`} aria-hidden="true" />
+      {import.meta.env.DEV && <div ref={debugRef} aria-hidden="true" style={{ position: 'fixed', left: 8, bottom: 8, zIndex: 9999, padding: '4px 8px', background: 'rgba(0,0,0,0.78)', color: '#fff', font: '12px/1.4 monospace', pointerEvents: 'none' }} />}
+    </>
+  );
 }
 
 /* ---------- Custom magnetic cursor (fine pointers only) ---------- */
@@ -878,7 +893,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
       ) : (
       <main id="main" tabIndex={-1}>
         <div className="portfolio-shell">
-          <DitherSpotlight className="hero-dither" radius={230} dotScale={5} intensity={0.6} />
+          <DitherSpotlight className="hero-dither" radius={230} dotScale={5} intensity={0.6} keepClear=".portfolio-shell .wordmark, .hero-kicker, .hero h1, .hero-note, .hero-actions a, .hero-footer span, .hero-footer a, .portrait-caption" />
           <CharacterCanvas />
           <a className="wordmark" href="#top" aria-label="Mohamed Higazy, home"><span className="sr-only">H</span><HMark />IGAZY<span>.</span></a>
 

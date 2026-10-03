@@ -111,6 +111,10 @@ function createProgram(gl: WebGL2RenderingContext) {
     uniform float u_dotScale;
     uniform float u_intensity;
     uniform float u_active;
+    uniform vec4 u_keep[12];
+    uniform int u_keepCount;
+    uniform float u_keepFloor;
+    uniform float u_keepSoft;
 
     out vec4 outColor;
 
@@ -145,6 +149,16 @@ function createProgram(gl: WebGL2RenderingContext) {
       vec2 p = gl_FragCoord.xy;
       float distToPointer = distance(p, u_pointer);
       float light = (1.0 - smoothstep(u_radius * u_softness, u_radius, distToPointer)) * u_active;
+
+      // keep text readable: the halo fades to u_keepFloor on top of each protected box and back to full strength u_keepSoft px away
+      float keep = 1.0;
+      for (int i = 0; i < 12; i++) {
+        if (i >= u_keepCount) break;
+        vec4 box = u_keep[i];
+        vec2 gap = max(max(box.xy - p, vec2(0.0)), p - box.zw);
+        keep = min(keep, mix(u_keepFloor, 1.0, smoothstep(0.0, u_keepSoft, length(gap))));
+      }
+      light *= keep;
 
       vec2 cell = floor(p / u_dotScale);
       vec2 local = fract(p / u_dotScale) - 0.5;
@@ -186,6 +200,12 @@ export interface DitherSpotlightProps {
   dotScale?: number;
   intensity?: number;
   followSpeed?: number;
+  /** CSS selector of text that must stay readable: the halo fades out as the pointer comes close to any of it. */
+  keepClear?: string;
+  /** Distance in px from an element at which the fade starts. */
+  keepClearDistance?: number;
+  /** Strength the halo fades to on top of the text (0 to 1). */
+  keepClearFloor?: number;
   style?: React.CSSProperties;
   className?: string;
   children?: React.ReactNode;
@@ -202,6 +222,9 @@ export function DitherSpotlight({
   dotScale = 5,
   intensity = 0.92,
   followSpeed = 0.14,
+  keepClear,
+  keepClearDistance = 80,
+  keepClearFloor = 0.15,
   style,
   className,
   children,
@@ -272,6 +295,10 @@ export function DitherSpotlight({
       dotScale: context.getUniformLocation(program, 'u_dotScale'),
       intensity: context.getUniformLocation(program, 'u_intensity'),
       active: context.getUniformLocation(program, 'u_active'),
+      keep: context.getUniformLocation(program, 'u_keep'),
+      keepCount: context.getUniformLocation(program, 'u_keepCount'),
+      keepFloor: context.getUniformLocation(program, 'u_keepFloor'),
+      keepSoft: context.getUniformLocation(program, 'u_keepSoft'),
     };
 
     const ink = parseRgb(inkRgb);
@@ -280,6 +307,8 @@ export function DitherSpotlight({
     if (still) activeRef.current = 0;
     let rafId = 0;
     const start = performance.now();
+    // text the halo must not drown: found once, measured on every frame while the pointer is over the hero
+    const protectedNodes = keepClear ? Array.from(document.querySelectorAll(keepClear)) : [];
 
     function resize() {
       const rect = canvas.getBoundingClientRect();
@@ -301,6 +330,18 @@ export function DitherSpotlight({
       const targetActive = hasPointerRef.current ? 1 : 0;
       activeRef.current = still ? 0 : activeRef.current + (targetActive - activeRef.current) * followSpeed;
 
+      // boxes of the text to keep clear, in canvas pixels with the origin at the bottom left (like gl_FragCoord)
+      const wrapperBox = canvas.getBoundingClientRect();
+      const boxes = new Float32Array(48);
+      let count = 0;
+      for (const node of protectedNodes) {
+        if (count === 12) break;
+        const box = node.getBoundingClientRect();
+        if (box.width === 0 && box.height === 0) continue;
+        boxes.set([(box.left - wrapperBox.left) * dpr, (wrapperBox.bottom - box.bottom) * dpr, (box.right - wrapperBox.left) * dpr, (wrapperBox.bottom - box.top) * dpr], count * 4);
+        count += 1;
+      }
+
       context.useProgram(program);
       context.uniform2f(uniforms.resolution, canvas.width, canvas.height);
       context.uniform2f(uniforms.pointer, pointerRef.current.x * dpr, pointerRef.current.y * dpr);
@@ -312,6 +353,10 @@ export function DitherSpotlight({
       context.uniform1f(uniforms.dotScale, Math.max(2, dotScale * dpr));
       context.uniform1f(uniforms.intensity, intensity);
       context.uniform1f(uniforms.active, activeRef.current);
+      context.uniform4fv(uniforms.keep, boxes);
+      context.uniform1i(uniforms.keepCount, count);
+      context.uniform1f(uniforms.keepFloor, keepClearFloor);
+      context.uniform1f(uniforms.keepSoft, keepClearDistance * dpr);
       context.drawArrays(context.TRIANGLES, 0, 6);
     }
 
@@ -341,7 +386,7 @@ export function DitherSpotlight({
       visibility.disconnect();
       context.deleteProgram(program);
     };
-  }, [backgroundRgb, dotScale, followSpeed, inkRgb, intensity, live, radius, softness]);
+  }, [backgroundRgb, dotScale, followSpeed, inkRgb, intensity, keepClear, keepClearDistance, keepClearFloor, live, radius, softness]);
 
   return (
     <div ref={wrapperRef} className={['dither', className].filter(Boolean).join(' ')} style={style}>

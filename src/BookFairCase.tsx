@@ -79,7 +79,7 @@ const assumptions = [
 
 const decisions = [
   { icon: QrCode, title: 'One QR as the backbone', text: 'The QR code is the app login and the start of the journey.', tradeoff: 'It depends on a phone, so the QR also works offline and as a printout.' },
-  { icon: CalendarCheck, title: 'Timed signing slots instead of a physical queue', text: 'The visitor gets a time, not a place in a line.', tradeoff: 'No-shows. A slot is released after 10 minutes to a short standby list.' },
+  { icon: CalendarCheck, title: 'Timed signing slots instead of a physical queue', text: 'The visitor gets a time slot, not a place in a long line.', tradeoff: 'No-shows. A slot is released after 10 minutes to a short standby list.' },
   { icon: MapPin, title: 'A 2D live map first, AR on top', text: 'The live map is the base for wayfinding and crowd alerts.', tradeoff: 'Indoor positioning needs beacons and venue setup, so AR is a later layer, not the base.' },
   { icon: Gift, title: 'Rewards as a crowd-control lever, not just a game', text: 'Organisers can attach a reward to a quieter area.', tradeoff: 'A reward can pull people into one place, so rewards need caps (see Risks).' },
 ];
@@ -133,7 +133,7 @@ const shots = {
   ar: { src: 'vr-navigation.webp', w: 900, h: 1949, alt: 'App screen: a camera view of the fair hall with an arrow path on the floor, a "turn left, 50 m" instruction, and a label for the Egyptian pavilion marked as a crowded area (phase 3 concept)' },
   home: { src: 'home.webp', w: 900, h: 2422, alt: 'App home screen: a greeting, a search field, the competitions rating with a points total, browsing by country with flags, and the top picks of books, above a bottom navigation bar' },
   request: { src: 'signing-request.webp', w: 900, h: 1948, alt: "App screen: an author's page with her portrait, name, a 4.5 out of 5 rating, an About the author text, and two buttons, Request signing and Share" },
-  checkin: { src: 'signing-checkin.webp', w: 900, h: 1948, alt: "App screen: an author's page with his portrait, name, a 4.5 out of 5 rating, a 03:47 countdown to the visitor's slot, 14 people ahead in the same slot, an About the author text, and two buttons, Check in and Cancel request" },
+  checkin: { src: 'signing-checkin.webp', w: 900, h: 1948, alt: "App screen: an author's page with his portrait, name, a 4.5 out of 5 rating, a 03:47 countdown to the visitor's slot, the number 14 beside an Arabic label meaning 'ahead of you', an About the author text, and two buttons, Check in and Cancel request" },
   survey: { src: 'survey.webp', w: 900, h: 1948, alt: 'App screen, exit survey: a star rating for the events, a three-option question on how easy it was to move around the fair, a three-option question on satisfaction with the digital tools, a short optional note, a banner about extra points for completing the survey, and a Send rating button' },
   map: { src: 'crowd-map.webp', w: 900, h: 2050, alt: 'App screen: a map of the fair with country pavilions shown as flags, and a highlighted route from the current position to a destination' },
 };
@@ -183,16 +183,16 @@ const flowPhases: { phase: string; steps: { icon: LucideIcon; title: string; tex
 ];
 
 const compact = [
-  { id: 'book', icon: PenLine, title: 'Book signing', solves: 'Solves problem 02 · Crowding and queues', shots: ['request', 'checkin'] as const, text: 'Visitors book a timed slot at a book signing in the app and receive a digital ticket. They are reminded before the slot, and check in on arrival. A slot that is not claimed is released after 10 minutes to a short standby list.', visitor: 'No standing in a queue for a favourite author', organiser: 'Capacity set per signing, with real data on expected attendance', kpi: 'Average wait at book signings', note: "In the concept, each signing slot is a 15-minute window shared by a small group of up to 20 visitors. On the check-in screen, the countdown is the time left until the visitor's slot opens, and the figure beside it is their place in that group's check-in order." },
+  { id: 'book', icon: PenLine, title: 'Book signing', solves: 'Solves problem 02 · Crowding and queues', shots: ['request', 'checkin'] as const, text: 'Visitors book a timed slot at a book signing in the app and receive a digital ticket. They are reminded before the slot, and check in on arrival. A slot that is not claimed is released after 10 minutes to a short standby list.', visitor: 'No long queue: a short, ordered check-in within a slot', organiser: 'Capacity set per signing, with real data on expected attendance', kpi: 'Average wait at book signings', note: "In the concept, each signing slot is a 15-minute window shared by a small group of up to 20 visitors. On the check-in screen, the countdown is the time left until the visitor's slot opens, and the figure beside it is their place in that group's check-in order." },
   { id: 'crowd', icon: Users, title: 'Crowd management', solves: 'Solves problem 02 · Crowding and queues', shots: ['map'] as const, text: 'The live map shows crowd density in real time. When an area is congested, the app alerts visitors and suggests a quieter route or a less crowded event nearby.', visitor: 'Avoids congestion, decides faster', organiser: 'Better crowd flow, fewer bottlenecks', kpi: 'Share of visitors who follow a reroute alert' },
-  { id: 'survey', icon: MessageSquareText, title: 'Micro-ratings and exit survey', solves: 'Solves problem 04 · Limited data for organisers', shots: ['survey'] as const, text: 'Two light touches, not one long form: a one-tap micro-rating after an event, never after every stand, and one short survey at the exit. Both feed the dashboard in real time, so organisers can adjust timings or locations.', visitor: 'Their voice is heard in a few taps', organiser: 'Decisions based on real ratings', kpi: 'Survey completion rate', note: 'Exit survey screen drawn for this case study in the visual style of the app.' },
+  { id: 'survey', icon: MessageSquareText, title: 'Micro-ratings and exit survey', solves: 'Solves problem 04 · Limited data for organisers', shots: ['survey'] as const, text: 'Two light touches, not one long form: a one-tap micro-rating after an event, never after every stand, and one short survey at the exit. Both feed the dashboard in real time, so organisers can adjust timings or locations.', visitor: 'Their voice is heard in a few taps', organiser: 'Decisions based on real ratings', kpi: 'Survey completion rate', badge: 'Phase 2', note: 'Exit survey screen drawn for this case study in the visual style of the app.' },
 ];
 
 const dashboard = [
   { title: 'Live monitoring of attendance and congestion', feeds: 'Fed by features 01 and 04', lead: 'A live map of the site that shows:', items: ['The number of visitors in each area.', 'Traffic-light signals for congestion.', 'The option to send alerts to visitors, to spread them across less crowded areas.'] },
   { title: 'Following ticket and event bookings', feeds: 'Fed by feature 03', items: ['The number of tickets booked, and daily tickets.', 'An updated events schedule, with the attendance rate for each event.', 'Notifications when bookings are full, or when expected attendance is low.'] },
-  { title: 'Managing the rewards system', feeds: 'Fed by feature 02', items: ['The number of participants in the digital challenges.', 'Control over starting new challenges, or closing challenges when needed.'] },
-  { title: 'Managing ratings and surveys', feeds: 'Fed by feature 05', items: ['A board that shows micro-ratings and exit-survey results and classifies them (general satisfaction, suggestions, complaints).', 'Alerts about immediate negative ratings.', 'Filtering results by date or by type of event.'] },
+  { title: 'Managing the rewards system', feeds: 'Fed by feature 02 (phase 2)', items: ['The number of participants in the digital challenges.', 'Control over starting new challenges, or closing challenges when needed.'] },
+  { title: 'Managing ratings and surveys', feeds: 'Fed by feature 05 (phase 2)', items: ['A board that shows micro-ratings and exit-survey results and classifies them (general satisfaction, suggestions, complaints).', 'Alerts about immediate negative ratings.', 'Filtering results by date or by type of event.'] },
   { title: 'Statistics and analytics', feeds: 'Fed by all five features', items: ['Total number of visitors by day and by hour.', 'The areas of highest activity inside the fair.', 'The average time a visitor stays inside the fair.', 'The rate of visitor participation in events and challenges.'] },
   { title: 'Sending notifications and alerts to visitors', feeds: 'Fed by features 03 and 04', lead: 'A panel for sending instant alerts to all visitors or to a specific group:', items: ['A change in the location of an event.', 'An alert about congestion.', 'A notice that an event or a signing is starting.'] },
 ];
@@ -201,7 +201,7 @@ const risks = [
   { title: 'Privacy', text: 'Movement tracking needs explicit consent and anonymised, aggregated data, in line with Saudi data-protection law.' },
   { title: 'No smartphone or a dead battery', text: 'Printed QR codes, kiosks and staffed help points.' },
   { title: 'Network load in a full hall', text: 'Offline tickets and cached maps.' },
-  { title: 'Indoor positioning accuracy', text: 'GPS does not work reliably indoors, and both the live crowd map and AR wayfinding depend on knowing where visitors are. Use BLE beacons or Wi-Fi positioning, validated in one hall before scaling. This is why AR wayfinding is held for phase 3.' },
+  { title: 'Indoor positioning accuracy', text: 'GPS does not work reliably indoors, and both the live crowd map and AR wayfinding depend on knowing where visitors are. A crowd map only has to show how busy an area is, while AR needs much finer accuracy. Use BLE beacons or Wi-Fi positioning, validated in one hall before scaling. This is why AR wayfinding is held for phase 3.' },
   { title: 'Gamification side effects', text: 'Challenges can create new crowds and points can be gamed, so challenges are spread across zones and capped.' },
   { title: 'Survey fatigue and incentive bias', text: 'Points for ratings can inflate scores, so points reward completing a rating, never the score given; micro-ratings are limited to one per event; and the exit survey is the only longer form.' },
   { title: 'Accessibility', text: 'Step-free routes on the map, screen-reader support, Arabic and English.' },
@@ -215,8 +215,8 @@ const measures = [
 ];
 
 const phases = [
-  { title: 'Phase 1', text: 'QR ticket, book signing, live 2D map with crowd alerts, core dashboard.' },
-  { title: 'Phase 2', text: 'Rewards system (points, challenges and rewards) and micro-ratings.' },
+  { title: 'Phase 1', text: 'QR ticket, book signing, live 2D map with crowd alerts, and the core dashboard (modules 01, 02, 05 and 06).' },
+  { title: 'Phase 2', text: 'Rewards system (points, challenges and rewards) and micro-ratings, with dashboard modules 03 and 04.' },
   { title: 'Phase 3', text: 'AR wayfinding, leaderboards, personalised suggestions.' },
 ];
 
@@ -243,12 +243,12 @@ function Value({ visitor, organiser, kpi }: { visitor: string; organiser: string
   );
 }
 
-function FeatureHead({ index, id, title, lead, solves, badge }: { index: number; id: string; title: string; lead: string; solves: string; badge?: string }) {
+function FeatureHead({ index, id, title, lead, solves, badge, onDark }: { index: number; id: string; title: string; lead: string; solves: string; badge?: string; onDark?: boolean }) {
   return (
     <header className="bf-fhead">
       <span>Feature {num(index)}</span>
       <h3 id={id}>{title}</h3>
-      {badge && <ol className="bf-chips" aria-label="Arrives in"><li>{badge}</li></ol>}
+      {badge && (onDark ? <ol className="bf-chips" aria-label="Arrives in"><li>{badge}</li></ol> : <ul className="bf-jm-tags" aria-label="Arrives in"><li>{badge}</li></ul>)}
       <p>{lead}</p>
       <p className="bf-solves">{solves}</p>
     </header>
@@ -499,7 +499,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         {/* Live map and AR: full width, the phone is the hero */}
         <article className="bf-vr" aria-labelledby="bf-f-ar" data-reveal>
           <div className="bf-vr-text">
-            <FeatureHead index={0} id="bf-f-ar" title="Live map and AR wayfinding" lead="One scan opens a guided route to the first stand." solves={wayfinding.solves} badge="Phase 3" />
+            <FeatureHead index={0} id="bf-f-ar" title="Live map and AR wayfinding" lead="One scan opens a guided route to the first stand." solves={wayfinding.solves} badge="Phase 3" onDark />
             <div className="bf-vr-pair">
               <div><h4>The problem</h4><p>{wayfinding.problem}</p></div>
               <div><h4>The solution</h4><p>{wayfinding.solution}</p><ul>{wayfinding.can.map((item) => <li key={item}>{item}</li>)}</ul></div>
@@ -515,7 +515,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         {/* Rewards system: split screen, the app on one half and four cards on the other */}
         <article className="bf-game" aria-labelledby="bf-f-game">
           <div data-reveal>
-            <FeatureHead index={1} id="bf-f-game" title="Rewards system" lead="Points, challenges and rewards that turn visitors into participants." solves={rewards.solves} />
+            <FeatureHead index={1} id="bf-f-game" title="Rewards system" lead="Points, challenges and rewards that turn visitors into participants." solves={rewards.solves} badge="Phase 2" />
             <ul className="bf-game-grid">
               {rewards.cards.map((card) => (
                 <li key={card.title}>
@@ -541,6 +541,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
               <div className="bf-compact-body">
                 <span className="bf-compact-no">Feature {num(index + 2)}</span>
                 <h3><item.icon size={20} strokeWidth={1.7} aria-hidden="true" /> {item.title}</h3>
+                {'badge' in item && item.badge && <ul className="bf-jm-tags" aria-label="Arrives in"><li>{item.badge}</li></ul>}
                 <p className="bf-solves">{item.solves}</p>
                 <p>{item.text}</p>
                 <ul className="bf-tags" aria-label="Added value and success measure">
@@ -658,7 +659,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
           <button type="button" className="btn btn-solid" onClick={onBack} data-magnetic><ArrowLeft size={16} strokeWidth={1.6} aria-hidden="true" /> Back to portfolio</button>
           <a className="btn btn-line" href="#contact" data-magnetic>Let's talk <ArrowUpRight size={16} strokeWidth={1.6} aria-hidden="true" /></a>
         </div>
-        <p className="cs-disclaimer">A concept, not yet validated with visitors. Experience design work. The app screens and the dashboard were designed by the Product Designer on the team, except the exit survey screen, which was drawn for this case study. The name and logo of the Literature, Publishing &amp; Translation Commission belong to their owner.</p>
+        <p className="cs-disclaimer">A concept, not yet validated with visitors. Experience design work. The app screens and the dashboard were designed by the Product Designer on the team, except the exit survey screen, which was drawn for this case study, and one label on the check-in screen, which was edited to match the concept. The name and logo of the Literature, Publishing &amp; Translation Commission belong to their owner.</p>
       </section>
     </article>
   );

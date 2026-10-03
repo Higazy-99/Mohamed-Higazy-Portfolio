@@ -208,7 +208,7 @@
           "core problems"
         ],
         [
-          "5",
+          "4",
           "journey stages"
         ],
         [
@@ -219,7 +219,7 @@
       "cta": "View the full case study",
       "problem": "Visitors struggle to find their way, queues and crowds build up, and organisers have little live data. A concept for one end-to-end visitor experience that answers all four problems.",
       "did": [
-        "A five-stage visitor journey, from the ticket to the exit survey.",
+        "A four-stage visitor journey, from the QR scan to the exit survey.",
         "Five features, each tied to a problem and a proposed measure of success.",
         "An admin dashboard for the fair's management team."
       ]

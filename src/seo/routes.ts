@@ -56,7 +56,7 @@ export const routes: SeoRoute[] = [
   {
     path: '/work/smart-book-fair',
     title: 'Smart Book Fair – Digital Visitor Experience | Mohamed Higazy',
-    description: 'A concept for one end-to-end digital visitor experience at a book fair, from the ticket and the QR scan to the exit survey: live map and AR wayfinding, book signing slots, a rewards system, crowd management and an admin dashboard.',
+    description: 'A concept for one end-to-end digital visitor experience at a book fair, from the QR scan to the exit survey: live map and AR wayfinding, book signing slots, a rewards system, crowd management and an admin dashboard.',
     ogImage: '/og/smart-book-fair.jpg',
     ogImageAlt: 'Smart Book Fair, a complete digital visitor experience: an experience design case by Mohamed Higazy',
     type: 'article',

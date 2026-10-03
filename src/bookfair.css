@@ -86,7 +86,7 @@
 
 /* 04 journey map: a grid, one column per stage and one row per layer (like the Fan-ID journey) */
 .bf-jm-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
-.bf-jm { display: grid; grid-template-columns: 148px repeat(5, minmax(200px, 1fr)); min-width: 1160px; }
+.bf-jm { display: grid; grid-template-columns: 148px repeat(4, minmax(210px, 1fr)); min-width: 1000px; }
 .bf-jm-row { display: contents; }
 .bf-jm-label { position: sticky; left: 0; z-index: 2; padding: 20px 16px 20px 24px; border-top: 1px solid var(--line); border-right: 1px solid var(--line); background: var(--surface); font-size: var(--fs-xs); font-weight: 600; color: var(--accent); }
 .bf-jm-row:first-child > * { border-top: 0; }
@@ -96,7 +96,6 @@
 .is-s2 { --c: var(--bf-coral); }
 .is-s3 { --c: var(--bf-plum); }
 .is-s4 { --c: var(--bf-amber); }
-.is-s5 { --c: var(--ink); }
 .bf-jm-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--c, var(--accent)); color: #fff; }
 .bf-jm-stage small { display: block; margin-top: 14px; font-size: var(--fs-xs); font-weight: 600; color: var(--c); }
 .bf-jm-stage h3 { margin-top: 4px; font-family: var(--display); font-size: clamp(18px, 1.5vw, 22px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; }

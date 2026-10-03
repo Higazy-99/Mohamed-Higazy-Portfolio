@@ -19,7 +19,7 @@ const meta = [
 ];
 
 const stats = [
-  { value: '5', label: 'Journey stages' },
+  { value: '4', label: 'Journey stages' },
   { value: '5', label: 'Key features' },
   { value: '6', label: 'Dashboard modules' },
   { value: '4', label: 'Core problems' },
@@ -78,31 +78,21 @@ const assumptions = [
 ];
 
 const decisions = [
-  { icon: QrCode, title: 'One QR as the backbone', text: 'The ticket is the app login and the start of the journey.', tradeoff: 'It depends on a phone, so the QR also works offline and as a printout.' },
+  { icon: QrCode, title: 'One QR as the backbone', text: 'The QR code is the app login and the start of the journey.', tradeoff: 'It depends on a phone, so the QR also works offline and as a printout.' },
   { icon: CalendarCheck, title: 'Timed signing slots instead of a physical queue', text: 'The visitor gets a time, not a place in a line.', tradeoff: 'No-shows. A slot is released after 10 minutes to a short standby list.' },
   { icon: MapPin, title: 'A 2D live map first, AR on top', text: 'The live map is the base for wayfinding and crowd alerts.', tradeoff: 'Indoor positioning needs beacons and venue setup, so AR is a later layer, not the base.' },
   { icon: Gift, title: 'Rewards as a crowd-control lever, not just a game', text: 'Organisers can attach a reward to a quieter area.', tradeoff: 'A reward can pull people into one place, so rewards need caps (see Risks).' },
 ];
 
-const stageNo = (index: number) => String(index).padStart(2, '0');
+const stageNo = (index: number) => String(index + 1).padStart(2, '0');
 
 const journey = [
-  {
-    icon: Ticket,
-    title: 'Before the visit',
-    tag: 'Ticket and interests',
-    does: ['Buys a ticket [channel to confirm].', 'Chooses their interests [list of options to confirm].', 'Receives the QR code.'],
-    app: ['Issues the ticket as a QR code that also works offline and as a printout.', 'Keeps the chosen interests, to personalise suggestions later.'],
-    touchpoints: ['Ticket purchase', 'Interest selection', 'QR code'],
-    points: 'No points yet. They start at the QR scan.',
-    organiser: 'An early view of tickets sold and visitor interests, before the doors open.',
-  },
   {
     icon: QrCode,
     title: 'Entry point',
     tag: 'QR code scan',
-    does: ['Scans the QR code at the entrance.', 'Chooses a publisher from the list and follows the steps to reach it.'],
-    app: ["Signs the visitor in with the ticket and sends a welcome message with the day's highlights.", 'Suggests events based on the interests chosen before the visit.', 'Opens the live map, with AR guidance to the stand on top.'],
+    does: ['Scans the QR code received with the ticket.', 'Chooses a publisher from the list and follows the steps to reach it.'],
+    app: ["Sends a welcome message with the day's highlights.", "Suggests events based on the visitor's preferences.", 'Opens the live map, with AR guidance to the stand on top.'],
     touchpoints: ['QR code', 'App', 'Live map', 'AR guidance'],
     points: 'Registered automatically in the rewards system. Points start with the QR scan.',
     organiser: 'The QR scan and the positioning give a starting point for tracking: peak times and crowd flow in real time.',
@@ -270,7 +260,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
       <header className="cs-hero">
         <p className="eyebrow">Experience design · Digital visitor experience · 2025</p>
         <h1 id="bf-title">Smart Book Fair: <span>a complete digital visitor experience</span></h1>
-        <p className="cs-lead">One end-to-end concept for the visitor, from the ticket and the QR scan at the entrance to the exit survey, with crowd management and rewards built in.</p>
+        <p className="cs-lead">One end-to-end concept for the visitor, from the QR scan at the entrance to the exit survey, with crowd management and rewards built in.</p>
         <dl className="cs-meta">
           {meta.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}
         </dl>
@@ -288,9 +278,9 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         <div className="cs-two">
           <header data-reveal>
             <span className="eyebrow">01 · Overview</span>
-            <h2 id="bf-overview">From the ticket <em>to the exit</em></h2>
+            <h2 id="bf-overview">From the QR scan <em>to the exit</em></h2>
           </header>
-          <p className="bf-overview-text" data-reveal>Digital tools that give visitors ease of access, navigation and interaction with the fair, with rewards and crowd management built in. The experience starts before the visit, with the ticket, and continues from the QR scan at the entrance until the exit survey.</p>
+          <p className="bf-overview-text" data-reveal>Digital tools that give visitors ease of access, navigation and interaction with the fair, with rewards and crowd management built in. The experience starts with the QR scan at the entrance and continues until the exit survey.</p>
         </div>
         <h3 className="bf-sub" data-reveal>Context</h3>
         <p className="bf-context" data-reveal>A concept I developed for the Literature, Publishing &amp; Translation Commission and delivered in May 2025. The goal was to give the Commission one end-to-end visitor experience to align on before any detailed design or build.</p>
@@ -407,11 +397,11 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </ol>
       </section>
 
-      {/* 05 Journey map: five stages, 00 to 04 */}
+      {/* 05 Journey map: four stages, 01 to 04 */}
       <section className="cs-section" id="journey" aria-labelledby="bf-journey">
         <header className="section-head" data-reveal>
           <span className="eyebrow">05 · Visitor journey and user flow</span>
-          <h2 id="bf-journey">The visitor journey, <em>from the ticket to the exit</em></h2>
+          <h2 id="bf-journey">The visitor journey, <em>from the QR scan to the exit</em></h2>
         </header>
         <div className="bf-seg" role="group" aria-label="Journey view" data-reveal>
           <button type="button" aria-pressed={view === 'journey'} aria-controls="bf-view-journey" onClick={() => setView('journey')} data-magnetic>Journey map</button>
@@ -419,7 +409,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </div>
         <div id="bf-view-journey" hidden={view !== 'journey'}>
         <div className="bf-jm-scroll">
-          <div className="bf-jm" role="table" aria-label="Visitor journey map: five stages from the ticket to the exit">
+          <div className="bf-jm" role="table" aria-label="Visitor journey map: four stages from the QR scan to the exit">
             <div className="bf-jm-row" role="row">
               <div className="bf-jm-label" role="columnheader">Stage</div>
               {journey.map((stage, index) => (
@@ -492,7 +482,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         </div>
         <figure className="bf-entry" data-reveal>
           <Zoomable src={`${BASE}/entry-point.webp`} alt='A visitor holds a phone in front of a "Scan here" kiosk with a touch screen, next to shelves of books. The logos of the Literature, Publishing & Translation Commission and of the Riyadh International Book Fair are on the wall.' w={2000} h={1125} />
-          <figcaption><QrCode size={16} strokeWidth={1.8} aria-hidden="true" /> The entry point. The visitor arrives with the ticket QR, scans it, and the on-site experience starts.</figcaption>
+          <figcaption><QrCode size={16} strokeWidth={1.8} aria-hidden="true" /> The entry point. On arrival, the visitor scans the QR code, and the digital experience starts.</figcaption>
         </figure>
       </section>
 
@@ -644,11 +634,11 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
       <section className="cs-section cs-close">
         <div className="cs-panel is-dark" data-reveal>
           <span className="eyebrow">My contribution</span>
-          <p>The experience strategy, the five-stage visitor journey, the feature set and the six dashboard modules, shaped into one concept for the Commission. The UI screens were designed by the Product Designer on the team.</p>
+          <p>The experience strategy, the four-stage visitor journey, the feature set and the six dashboard modules, shaped into one concept for the Commission. The UI screens were designed by the Product Designer on the team.</p>
         </div>
         <div className="cs-panel" data-reveal>
           <span className="eyebrow">Where it stands</span>
-          <p>Delivered to the Commission in May 2025 as a complete concept: a five-stage visitor journey, five features, an admin dashboard and a phased plan, ready to move into detailed design. It has not been tested with visitors yet. The first step would be to validate the riskiest assumptions on site, starting with signing queues and entry, before any build.</p>
+          <p>Delivered to the Commission in May 2025 as a complete concept: a four-stage visitor journey, five features, an admin dashboard and a phased plan, ready to move into detailed design. It has not been tested with visitors yet. The first step would be to validate the riskiest assumptions on site, starting with signing queues and entry, before any build.</p>
           <p className="fid-gap">Not yet covered here: usability testing, Arabic and right-to-left screens, consent flows, and the author's side of the signing experience.</p>
         </div>
         <div className="cs-panel" data-reveal>

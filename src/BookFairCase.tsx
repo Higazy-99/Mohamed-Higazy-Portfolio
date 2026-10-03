@@ -92,7 +92,7 @@ const journey = [
     title: 'Entry point',
     tag: 'QR code scan',
     does: ['Scans the QR code received with the ticket.', 'Chooses a publisher from the list and follows the steps to reach it.'],
-    app: ['Opens the app. If it is not installed, takes the visitor to download it.', "Sends a welcome message with the day's highlights.", "Suggests events based on the visitor's preferences (phase 3).", 'Opens the live map with a route to the stand (AR guidance on top from phase 3).'],
+    app: ['Opens the app. If it is not installed, takes the visitor to download it.', "Sends a welcome message with the day's highlights.", 'Suggests events based on the events they add and the stands they visit (phase 3).', 'Opens the live map with a route to the stand (AR guidance on top from phase 3).'],
     touchpoints: ['QR code', 'App', 'Live map', 'AR guidance (phase 3)'],
     points: 'Registered automatically in the rewards system. Points start with the QR scan (from phase 2).',
     organiser: 'The QR scan and the positioning give a starting point for tracking: peak times and crowd flow in real time.',
@@ -144,7 +144,7 @@ const wayfinding = {
   solution: 'A live 2D map, opened right after the QR scan at the entrance. In phase 3, AR guidance is added on top: a camera view with arrows on the floor.',
   can: ['Preview the floor plan, and follow the route to a hall or an event.', 'In phase 3, follow AR arrows on the floor to the chosen stand.'],
   steps: ['Scan the code', 'Choose the publisher from the list', 'Follow the route'],
-  visitor: 'A stronger sense of control over the visit: a guided start that suits their interests, without random exploration.',
+  visitor: 'A stronger sense of control over the visit: a guided start straight to the stand they pick, without random exploration.',
   organiser: 'Meant to reduce requests for help and to spread movement more evenly across the halls.',
   kpi: 'Time to reach a first chosen stand',
 };
@@ -183,8 +183,8 @@ const flowPhases: { phase: string; steps: { icon: LucideIcon; title: string; tex
 ];
 
 const compact = [
-  { id: 'book', icon: PenLine, title: 'Book signing', solves: 'Solves problem 02 · Crowding and queues', shots: ['request', 'checkin'] as const, text: 'Visitors book a timed slot at a book signing in the app and receive a digital ticket. They are reminded before the slot, and check in on arrival. A slot that is not claimed is released after 10 minutes to a short standby list.', visitor: 'No long queue: a short, ordered check-in within a slot', organiser: 'Capacity set per signing, with real data on expected attendance', kpi: 'Average wait at book signings', note: "In the concept, each signing slot is a 15-minute window shared by a small group of up to 20 visitors. On the check-in screen, the countdown is the time left until the visitor's slot opens, and the figure beside it is their place in that group's check-in order." },
-  { id: 'crowd', icon: Users, title: 'Crowd management', solves: 'Solves problem 02 · Crowding and queues', shots: ['map'] as const, text: 'The live map shows crowd density in real time. When an area is congested, the app alerts visitors and suggests a quieter route or a less crowded event nearby.', visitor: 'Avoids congestion, decides faster', organiser: 'Better crowd flow, fewer bottlenecks', kpi: 'Share of visitors who follow a reroute alert' },
+  { id: 'book', icon: PenLine, title: 'Book signing', solves: 'Solves problem 02 · Crowding and queues', badge: 'Phase 1', shots: ['request', 'checkin'] as const, text: 'Visitors book a timed slot at a book signing in the app and receive a digital ticket. They are reminded before the slot, and check in on arrival. A slot that is not claimed is released after 10 minutes to a short standby list.', visitor: 'No long queue: a short, ordered check-in within a slot', organiser: 'Capacity set per signing, with real data on expected attendance', kpi: 'Average wait at book signings', note: "In the concept, each signing slot is a 15-minute window shared by a small group of up to 20 visitors. On the check-in screen, the countdown is the time left until the visitor's slot opens, and the figure beside it is their place in that group's check-in order." },
+  { id: 'crowd', icon: Users, title: 'Crowd management', solves: 'Solves problem 02 · Crowding and queues', badge: 'Phase 1', shots: ['map'] as const, text: 'The live map shows crowd density in real time. When an area is congested, the app alerts visitors and suggests a quieter route or a less crowded event nearby.', visitor: 'Avoids congestion, decides faster', organiser: 'Better crowd flow, fewer bottlenecks', kpi: 'Share of visitors who follow a reroute alert' },
   { id: 'survey', icon: MessageSquareText, title: 'Micro-ratings and exit survey', solves: 'Solves problem 04 · Limited data for organisers', shots: ['survey'] as const, text: 'Two light touches, not one long form: a one-tap micro-rating after an event, never after every stand, and one short survey at the exit. Both feed the dashboard in real time, so organisers can adjust timings or locations.', visitor: 'Their voice is heard in a few taps', organiser: 'Decisions based on real ratings', kpi: 'Survey completion rate', badge: 'Phase 2', note: 'Exit survey screen drawn for this case study in the visual style of the app.' },
 ];
 
@@ -499,7 +499,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         {/* Live map and AR: full width, the phone is the hero */}
         <article className="bf-vr" aria-labelledby="bf-f-ar" data-reveal>
           <div className="bf-vr-text">
-            <FeatureHead index={0} id="bf-f-ar" title="Live map and AR wayfinding" lead="One scan opens a guided route to the first stand." solves={wayfinding.solves} badge="Phase 3" onDark />
+            <FeatureHead index={0} id="bf-f-ar" title="Live map and AR wayfinding" lead="One scan opens a guided route to the first stand." solves={wayfinding.solves} badge="Map: phase 1 · AR: phase 3" onDark />
             <div className="bf-vr-pair">
               <div><h4>The problem</h4><p>{wayfinding.problem}</p></div>
               <div><h4>The solution</h4><p>{wayfinding.solution}</p><ul>{wayfinding.can.map((item) => <li key={item}>{item}</li>)}</ul></div>
@@ -541,7 +541,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
               <div className="bf-compact-body">
                 <span className="bf-compact-no">Feature {num(index + 2)}</span>
                 <h3><item.icon size={20} strokeWidth={1.7} aria-hidden="true" /> {item.title}</h3>
-                {'badge' in item && item.badge && <ul className="bf-jm-tags" aria-label="Arrives in"><li>{item.badge}</li></ul>}
+                {item.badge && <ul className="bf-jm-tags" aria-label="Arrives in"><li>{item.badge}</li></ul>}
                 <p className="bf-solves">{item.solves}</p>
                 <p>{item.text}</p>
                 <ul className="bf-tags" aria-label="Added value and success measure">

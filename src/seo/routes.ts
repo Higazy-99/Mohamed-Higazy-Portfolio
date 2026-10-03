@@ -53,6 +53,14 @@ export const routes: SeoRoute[] = [
     ogImageAlt: 'Film Saudi UX audit: a heuristic evaluation by Mohamed Higazy',
     type: 'article',
   },
+  {
+    path: '/work/smart-book-fair',
+    title: 'Smart Book Fair – Digital Visitor Experience | Mohamed Higazy',
+    description: 'A complete digital visitor experience for the book fair, from the QR scan at the entrance to the exit: VR navigation, gamification, pre-booking, crowd management and an admin dashboard.',
+    ogImage: '/og/smart-book-fair.jpg',
+    ogImageAlt: 'Smart Book Fair, a complete digital visitor experience: an experience design case by Mohamed Higazy',
+    type: 'article',
+  },
 ];
 
 export const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';

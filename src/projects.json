@@ -176,6 +176,57 @@
     "position": "12% 50%"
   },
   {
+    "id": 1000000005,
+    "url": "/work/smart-book-fair",
+    "cover": "/case/book-fair/cover.webp",
+    "category": "Experience Design · Book fair · 2025",
+    "title": "Smart Book Fair – Digital Visitor Experience",
+    "description": "A complete digital visitor experience, from the QR scan at the entrance to the exit.",
+    "color": "#0b3d4a",
+    "preview": {
+      "facts": [
+        [
+          "Role",
+          "CX / UX Designer"
+        ],
+        [
+          "Team",
+          "With a Product Designer (UI)"
+        ],
+        [
+          "For",
+          "Literature, Publishing & Translation Commission"
+        ],
+        [
+          "Date",
+          "May 2025"
+        ]
+      ],
+      "numbers": [
+        [
+          "6",
+          "strategic objectives"
+        ],
+        [
+          "5",
+          "key features"
+        ],
+        [
+          "4",
+          "journey stages"
+        ]
+      ],
+      "cta": "View the full case study",
+      "problem": "Digital tools that give visitors ease of access, navigation and interaction with the fair, with gamification and crowd-management strategies.",
+      "did": [
+        "The visitor journey from the QR scan to the exit.",
+        "Five key features, each with its added value for the visitor and the organiser.",
+        "An admin dashboard for the fair's management team."
+      ]
+    },
+    "position": "0% 50%"
+  },
+  {
     "id": 229885305,
     "url": "https://www.behance.net/gallery/229885305/Redesign-Task",
     "cover": "https://mir-s3-cdn-cf.behance.net/projects/max_808_webp/94ad96229885305.Y3JvcCw5MjksNzI3LDExOSww.png",

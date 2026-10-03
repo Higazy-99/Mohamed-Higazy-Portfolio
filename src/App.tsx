@@ -12,6 +12,7 @@ import { applyRouteHead } from './seo/head';
 import FanIdCase from './FanIdCase';
 import FilmSaudiCase from './FilmSaudiCase';
 import StcInspectorCase from './StcInspectorCase';
+import BookFairCase from './BookFairCase';
 // styles.css is also imported by main.tsx; importing it here fixes the order so that home-a11y.css always comes after it
 import './styles.css';
 import './home-a11y.css';
@@ -29,7 +30,7 @@ const YEARS = 3;
 type Point = { x: number; y: number };
 
 /* ---------- Content ---------- */
-const FEATURED_IDS = [1000000001, 1000000004, 1000000002, 1000000003];
+const FEATURED_IDS = [1000000001, 1000000004, 1000000005, 1000000002, 1000000003];
 const featured = FEATURED_IDS.map((id) => projects.find((project) => project.id === id)!).filter(Boolean);
 const rest = projects.filter((project) => !FEATURED_IDS.includes(project.id));
 
@@ -659,6 +660,7 @@ const WIJHA_PATH = '/work/wijha';
 const FANID_PATH = '/work/fan-id';
 const FILM_PATH = '/work/film-saudi';
 const STC_PATH = '/work/stc-inspector';
+const BOOKFAIR_PATH = '/work/smart-book-fair';
 
 function useRoute(initialPath?: string) {
   const clean = () => (typeof window === 'undefined' ? '/' : window.location.pathname).replace(/\/$/, '') || '/';
@@ -829,7 +831,8 @@ function App({ initialPath }: { initialPath?: string } = {}) {
   const isFanId = path === FANID_PATH;
   const isFilm = path === FILM_PATH;
   const isStc = path === STC_PATH;
-  const isCase = isWijha || isFanId || isFilm || isStc;
+  const isBookFair = path === BOOKFAIR_PATH;
+  const isCase = isWijha || isFanId || isFilm || isStc || isBookFair;
   const goWork = () => {
     navigate('/');
     window.setTimeout(() => document.getElementById('work')?.scrollIntoView(), 30);
@@ -870,7 +873,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
 
       {isCase ? (
         <main id="main" tabIndex={-1}>
-          {isFanId ? <FanIdCase onBack={goWork} /> : isFilm ? <FilmSaudiCase onBack={goWork} /> : isStc ? <StcInspectorCase onBack={goWork} /> : <CaseStudy onBack={goWork} />}
+          {isFanId ? <FanIdCase onBack={goWork} /> : isFilm ? <FilmSaudiCase onBack={goWork} /> : isStc ? <StcInspectorCase onBack={goWork} /> : isBookFair ? <BookFairCase onBack={goWork} /> : <CaseStudy onBack={goWork} />}
         </main>
       ) : (
       <main id="main" tabIndex={-1}>

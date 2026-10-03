@@ -66,7 +66,7 @@ const matrix: { app: string; kind: string; ours?: boolean; cells: [Mark, string?
 const research = [
   { text: 'The Riyadh International Book Fair drew about 500,000 visitors over ten days in 2016, and needed queue systems, signage and crowd management procedures inside and outside the venue.', source: 'Crowd Dynamics', href: 'https://crowddynamics.com/riyadh-international-book-fair' },
   { text: 'The Cairo International Book Fair recorded 445,029 visitors in a single day in 2025.', source: 'Maspero, Egyptian National Media Authority', href: 'https://www.maspero.eg/art-and-culture/2025/01/26/838326/445-%D8%A3%D9%84%D9%81-%D8%B2%D8%A7%D8%A6%D8%B1-%D8%AE%D9%84%D8%A7%D9%84-%D8%A7%D9%84%D9%8A%D9%88%D9%85-%D8%A7%D9%84%D8%AB%D8%A7%D9%86%D9%8A-%D9%84%D9%85%D8%B9%D8%B1%D8%B6-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%84%D9%84%D9%83%D8%AA%D8%A7%D8%A8' },
-  { text: 'A study of a gamified AR navigation system for exhibitions found that visitors in game mode followed the intended route more closely.', source: 'Applied Sciences (MDPI), 2022', href: 'https://www.mdpi.com/2076-3417/12/6/2969' },
+  { text: 'A study of an AR navigation system for exhibitions found that visitors in game mode followed the intended route more closely.', source: 'Applied Sciences (MDPI), 2022', href: 'https://www.mdpi.com/2076-3417/12/6/2969' },
 ];
 
 const assumptions = [
@@ -92,19 +92,19 @@ const journey = [
     title: 'Entry point',
     tag: 'QR code scan',
     does: ['Scans the QR code received with the ticket.', 'Chooses a publisher from the list and follows the steps to reach it.'],
-    app: ["Sends a welcome message with the day's highlights.", "Suggests events based on the visitor's preferences.", 'Opens the live map, with AR guidance to the stand on top.'],
-    touchpoints: ['QR code', 'App', 'Live map', 'AR guidance'],
-    points: 'Registered automatically in the rewards system. Points start with the QR scan.',
+    app: ["Sends a welcome message with the day's highlights.", "Suggests events based on the visitor's preferences (phase 3).", 'Opens the live map with a route to the stand (AR guidance on top from phase 3).'],
+    touchpoints: ['QR code', 'App', 'Live map', 'AR guidance (phase 3)'],
+    points: 'Registered automatically in the rewards system. Points start with the QR scan (from phase 2).',
     organiser: 'The QR scan and the positioning give a starting point for tracking: peak times and crowd flow in real time.',
   },
   {
     icon: CalendarCheck,
     title: 'Engaging with events',
     tag: 'Live schedule',
-    does: ['Adds the events they want to attend to a personal schedule.', 'Visits the stands and explores the fair.', 'Takes part in quizzes, workshops and book-related competitions.', 'Rates an event with one tap, after the event.'],
+    does: ['Adds the events they want to attend to a personal schedule.', 'Visits the stands and explores the fair.', 'Takes part in quizzes, workshops and book-related competitions.', 'Rates an event with one tap, after the event (from phase 2).'],
     app: ['Shows a dynamic schedule that changes in real time with updates or availability.', 'Sends a notification before each event.', 'Uses anonymised movement data to encourage exploring different areas of the fair.', 'Asks for a one-tap micro-rating after an event, never after every stand.'],
-    touchpoints: ['Schedule', 'Notifications', 'Stands', 'Live map', 'Micro-rating'],
-    points: 'Points for visiting or interacting with stands, for interactive activities and for rating an event.',
+    touchpoints: ['Schedule', 'Notifications', 'Stands', 'Live map', 'Micro-rating (phase 2)'],
+    points: 'Points for visiting or interacting with stands, for interactive activities and for rating an event (from phase 2).',
     organiser: 'The live map shows crowd density, so visitors can be directed to less crowded areas.',
   },
   {
@@ -114,7 +114,7 @@ const journey = [
     does: ["Books a signing slot in advance, and checks in at the author's stand at their time.", 'Takes part in workshops, such as writing books or tips on publishing.'],
     app: ['Sends a notification when their time comes.', 'Guides them to the stand.', 'Releases an unclaimed slot after 10 minutes to a short standby list.'],
     touchpoints: ['Digital ticket', 'Notification', "Author's stand", 'Workshops'],
-    points: 'Extra points for workshops. Exclusive workshops and special events unlock higher-value rewards: signed books, invitations to private events, or tickets to coming events.',
+    points: 'Extra points for workshops. Exclusive workshops and special events unlock higher-value rewards: signed books, invitations to private events, or tickets to coming events (from phase 2).',
     organiser: 'Sets the capacity of each event, with real data on interests and expected attendance.',
   },
   {
@@ -124,16 +124,16 @@ const journey = [
     does: ['Fills in one short exit survey about the events, the ease of navigation and the digital tools.', 'Redeems points for rewards.'],
     app: ['Shows the available points and the rewards on offer.', 'Sends a thank-you message with a summary of the day, the points collected and the rewards redeemed.', 'Offers discounts for the next fair, or special offers from partner bookshops.'],
     touchpoints: ['Exit survey', 'Rewards', 'Thank-you message'],
-    points: 'Points are exchanged for rewards through the app.',
+    points: 'Points are exchanged for rewards through the app (from phase 2).',
     organiser: 'Exit survey data and event micro-ratings are collected in real time and analysed, to give the organisers immediate feedback.',
   },
 ];
 
 const shots = {
-  ar: { src: 'vr-navigation.webp', w: 900, h: 1949, alt: 'App screen: a camera view of the fair hall with an arrow path on the floor, a "turn left, 50 m" instruction, and a label for the Egyptian pavilion marked as a crowded area' },
+  ar: { src: 'vr-navigation.webp', w: 900, h: 1949, alt: 'App screen: a camera view of the fair hall with an arrow path on the floor, a "turn left, 50 m" instruction, and a label for the Egyptian pavilion marked as a crowded area (phase 3 concept)' },
   home: { src: 'home.webp', w: 900, h: 2422, alt: 'App home screen: a greeting, a search field, the competitions rating with a points total, browsing by country with flags, and the top picks of books, above a bottom navigation bar' },
   request: { src: 'signing-request.webp', w: 900, h: 1948, alt: "App screen: an author's page with her portrait, name, a 4.5 out of 5 rating, an About the author text, and two buttons, Request signing and Share" },
-  checkin: { src: 'signing-checkin.webp', w: 900, h: 1948, alt: "App screen: an author's page with his portrait, name, a 4.5 out of 5 rating, a 03:47 countdown to the visitor's slot, a count of 14 people, an About the author text, and two buttons, Check in and Cancel request" },
+  checkin: { src: 'signing-checkin.webp', w: 900, h: 1948, alt: "App screen: an author's page with his portrait, name, a 4.5 out of 5 rating, a 03:47 countdown to the visitor's slot, 14 people ahead in the same slot, an About the author text, and two buttons, Check in and Cancel request" },
   survey: { src: 'survey.webp', w: 900, h: 1948, alt: 'App screen, exit survey: a star rating for the events, a three-option question on how easy it was to move around the fair, a three-option question on satisfaction with the digital tools, a short optional note, a banner about extra points for completing the survey, and a Send rating button' },
   map: { src: 'crowd-map.webp', w: 900, h: 2050, alt: 'App screen: a map of the fair with country pavilions shown as flags, and a highlighted route from the current position to a destination' },
 };
@@ -141,9 +141,9 @@ const shots = {
 const wayfinding = {
   solves: 'Solves problem 01 · Navigation difficulty',
   problem: 'First-time visitors cannot read the layout of the stands or find the fastest route.',
-  solution: 'A live map, opened right after the QR scan at the entrance, with AR guidance on top: a camera view with arrows on the floor.',
-  can: ['Preview the floor plan in 3D, and follow the steps to a hall or an event.', 'Follow the AR arrows on the floor to the chosen stand.'],
-  steps: ['Scan the code', 'Choose the publisher from the list', 'Follow the arrows'],
+  solution: 'A live 2D map, opened right after the QR scan at the entrance. In phase 3, AR guidance is added on top: a camera view with arrows on the floor.',
+  can: ['Preview the floor plan, and follow the route to a hall or an event.', 'In phase 3, follow AR arrows on the floor to the chosen stand.'],
+  steps: ['Scan the code', 'Choose the publisher from the list', 'Follow the route'],
   visitor: 'A stronger sense of control over the visit: a guided start that suits their interests, without random exploration.',
   organiser: 'Meant to reduce requests for help and to spread movement more evenly across the halls.',
   kpi: 'Time to reach a first chosen stand',
@@ -174,7 +174,7 @@ const flowPhases: { phase: string; steps: { icon: LucideIcon; title: string; tex
   ] },
   { phase: 'Navigation', steps: [
     { icon: Bell, title: 'Reminder', text: 'Push notification before the slot' },
-    { icon: Navigation, title: 'AR guide', text: "Tap 'Start navigation' and follow the AR arrows to the stand" },
+    { icon: Navigation, title: 'Guide', text: "Tap 'Start navigation' and follow the route to the stand (AR arrows from phase 3)" },
   ] },
   { phase: 'Attendance', steps: [
     { icon: CircleCheck, title: 'Check-in', text: 'Check in at the stand. A slot not claimed in 10 minutes is released' },
@@ -183,7 +183,7 @@ const flowPhases: { phase: string; steps: { icon: LucideIcon; title: string; tex
 ];
 
 const compact = [
-  { id: 'book', icon: PenLine, title: 'Book signing', solves: 'Solves problem 02 · Crowding and queues', shots: ['request', 'checkin'] as const, text: 'Visitors book a timed slot at a book signing in the app and receive a digital ticket. They are reminded before the slot, and check in on arrival. A slot that is not claimed is released after 10 minutes to a short standby list.', visitor: 'No standing in a queue for a favourite author', organiser: 'Capacity set per signing, with real data on expected attendance', kpi: 'Average wait at book signings', note: "On the check-in screen, the countdown is the time left until the visitor's slot, and the figure beside it is the number of people ahead of them in the same slot." },
+  { id: 'book', icon: PenLine, title: 'Book signing', solves: 'Solves problem 02 · Crowding and queues', shots: ['request', 'checkin'] as const, text: 'Visitors book a timed slot at a book signing in the app and receive a digital ticket. They are reminded before the slot, and check in on arrival. A slot that is not claimed is released after 10 minutes to a short standby list.', visitor: 'No standing in a queue for a favourite author', organiser: 'Capacity set per signing, with real data on expected attendance', kpi: 'Average wait at book signings', note: "In the concept, each signing slot is a 15-minute window shared by a small group of up to 20 visitors. On the check-in screen, the countdown is the time left until the visitor's slot opens, and the figure beside it is their place in that group's check-in order." },
   { id: 'crowd', icon: Users, title: 'Crowd management', solves: 'Solves problem 02 · Crowding and queues', shots: ['map'] as const, text: 'The live map shows crowd density in real time. When an area is congested, the app alerts visitors and suggests a quieter route or a less crowded event nearby.', visitor: 'Avoids congestion, decides faster', organiser: 'Better crowd flow, fewer bottlenecks', kpi: 'Share of visitors who follow a reroute alert' },
   { id: 'survey', icon: MessageSquareText, title: 'Micro-ratings and exit survey', solves: 'Solves problem 04 · Limited data for organisers', shots: ['survey'] as const, text: 'Two light touches, not one long form: a one-tap micro-rating after an event, never after every stand, and one short survey at the exit. Both feed the dashboard in real time, so organisers can adjust timings or locations.', visitor: 'Their voice is heard in a few taps', organiser: 'Decisions based on real ratings', kpi: 'Survey completion rate', note: 'Exit survey screen drawn for this case study in the visual style of the app.' },
 ];
@@ -201,8 +201,9 @@ const risks = [
   { title: 'Privacy', text: 'Movement tracking needs explicit consent and anonymised, aggregated data, in line with Saudi data-protection law.' },
   { title: 'No smartphone or a dead battery', text: 'Printed QR codes, kiosks and staffed help points.' },
   { title: 'Network load in a full hall', text: 'Offline tickets and cached maps.' },
+  { title: 'Indoor positioning accuracy', text: 'GPS does not work reliably indoors, and both the live crowd map and AR wayfinding depend on knowing where visitors are. Use BLE beacons or Wi-Fi positioning, validated in one hall before scaling. This is why AR wayfinding is held for phase 3.' },
   { title: 'Gamification side effects', text: 'Challenges can create new crowds and points can be gamed, so challenges are spread across zones and capped.' },
-  { title: 'Survey fatigue and incentive bias', text: 'Points for ratings can inflate scores.' },
+  { title: 'Survey fatigue and incentive bias', text: 'Points for ratings can inflate scores, so points reward completing a rating, never the score given; micro-ratings are limited to one per event; and the exit survey is the only longer form.' },
   { title: 'Accessibility', text: 'Step-free routes on the map, screen-reader support, Arabic and English.' },
 ];
 
@@ -242,11 +243,12 @@ function Value({ visitor, organiser, kpi }: { visitor: string; organiser: string
   );
 }
 
-function FeatureHead({ index, id, title, lead, solves }: { index: number; id: string; title: string; lead: string; solves: string }) {
+function FeatureHead({ index, id, title, lead, solves, badge }: { index: number; id: string; title: string; lead: string; solves: string; badge?: string }) {
   return (
     <header className="bf-fhead">
       <span>Feature {num(index)}</span>
       <h3 id={id}>{title}</h3>
+      {badge && <ol className="bf-chips" aria-label="Arrives in"><li>{badge}</li></ol>}
       <p>{lead}</p>
       <p className="bf-solves">{solves}</p>
     </header>
@@ -348,6 +350,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
             </tbody>
           </table>
         </div>
+        <small className="bf-compact-note" data-reveal>Feature comparison as of May 2025, based on each product's public website.</small>
         <p className="bf-insight" data-reveal><Lightbulb size={18} strokeWidth={1.8} aria-hidden="true" /><span>No single platform covers all six capabilities. Event apps such as Whova, PheedLoop and Cvent cover the live map, rewards, booking and surveys, but none offers AR navigation, and crowd management is partial at best. Navigine covers indoor navigation, but not the event side. Smart Book Fair combines all six in one experience designed for book fairs, with AR arriving in phase 3.</span></p>
 
         <h3 className="bf-sub" data-reveal>Public sources</h3>
@@ -402,6 +405,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         <header className="section-head" data-reveal>
           <span className="eyebrow">05 · Visitor journey and user flow</span>
           <h2 id="bf-journey">The visitor journey, <em>from the QR scan to the exit</em></h2>
+          <p>The journey shows the full concept across all three phases. Features that arrive later are marked with their phase.</p>
         </header>
         <div className="bf-seg" role="group" aria-label="Journey view" data-reveal>
           <button type="button" aria-pressed={view === 'journey'} aria-controls="bf-view-journey" onClick={() => setView('journey')} data-magnetic>Journey map</button>
@@ -456,7 +460,6 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
             </li>
           ))}
         </ol>
-        <p className="bf-insight"><Lightbulb size={18} strokeWidth={1.8} aria-hidden="true" /><span>The journey shows the full concept. AR guidance and personalised suggestions arrive in phase 3 (see Measuring success).</span></p>
         </div>
         <div id="bf-view-flow" hidden={view !== 'flow'}>
           <div className="bf-phases-scroll" role="region" aria-label="User flow: booking a book signing, scrolls sideways on small screens" tabIndex={0}>
@@ -478,7 +481,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
               ))}
             </ol>
           </div>
-          <p className="bf-insight"><Lightbulb size={18} strokeWidth={1.8} aria-hidden="true" /><span>One flow connects four parts of the concept: book signing, AR navigation, the rewards system and micro-ratings. This is what makes the experience one system, not separate features.</span></p>
+          <p className="bf-insight"><Lightbulb size={18} strokeWidth={1.8} aria-hidden="true" /><span>One flow connects four parts of the concept: book signing, the live map, the rewards system and micro-ratings. This is what makes the experience one system, not separate features.</span></p>
         </div>
         <figure className="bf-entry" data-reveal>
           <Zoomable src={`${BASE}/entry-point.webp`} alt='A visitor holds a phone in front of a "Scan here" kiosk with a touch screen, next to shelves of books. The logos of the Literature, Publishing & Translation Commission and of the Riyadh International Book Fair are on the wall.' w={2000} h={1125} />
@@ -496,7 +499,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
         {/* Live map and AR: full width, the phone is the hero */}
         <article className="bf-vr" aria-labelledby="bf-f-ar" data-reveal>
           <div className="bf-vr-text">
-            <FeatureHead index={0} id="bf-f-ar" title="Live map and AR wayfinding" lead="One scan opens a guided route to the first stand." solves={wayfinding.solves} />
+            <FeatureHead index={0} id="bf-f-ar" title="Live map and AR wayfinding" lead="One scan opens a guided route to the first stand." solves={wayfinding.solves} badge="Phase 3" />
             <div className="bf-vr-pair">
               <div><h4>The problem</h4><p>{wayfinding.problem}</p></div>
               <div><h4>The solution</h4><p>{wayfinding.solution}</p><ul>{wayfinding.can.map((item) => <li key={item}>{item}</li>)}</ul></div>
@@ -580,7 +583,7 @@ function BookFairCase({ onBack }: { onBack: () => void }) {
       <section className="cs-section" id="risks" aria-labelledby="bf-risks">
         <header className="section-head" data-reveal>
           <span className="eyebrow">08 · Risks and open questions</span>
-          <h2 id="bf-risks">Six things that could go <em>wrong</em></h2>
+          <h2 id="bf-risks">Seven things that could go <em>wrong</em></h2>
         </header>
         <ol className="bf-next">
           {risks.map((item, index) => (

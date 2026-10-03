@@ -198,29 +198,29 @@
           "Literature, Publishing & Translation Commission"
         ],
         [
-          "Date",
-          "May 2025"
+          "Status",
+          "Concept delivered, May 2025"
         ]
       ],
       "numbers": [
         [
-          "6",
-          "strategic objectives"
+          "4",
+          "core problems"
+        ],
+        [
+          "5",
+          "journey stages"
         ],
         [
           "5",
           "key features"
-        ],
-        [
-          "4",
-          "journey stages"
         ]
       ],
       "cta": "View the full case study",
-      "problem": "Digital tools that give visitors ease of access, navigation and interaction with the fair, with gamification and crowd-management strategies.",
+      "problem": "Visitors struggle to find their way, queues and crowds build up, and organisers have little live data. A concept for one end-to-end visitor experience that answers all four problems.",
       "did": [
-        "The visitor journey from the QR scan to the exit.",
-        "Five key features, each with its added value for the visitor and the organiser.",
+        "A five-stage visitor journey, from the ticket to the exit survey.",
+        "Five features, each tied to a problem and a proposed measure of success.",
         "An admin dashboard for the fair's management team."
       ]
     },

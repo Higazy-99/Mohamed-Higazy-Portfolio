@@ -1,8 +1,16 @@
 /* Smart Book Fair case. Shares the .cs-* case skeleton from styles.css; everything else is .bf-*.
    This file loads before styles.css, so overrides of shared classes carry the .cs.bf prefix. */
-.cs.bf { --accent: #0d5565; --m-accent: #8fd3de; --bf-coral: #c4453a; --bf-plum: #6a2c4c; --bf-amber: #b8741c; }
+.cs.bf { --accent: #0d5565; --m-accent: #8fd3de; --bf-coral: #c4453a; --bf-plum: #6a2c4c; --bf-amber: #b8741c; --bf-kpi: #8a5a00; }
 .cs.bf .cs-hero h1 { max-width: 18ch; }
 .cs.bf .bf-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* six meta items wrap onto a second row: the first cell of each row sits flush left (same as Fan-ID) */
+@media (min-width: 901px) {
+  .cs.bf .cs-meta { row-gap: 20px; }
+  .cs.bf .cs-meta div:nth-child(4n + 1) { padding-left: 0; border-left: 0; }
+}
+@media (min-width: 721px) and (max-width: 900px) {
+  .cs.bf .cs-meta div:nth-child(odd) { padding-left: 0; border-left: 0; }
+}
 .bf h4 { font-weight: 600; }
 .bf-sub { margin: clamp(40px, 5vw, 72px) 0 20px; font-family: var(--display); font-size: clamp(20px, 1.8vw, 26px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; }
 .bf-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: color-mix(in oklab, var(--accent) 10%, var(--surface)); color: var(--accent); }
@@ -25,6 +33,15 @@
 .bf-problem-no { display: block; margin-bottom: 20px; font-family: var(--display); font-size: clamp(56px, 6vw, 96px); font-weight: 600; line-height: 0.85; letter-spacing: -0.05em; color: color-mix(in oklab, var(--bg) 22%, transparent); }
 .bf-problems h3 { margin-top: 18px; font-family: var(--display); font-size: clamp(21px, 1.9vw, 28px); font-weight: 600; line-height: 1.1; letter-spacing: -0.03em; }
 .bf-problems p { margin-top: 10px; font-size: var(--fs-sm); line-height: 1.6; color: color-mix(in oklab, var(--bg) 74%, transparent); }
+.bf-problems .bf-problem-goal { margin-top: 18px; padding-top: 12px; border-top: 1px solid color-mix(in oklab, var(--bg) 26%, transparent); font-size: var(--fs-xs); font-weight: 500; line-height: 1.4; color: var(--bg); }
+.bf-problem-goal b { display: block; margin-bottom: 2px; font-weight: 600; color: var(--m-accent); }
+
+/* overview: context line, four objectives, decisions with a trade-off */
+.bf-context { max-width: 70ch; font-size: var(--fs-md); line-height: 1.6; }
+.bf-objectives + .bf-note { margin-top: 16px; }
+.bf-objectives .bf-tradeoff { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--ink); }
+.bf-tradeoff strong { font-weight: 600; color: var(--accent); }
+.bf-sub-first { margin-top: 0; }
 
 /* 03 competitive analysis matrix */
 .bf-scroll-hint { display: none; margin-bottom: 10px; font-size: var(--fs-xs); color: var(--muted); }
@@ -57,19 +74,19 @@
 .bf-research p { margin-top: 8px; font-size: var(--fs-sm); line-height: 1.55; }
 .bf-research a { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; margin-top: auto; padding-top: 10px; font-size: var(--fs-xs); font-weight: 600; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 
-/* projected impact strip */
-.cs.bf .bf-impact { padding-top: clamp(64px, 8vw, 112px); }
-.bf-impact-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; font-size: clamp(22px, 2vw, 30px) !important; letter-spacing: -0.03em; }
-.bf-impact-title small { font-family: var(--text); font-size: var(--fs-xs); font-weight: 500; letter-spacing: 0; color: var(--muted); }
-.bf-impact-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
-.bf-impact-grid li { padding: clamp(18px, 2vw, 28px); border-radius: 20px; background: color-mix(in oklab, var(--accent) 8%, var(--surface)); }
-.bf-impact-grid strong { display: block; font-family: var(--display); font-size: clamp(40px, 4.6vw, 72px); font-weight: 600; line-height: 1; letter-spacing: -0.05em; color: var(--accent); }
-.bf-impact-grid p { margin-top: 12px; font-size: var(--fs-sm); line-height: 1.45; }
-.bf-impact-grid small { display: inline-block; margin-top: 12px; padding: 2px 10px; border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--accent); }
+/* assumptions and measures tables */
+.bf-table-wrap { overflow-x: auto; }
+.bf-table { width: 100%; border-collapse: collapse; text-align: left; font-size: var(--fs-sm); line-height: 1.55; }
+.bf-table th, .bf-table td { padding: 16px 24px; vertical-align: top; }
+.bf-table thead th { background: var(--accent); font-size: var(--fs-xs); font-weight: 600; color: #fff; }
+.bf-table tbody tr { border-top: 1px solid var(--line); }
+.bf-table tbody th { width: 38%; font-weight: 600; }
+.bf-table.is-three tbody th { width: 26%; }
+.bf-table.is-three tbody td:nth-child(2) { width: 30%; }
 
 /* 04 journey map: a grid, one column per stage and one row per layer (like the Fan-ID journey) */
 .bf-jm-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
-.bf-jm { display: grid; grid-template-columns: 148px repeat(4, minmax(210px, 1fr)); min-width: 1000px; }
+.bf-jm { display: grid; grid-template-columns: 148px repeat(5, minmax(200px, 1fr)); min-width: 1160px; }
 .bf-jm-row { display: contents; }
 .bf-jm-label { position: sticky; left: 0; z-index: 2; padding: 20px 16px 20px 24px; border-top: 1px solid var(--line); border-right: 1px solid var(--line); background: var(--surface); font-size: var(--fs-xs); font-weight: 600; color: var(--accent); }
 .bf-jm-row:first-child > * { border-top: 0; }
@@ -79,6 +96,7 @@
 .is-s2 { --c: var(--bf-coral); }
 .is-s3 { --c: var(--bf-plum); }
 .is-s4 { --c: var(--bf-amber); }
+.is-s5 { --c: var(--ink); }
 .bf-jm-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--c, var(--accent)); color: #fff; }
 .bf-jm-stage small { display: block; margin-top: 14px; font-size: var(--fs-xs); font-weight: 600; color: var(--c); }
 .bf-jm-stage h3 { margin-top: 4px; font-family: var(--display); font-size: clamp(18px, 1.5vw, 22px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; }
@@ -107,6 +125,13 @@
 .bf-value dt { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--accent); }
 .bf-value > div + div dt { color: var(--bf-coral); }
 .bf-value dd { margin: 0; font-size: var(--fs-sm); line-height: 1.55; }
+.bf-value.has-kpi { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.bf-value > div.is-kpi { border-left-color: var(--bf-kpi); }
+.bf-value > div.is-kpi dt { color: var(--bf-kpi); }
+.bf-solves { margin-top: 10px; font-size: var(--fs-xs); font-weight: 600; color: var(--accent); }
+.bf-fhead .bf-solves { margin-top: 14px; font-size: var(--fs-xs); color: var(--accent); }
+.bf-vr .bf-fhead .bf-solves { color: var(--m-accent); }
+.bf-compact-body > .bf-solves { margin-top: 6px; color: var(--accent); }
 #features > article { margin-top: clamp(96px, 11vw, 176px); padding-top: clamp(40px, 5vw, 72px); border-top: 1px solid var(--line); }
 #features > .section-head + article { margin-top: 0; border-top: 0; }
 #features > .bf-vr { padding-top: clamp(24px, 4vw, 64px); }
@@ -165,6 +190,8 @@
 .bf-tags li.is-org { background: color-mix(in oklab, var(--bf-coral) 8%, var(--surface)); }
 .bf-tags b { font-weight: 600; color: var(--accent); }
 .bf-tags .is-org b { color: var(--bf-coral); }
+.bf-tags li.is-kpi { background: color-mix(in oklab, var(--bf-kpi) 9%, var(--surface)); }
+.bf-tags .is-kpi b { color: var(--bf-kpi); }
 .bf-compact-note { display: block; margin-top: 12px; font-size: 12px; line-height: 1.4; color: var(--muted); }
 
 /* user flow: four phases, eight steps */
@@ -205,6 +232,7 @@
 .bf-modules h3 { margin-top: 8px; font-family: var(--display); font-size: clamp(18px, 1.5vw, 22px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; }
 .bf-modules p { margin-top: 8px; font-size: var(--fs-sm); line-height: 1.55; color: var(--muted); }
 .bf-modules ul { display: grid; gap: 6px; margin-top: 10px; }
+.bf-modules .bf-feeds { margin-top: 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--accent); }
 #dashboard .bf-value { margin-top: 28px; }
 
 /* 08 screens: dark band, phones in a row */
@@ -216,7 +244,13 @@
 .bf-gallery p { margin-top: 14px; font-size: var(--fs-xs); line-height: 1.4; text-align: center; color: color-mix(in oklab, var(--bg) 72%, transparent); }
 
 /* 09 next steps: a numbered track */
-.bf-next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(20px, 3vw, 48px); margin-top: 18px; }
+.bf-next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px clamp(20px, 3vw, 48px); margin-top: 18px; }
+.bf-next + .bf-sub, .bf-table-wrap + .bf-sub { margin-top: clamp(40px, 5vw, 72px); }
+.bf-sub + .bf-next { margin-top: 40px; }
+.cs.bf .cs-close .cs-panel:last-child { grid-column: 1 / -1; }
+.cs.bf .cs-close .fid-gap { margin-top: 12px; }
+@media (min-width: 1101px) { .bf-objectives.is-four { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 721px) { .bf-objectives.is-two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .bf-next > li { position: relative; padding-top: 28px; border-top: 2px solid var(--ink); }
 .bf-next > li > span { position: absolute; top: -18px; left: 0; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--ink); font-size: 13px; font-weight: 600; color: var(--bg); }
 .bf-next h3 { font-family: var(--display); font-size: clamp(20px, 1.8vw, 26px); font-weight: 600; line-height: 1.15; letter-spacing: -0.03em; }
@@ -254,15 +288,26 @@
   .bf-crowd > .bf-device { order: 2; }
   .bf-game .bf-device.is-tall .cs-zoom img { aspect-ratio: 900 / 1949; }
   .bf-next { grid-template-columns: 1fr; gap: 36px; }
+  .bf-value.has-kpi { grid-template-columns: 1fr; }
   .bf-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bf-modules > li:not(:nth-child(3n + 1)) { padding-left: 0; border-left: 0; }
   .bf-modules > li:nth-child(even) { padding-left: 20px; border-left: 1px solid var(--line); }
 }
 @media (max-width: 720px) {
   .bf-scroll-hint { display: block; }
-  .bf-impact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .bf-impact-grid strong { font-size: 40px; }
   .bf-compact > li { display: flex; }
+  /* assumptions and measures: each row becomes a small card */
+  .bf-table-wrap { overflow: visible; border: 0; background: none; box-shadow: none; }
+  .bf-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .bf-table, .bf-table tbody, .bf-table tr, .bf-table th, .bf-table td { display: block; width: auto !important; }
+  .bf-table tbody tr { margin-bottom: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow: hidden; }
+  .bf-table tbody th { padding: 14px 16px 4px; font-size: 16px; }
+  .bf-table td { padding: 6px 16px 12px; }
+  .bf-table td::before { content: attr(data-label); display: block; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .bf-objectives .bf-tradeoff { grid-column: 2; margin-top: 10px; }
+  .bf-objectives.is-two .bf-ico { grid-row: span 3; }
+  .bf-problems .bf-problem-goal { grid-column: 2; margin-top: 12px; }
+  .bf-problems .bf-ico { grid-row: span 3; }
   .bf-insight { padding: 14px 16px; }
   .cs.bf .bf-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bf-sub { margin: 32px 0 14px; font-size: 20px; }
@@ -277,7 +322,6 @@
   .bf-problems > li, .bf-problems > li + li { display: grid; grid-template-columns: 48px minmax(0, 1fr); column-gap: 14px; padding: 20px 0; border-left: 0; border-top: 1px solid color-mix(in oklab, var(--bg) 26%, transparent); }
   .bf-problems > li:first-child { border-top: 0; }
   .bf-problem-no { display: none; }
-  .bf-problems .bf-ico { grid-row: span 2; }
   .bf-problems h3 { margin-top: 0; font-size: 20px; }
   .bf-problems p { margin-top: 6px; }
   /* comparison: each row becomes a small card */

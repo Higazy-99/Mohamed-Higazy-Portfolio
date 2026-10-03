@@ -90,7 +90,7 @@ const testimonials = [
     relation: "Worked together for nearly three years on POCs, UX audits and design systems",
   },
   {
-    quote: "Working with Mohamed from 2023 to 2026 on high-end UX/UI projects for the Saudi Government was an absolute privilege. As a Senior UX & CX expert, he has a rare talent for translating complex user needs into seamless experiences, helping us deliver over 25 Proof of Concepts and drive major product enhancements. But beyond his impressive professional skills, Mohamed’s greatest asset is his character. He leads with empathy, listens actively, and brings a collaborative, positive energy to every room. He doesn't just design for users; he cares for his team just as deeply. Any organization would be lucky to have his talent and his heart.",
+    quote: "Working with Mohamed from 2023 to 2026 on high-end UX/UI projects for the Saudi Government was an absolute privilege. As a UX & CX expert, he has a rare talent for translating complex user needs into seamless experiences, helping us deliver over 25 Proof of Concepts and drive major product enhancements. But beyond his impressive professional skills, Mohamed’s greatest asset is his character. He leads with empathy, listens actively, and brings a collaborative, positive energy to every room. He doesn't just design for users; he cares for his team just as deeply. Any organization would be lucky to have his talent and his heart.",
     name: "Salaheddine Ogontayo",
     role: "Product Designer",
     relation: "Worked together on the same team",

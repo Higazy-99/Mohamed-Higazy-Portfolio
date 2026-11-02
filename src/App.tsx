@@ -903,7 +903,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
             <p className="hero-note">I design thoughtful, user-centred experiences that make digital products intuitive and easy to use.</p>
             <div className="hero-actions">
               <a className="btn btn-solid" href="/cv.pdf" target="_blank" rel="noopener noreferrer" aria-label="Resume (PDF, opens in a new tab)" data-magnetic>Resume <ArrowUpRight size={15} strokeWidth={1.6} aria-hidden="true" /></a>
-              <a className="btn btn-line" href="#contact" data-magnetic>Let's Talk</a>
+              <a className="btn btn-line" href="#contact" data-magnetic>Say hello</a>
             </div>
           </section>
 

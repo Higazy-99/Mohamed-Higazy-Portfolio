@@ -898,9 +898,9 @@ function App({ initialPath }: { initialPath?: string } = {}) {
           <a className="wordmark" href="#top" aria-label="Mohamed Higazy, home"><span className="sr-only">H</span><HMark />IGAZY<span>.</span></a>
 
           <section className="hero" aria-labelledby="hero-title">
-            <div className="hero-kicker"><i /> CX / UX Designer · Giza, Egypt</div>
+            <div className="hero-kicker"><i /> User Experience Designer · Giza, Egypt</div>
             <h1 id="hero-title">Mohamed<br /><em>Higazy</em></h1>
-            <p className="hero-note">I design digital products and services that are clear, useful and easy to use.</p>
+            <p className="hero-note">I design thoughtful, user-centred experiences that make digital products intuitive and easy to use.</p>
             <div className="hero-actions">
               <a className="btn btn-solid" href="/cv.pdf" target="_blank" rel="noopener noreferrer" aria-label="Resume (PDF, opens in a new tab)" data-magnetic>Resume <ArrowUpRight size={15} strokeWidth={1.6} aria-hidden="true" /></a>
               <a className="btn btn-line" href="#contact" data-magnetic>Let's Talk</a>

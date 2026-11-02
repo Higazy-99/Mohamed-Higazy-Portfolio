@@ -579,75 +579,46 @@ function TestiQuote({ text }: { text: string }) {
 }
 
 function Testimonials() {
-  const track = useRef<HTMLUListElement>(null);
-  const trackId = useId();
-  const [view, setView] = useState({ first: 0, visible: 3, prev: false, next: true });
-  useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    const update = () => {
-      const card = el.children[0] as HTMLElement | undefined;
-      if (!card) return;
-      const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
-      const step = card.offsetWidth + gap;
-      setView({
-        first: Math.round(el.scrollLeft / step),
-        visible: Math.max(1, Math.round((el.clientWidth + gap) / step)),
-        prev: el.scrollLeft > 4,
-        next: el.scrollLeft + el.clientWidth < el.scrollWidth - 4,
-      });
-    };
-    update();
-    el.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      el.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-  const go = (dir: 1 | -1) => {
-    const el = track.current;
-    const card = el?.children[0] as HTMLElement | undefined;
-    if (!el || !card) return;
-    if (dir === 1 ? !view.next : !view.prev) return;
-    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    el.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: reduced ? 'auto' : 'smooth' });
+  const [active, setActive] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const current = testimonials[active];
+  const changeTo = (index: number) => {
+    if (index === active || isTransitioning) return;
+    setIsTransitioning(true);
+    window.setTimeout(() => {
+      setActive(index);
+      window.setTimeout(() => setIsTransitioning(false), 50);
+    }, 180);
   };
-  // Left / right arrows move one card, but only when the track itself has focus (not a control inside a card).
-  const onTrackKey = (event: KeyboardEvent<HTMLUListElement>) => {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-    event.preventDefault();
-    go(event.key === 'ArrowRight' ? 1 : -1);
-  };
-  const last = Math.min(view.first + view.visible, testimonials.length);
+  const move = (direction: -1 | 1) => changeTo((active + direction + testimonials.length) % testimonials.length);
   return (
-    <div data-reveal role="group" aria-roledescription="carousel" aria-label="Testimonials">
-      <ul className="testi-list" id={trackId} ref={track} tabIndex={0} role="list" aria-label="Testimonials, scrolls sideways. Use the left and right arrow keys." onKeyDown={onTrackKey}>
-        {testimonials.map((t, index) => (
-          <li key={t.name}>
-            <div className="testi-slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${testimonials.length}`}>
-            <figure className="testi">
-              <span className="testi-mark" aria-hidden="true">&ldquo;</span>
-              <TestiQuote text={t.quote} />
-              <figcaption>
-                <span className="testi-id">
-                  <span className="testi-av" aria-hidden="true">{initialsOf(t.name)}</span>
-                  <span className="testi-who"><b>{t.name}</b><span>{t.role}</span></span>
-                </span>
-                <span className="testi-rel">{t.relation}</span>
-              </figcaption>
-            </figure>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <div className="testi-editorial" data-reveal role="group" aria-roledescription="carousel" aria-label="Testimonials">
+      <div className={`testi-feature ${isTransitioning ? 'is-transitioning' : ''}`} aria-live="polite" aria-atomic="true">
+        <span className="testi-index" aria-hidden="true">{String(active + 1).padStart(2, '0')}</span>
+        <figure className="testi" key={current.name}>
+          <span className="testi-mark" aria-hidden="true">&ldquo;</span>
+          <TestiQuote text={current.quote} />
+          <figcaption>
+            <span className="testi-id">
+              <span className="testi-av" aria-hidden="true">{initialsOf(current.name)}</span>
+              <span className="testi-who"><b>{current.name}</b><span>{current.role}</span></span>
+            </span>
+            <span className="testi-rel">{current.relation}</span>
+          </figcaption>
+        </figure>
+      </div>
       <div className="testi-nav">
-        <p className="testi-count" aria-live="polite">{view.first + 1}{last > view.first + 1 ? `\u2013${last}` : ''} of {testimonials.length}</p>
+        <div className="testi-picker" aria-label="Choose a recommendation">
+          {testimonials.map((testimonial, index) => (
+            <button key={testimonial.name} type="button" onClick={() => changeTo(index)} aria-label={`Show ${testimonial.name}'s recommendation`} aria-pressed={active === index} data-magnetic>
+              <span className={active === index ? 'is-active' : ''} />
+            </button>
+          ))}
+        </div>
+        <p className="testi-count" aria-live="polite">{String(active + 1).padStart(2, '0')} / {String(testimonials.length).padStart(2, '0')}</p>
         <div className="testi-arrows">
-          <button type="button" onClick={() => go(-1)} aria-disabled={!view.prev} aria-controls={trackId} aria-label="Previous testimonial" data-magnetic><ArrowLeft size={18} strokeWidth={1.6} aria-hidden="true" /></button>
-          <button type="button" onClick={() => go(1)} aria-disabled={!view.next} aria-controls={trackId} aria-label="Next testimonial" data-magnetic><ArrowRight size={18} strokeWidth={1.6} aria-hidden="true" /></button>
+          <button type="button" onClick={() => move(-1)} aria-label="Previous testimonial" data-magnetic><ArrowLeft size={18} strokeWidth={1.6} aria-hidden="true" /></button>
+          <button type="button" onClick={() => move(1)} aria-label="Next testimonial" data-magnetic><ArrowRight size={18} strokeWidth={1.6} aria-hidden="true" /></button>
         </div>
       </div>
     </div>

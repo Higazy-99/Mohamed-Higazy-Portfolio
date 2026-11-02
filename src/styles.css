@@ -905,33 +905,35 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
 
 
 /* ---------- Testimonials ---------- */
-.testi-list { --testi-gap: clamp(14px, 1.6vw, 28px); display: flex; gap: var(--testi-gap); margin: -8px -4px -28px; padding: 8px 4px 28px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 4px; overscroll-behavior-x: contain; scrollbar-width: none; }
-.testi-list::-webkit-scrollbar { display: none; }
-.testi-list > li { flex: 0 0 calc((100% - 2 * var(--testi-gap)) / 3); display: flex; scroll-snap-align: start; }
-.testi-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 36px; }
-.testi-count { font-size: var(--fs-xs); font-variant-numeric: tabular-nums; color: var(--muted); }
-.testi-arrows { display: flex; gap: 8px; }
-.testi-arrows button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; transition: background-color 200ms var(--ease), color 200ms var(--ease), opacity 200ms var(--ease); }
-.has-cursor .testi-arrows button { cursor: none; }
-.testi-arrows button:hover:not(:disabled) { background: var(--ink); color: var(--bg); }
-.testi-arrows button:disabled { opacity: 0.35; cursor: default; }
-.testi { position: relative; display: flex; flex-direction: column; width: 100%; margin: 0; padding: clamp(28px, 2.8vw, 44px); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow-sm); transition: translate 400ms var(--ease), box-shadow 400ms var(--ease); }
-.testi:hover { translate: 0 -4px; box-shadow: var(--shadow-lg); }
-.testi-mark { display: block; height: 0.55em; font-family: var(--display); font-size: clamp(72px, 7vw, 104px); font-weight: 600; line-height: 1; color: var(--accent); user-select: none; }
-.testi blockquote { margin: clamp(20px, 2vw, 28px) 0 32px; }
-.testi blockquote p { max-width: 65ch; font-size: var(--fs-md); line-height: 1.6; }
-.testi figcaption { margin-top: auto; padding-top: 22px; border-top: 1px solid var(--line); }
+.testi-editorial { max-width: 1000px; margin-inline: auto; }
+.testi-feature { display: grid; grid-template-columns: clamp(92px, 15vw, 180px) minmax(0, 1fr); gap: clamp(20px, 4vw, 52px); align-items: start; transition: opacity 180ms var(--ease), translate 180ms var(--ease); }
+.testi-feature.is-transitioning { opacity: 0; translate: 12px 0; }
+.testi-index { padding-top: 2px; font-size: clamp(76px, 12vw, 144px); font-weight: 300; line-height: 0.85; letter-spacing: -0.06em; font-variant-numeric: tabular-nums; color: color-mix(in oklab, var(--ink) 13%, transparent); user-select: none; }
+.testi { position: relative; display: flex; flex-direction: column; min-width: 0; margin: 0; padding: clamp(4px, 1vw, 12px) 0 0; }
+.testi-mark { display: block; height: 0.55em; font-family: var(--display); font-size: clamp(56px, 6vw, 80px); font-weight: 600; line-height: 1; color: var(--accent); user-select: none; }
+.testi blockquote { margin: 12px 0 24px; }
+.testi blockquote p { max-width: 58ch; font-size: clamp(20px, 2.35vw, 30px); line-height: 1.5; letter-spacing: -0.02em; }
+.testi figcaption { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
 .testi-id { display: flex; align-items: center; gap: 14px; }
 .testi-av { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: color-mix(in oklab, var(--accent) 10%, var(--surface)); font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.02em; color: var(--accent); }
 .testi-who b { display: block; font-size: var(--fs-sm); font-weight: 600; color: var(--ink); }
 .testi-who span { display: block; font-size: var(--fs-xs); line-height: 1.4; color: var(--muted); }
-.testi-rel { display: block; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: var(--fs-xs); line-height: 1.5; color: var(--muted); }
-@media (min-width: 721px) { .testi-rel { min-height: 4.1em; } }
-@media (max-width: 1100px) { .testi-list > li { flex-basis: calc((100% - var(--testi-gap)) / 2); } }
-@media (max-width: 720px) {
-  .testi-list > li { flex: 0 0 88%; }
-}
-@media (prefers-reduced-motion: reduce) { .testi, .testi:hover, .testi-arrows button { transition: none; translate: none; } }
+.testi-rel { display: block; margin-top: 12px; font-size: var(--fs-xs); line-height: 1.5; color: var(--muted); }
+.testi-nav { display: flex; align-items: center; gap: 20px; margin: 28px 0 0 clamp(112px, 19vw, 232px); padding-top: 18px; border-top: 1px solid var(--line); }
+.testi-picker { display: flex; align-items: center; gap: 8px; }
+.testi-picker button { display: grid; place-items: center; min-width: 24px; min-height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.testi-picker button span { display: block; width: 18px; height: 1px; background: color-mix(in oklab, var(--ink) 25%, transparent); transition: width 300ms var(--ease), background-color 300ms var(--ease); }
+.testi-picker button:hover span { width: 24px; background: color-mix(in oklab, var(--ink) 55%, transparent); }
+.testi-picker button span.is-active { width: 36px; background: var(--ink); }
+.testi-count { margin: 0 auto 0 0; font-size: var(--fs-xs); font-variant-numeric: tabular-nums; letter-spacing: 0.08em; color: var(--muted); }
+.testi-arrows { display: flex; gap: 6px; }
+.testi-arrows button { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; transition: background-color 200ms var(--ease), color 200ms var(--ease); }
+.has-cursor .testi-arrows button, .has-cursor .testi-picker button { cursor: none; }
+.testi-arrows button:hover { background: var(--ink); color: var(--bg); }
+.testi-more { display: inline-flex; align-items: center; min-height: 40px; margin: -12px 0 8px; padding: 0; border: 0; background: none; font: inherit; font-size: var(--fs-xs); font-weight: 600; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.testi blockquote.is-clamped p { display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.testi-more:focus-visible, .testi-picker button:focus-visible, .testi-arrows button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .testi-feature, .testi-picker button span, .testi-arrows button { transition: none; translate: none; } }
 
 /* ---------- Phones: a calmer scale (the desktop sizes were too big on a 390px screen) ---------- */
 @media (max-width: 720px) {
@@ -968,10 +970,18 @@ html:has(dialog[open]) .cursor-dot, html:has(dialog[open]) .cursor-ring { displa
   .manifesto-list li { padding: 20px 0; }
   .manifesto-list h3 { font-size: 24px; }
   .manifesto-list p { font-size: 15px; }
-  .testi { padding: 24px; }
-  .testi-mark { font-size: 64px; }
-  .testi blockquote { margin: 16px 0 20px; }
-  .testi blockquote p { font-size: 15px; }
+  .testi-feature { grid-template-columns: 54px minmax(0, 1fr); gap: 16px; }
+  .testi-index { font-size: clamp(54px, 16vw, 74px); }
+  .testi-mark { font-size: 54px; }
+  .testi blockquote { margin: 8px 0 18px; }
+  .testi blockquote p { font-size: 18px; line-height: 1.55; }
+  .testi figcaption { margin-top: 16px; padding-top: 16px; }
+  .testi-nav { gap: 10px; margin: 20px 0 0 70px; padding-top: 12px; }
+  .testi-picker { gap: 4px; }
+  .testi-picker button span.is-active { width: 26px; }
+  .testi-picker button span { width: 12px; }
+  .testi-arrows { gap: 4px; }
+  .testi-arrows button { width: 38px; height: 38px; }
   .footer-cta h2 { font-size: clamp(30px, 9vw, 40px); }
   .footer-mail { font-size: 19px; }
   .footer-cols li a { font-size: 16px; }

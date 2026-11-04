@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Download, Minus, MoveDownRight, Pause, Play, Plus, X } from 'lucide-react';
+import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Download, MoveDownRight, Pause, Play, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react';
 import projects from './projects.json';
 import { DitherSpotlight, cappedDpr, useMotionAllowed } from './components/mellow/dither-spotlight';
@@ -16,6 +16,7 @@ import BookFairCase from './BookFairCase';
 // styles.css is also imported by main.tsx; importing it here fixes the order so that home-a11y.css always comes after it
 import './styles.css';
 import './home-a11y.css';
+import './home-work-showcase.css';
 import { EYES, FRAME_COUNT, frameForAngle, gazeOfFrame } from './gaze';
 
 const TAU = Math.PI * 2;
@@ -29,7 +30,7 @@ const YEARS = 3;
 type Point = { x: number; y: number };
 
 /* ---------- Content ---------- */
-const FEATURED_IDS = [1000000001, 1000000004, 1000000005, 1000000002, 1000000003];
+const FEATURED_IDS = [1000000001, 1000000004, 1000000002, 1000000005];
 const featured = FEATURED_IDS.map((id) => projects.find((project) => project.id === id)!).filter(Boolean);
 const rest = projects.filter((project) => !FEATURED_IDS.includes(project.id));
 
@@ -685,14 +686,14 @@ type Project = (typeof projects)[number];
 
 type Preview = { facts?: string[][]; numbers?: string[][]; cta?: string; problem?: string; did?: string[] };
 
-function ProjectCard({ project, index, onPreview }: { project: Project; index: number; onPreview: (project: Project, opener: HTMLElement) => void }) {
+function ProjectCard({ project, index, onPreview, variant = 'standard' }: { project: Project; index: number; onPreview: (project: Project, opener: HTMLElement) => void; variant?: 'standard' | 'featured' }) {
   const internal = project.url.startsWith('/');
   // what the card leads to, said on the card itself
   const kind = !internal ? 'Behance' : project.category.startsWith('UX Concept') ? 'Concept' : 'Case study';
   return (
     <li data-reveal style={{ transitionDelay: `${(index % 3) * 80}ms` }}>
       <a
-        className="card"
+        className={`card${variant === 'featured' ? ' card-featured' : ''}`}
         style={{ '--tint': project.color } as CSSProperties}
         href={project.url}
         {...(internal ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
@@ -706,13 +707,15 @@ function ProjectCard({ project, index, onPreview }: { project: Project; index: n
         aria-haspopup="dialog"
         aria-label={`${project.title}, ${project.category}. ${kind}. Opens a short preview`}
       >
-        <img src={project.cover} alt="" loading="lazy" referrerPolicy="no-referrer" style={project.position ? { objectPosition: project.position } : undefined} />
+        <img src={project.cover} alt="" loading={variant === 'featured' ? 'eager' : 'lazy'} referrerPolicy="no-referrer" style={project.position ? { objectPosition: project.position } : undefined} />
         <span className="card-no">{String(index + 1).padStart(2, '0')}</span>
         <span className={`card-type is-${kind.toLowerCase().replace(' ', '-')}`}>{kind}{!internal && <ArrowUpRight size={12} strokeWidth={2} aria-hidden="true" />}</span>
         <div className="card-info">
+          {variant === 'featured' && <span className="feature-label">Featured</span>}
           <span className="card-category">{project.category}</span>
           <h3>{project.title}</h3>
           {project.description && <p>{project.description}</p>}
+          {variant === 'featured' && <span className="feature-link">View case study <ArrowRight size={16} strokeWidth={1.8} aria-hidden="true" /></span>}
         </div>
       </a>
     </li>
@@ -938,13 +941,16 @@ function App({ initialPath }: { initialPath?: string } = {}) {
 
         <section className="section" id="work" aria-labelledby="work-title">
           <header className="section-head" data-reveal>
-            <span className="eyebrow">03 / 07 · Selected work</span>
-            <h2 id="work-title">Case studies &amp; <em>interfaces</em></h2>
-            <p>A selection of UX case studies and interface designs. Select a project to see the details.</p>
+            <div className="work-title-group">
+              <span className="eyebrow">03 / 07 · Selected work</span>
+              <h2 id="work-title">Case studies &amp; <em>interfaces</em></h2>
+              <p>A selection of UX case studies and interface designs. Select a project to see the details.</p>
+            </div>
           </header>
 
           <ul className="gallery">
-            {featured.map((project, index) => <ProjectCard key={project.id} project={project} index={index} onPreview={openPreview} />)}
+            {featured[0] && <ProjectCard key={featured[0].id} project={featured[0]} index={0} onPreview={openPreview} variant="featured" />}
+            {featured.slice(1).map((project, index) => <ProjectCard key={project.id} project={project} index={index + 1} onPreview={openPreview} />)}
           </ul>
 
           {/* always in the DOM, so the button's aria-controls points at a real element in both states */}
@@ -953,10 +959,9 @@ function App({ initialPath }: { initialPath?: string } = {}) {
           </ul>
 
           <div className="section-foot" data-reveal>
-            <button className="btn btn-line" type="button" aria-expanded={showAll} aria-controls="more-projects" onClick={() => setShowAll((open) => !open)} data-magnetic>
-              {showAll ? <>Show fewer <Minus size={15} strokeWidth={1.6} aria-hidden="true" /></> : <>View all projects ({projects.length}) <Plus size={15} strokeWidth={1.6} aria-hidden="true" /></>}
+            <button className="cases-toggle" type="button" aria-expanded={showAll} aria-controls="more-projects" onClick={() => setShowAll((open) => !open)} data-magnetic>
+              {showAll ? <>Show fewer <ArrowLeft size={15} strokeWidth={1.7} aria-hidden="true" /></> : <>View all cases <ArrowRight size={15} strokeWidth={1.7} aria-hidden="true" /></>}
             </button>
-            <a className="text-link" href={BEHANCE} target="_blank" rel="noopener noreferrer" data-magnetic>Full archive on Behance <ArrowUpRight size={14} strokeWidth={1.6} aria-hidden="true" /></a>
           </div>
         </section>
 

@@ -594,8 +594,27 @@ function Testimonials() {
   const move = (direction: -1 | 1) => changeTo((active + direction + testimonials.length) % testimonials.length);
   return (
     <div className="testi-editorial" data-reveal role="group" aria-roledescription="carousel" aria-label="Testimonials">
+      <div className="testi-intro">
+        <div>
+          <span className="eyebrow">04 / 07 · Testimonials</span>
+          <h2 id="testimonials-title">What people <em>say.</em></h2>
+        </div>
+        <div className="testi-controls">
+          <div className="testi-arrows">
+            <button type="button" onClick={() => move(-1)} aria-label="Previous testimonial" data-magnetic><ArrowLeft size={18} strokeWidth={1.6} aria-hidden="true" /></button>
+            <button type="button" onClick={() => move(1)} aria-label="Next testimonial" data-magnetic><ArrowRight size={18} strokeWidth={1.6} aria-hidden="true" /></button>
+          </div>
+          <div className="testi-progress" aria-label="Choose a recommendation">
+            {testimonials.map((testimonial, index) => (
+              <button key={testimonial.name} type="button" onClick={() => changeTo(index)} aria-label={`Show ${testimonial.name}'s recommendation`} aria-pressed={active === index} data-magnetic>
+                <span className={active === index ? 'is-active' : ''} />
+              </button>
+            ))}
+          </div>
+          <p className="testi-count" aria-live="polite">{String(active + 1).padStart(2, '0')} <span>/ {String(testimonials.length).padStart(2, '0')}</span></p>
+        </div>
+      </div>
       <div className={`testi-feature ${isTransitioning ? 'is-transitioning' : ''}`} aria-live="polite" aria-atomic="true">
-        <span className="testi-index" aria-hidden="true">{String(active + 1).padStart(2, '0')}</span>
         <figure className="testi" key={current.name}>
           <span className="testi-mark" aria-hidden="true">&ldquo;</span>
           <TestiQuote text={current.quote} />
@@ -607,20 +626,6 @@ function Testimonials() {
             <span className="testi-rel">{current.relation}</span>
           </figcaption>
         </figure>
-      </div>
-      <div className="testi-nav">
-        <div className="testi-picker" aria-label="Choose a recommendation">
-          {testimonials.map((testimonial, index) => (
-            <button key={testimonial.name} type="button" onClick={() => changeTo(index)} aria-label={`Show ${testimonial.name}'s recommendation`} aria-pressed={active === index} data-magnetic>
-              <span className={active === index ? 'is-active' : ''} />
-            </button>
-          ))}
-        </div>
-        <p className="testi-count" aria-live="polite">{String(active + 1).padStart(2, '0')} / {String(testimonials.length).padStart(2, '0')}</p>
-        <div className="testi-arrows">
-          <button type="button" onClick={() => move(-1)} aria-label="Previous testimonial" data-magnetic><ArrowLeft size={18} strokeWidth={1.6} aria-hidden="true" /></button>
-          <button type="button" onClick={() => move(1)} aria-label="Next testimonial" data-magnetic><ArrowRight size={18} strokeWidth={1.6} aria-hidden="true" /></button>
-        </div>
       </div>
     </div>
   );
@@ -966,10 +971,6 @@ function App({ initialPath }: { initialPath?: string } = {}) {
         </section>
 
         <section className="section" id="testimonials" aria-labelledby="testimonials-title">
-          <header className="section-head" data-reveal>
-            <span className="eyebrow">04 / 07 · Testimonials</span>
-            <h2 id="testimonials-title">What it's like to <em>work with me</em></h2>
-          </header>
           <Testimonials />
           <div className="section-foot" data-reveal>
             <a className="text-link" href={LINKEDIN} target="_blank" rel="noopener noreferrer" data-magnetic>Read full recommendations on LinkedIn <ArrowUpRight size={14} strokeWidth={1.6} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>

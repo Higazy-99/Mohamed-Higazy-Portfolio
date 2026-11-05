@@ -13,6 +13,7 @@ import FanIdCase from './FanIdCase';
 import FilmSaudiCase from './FilmSaudiCase';
 import StcInspectorCase from './StcInspectorCase';
 import BookFairCase from './BookFairCase';
+import RelatedCaseStudies from './RelatedCaseStudies';
 // styles.css is also imported by main.tsx; importing it here fixes the order so that home-a11y.css always comes after it
 import './styles.css';
 import './home-a11y.css';
@@ -868,6 +869,7 @@ function App({ initialPath }: { initialPath?: string } = {}) {
       {isCase ? (
         <main id="main" tabIndex={-1}>
           {isFanId ? <FanIdCase onBack={goWork} /> : isFilm ? <FilmSaudiCase onBack={goWork} /> : isStc ? <StcInspectorCase onBack={goWork} /> : isBookFair ? <BookFairCase onBack={goWork} /> : <CaseStudy onBack={goWork} />}
+          <RelatedCaseStudies currentPath={path} onNavigate={navigate} />
         </main>
       ) : (
       <main id="main" tabIndex={-1}>
